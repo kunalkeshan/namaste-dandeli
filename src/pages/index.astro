@@ -6,6 +6,7 @@
  * so this file is just the running order of the argument.
  */
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import SoloTravel from '../components/SoloTravel.astro';
 import Vehicles from '../components/Vehicles.astro';
@@ -15,12 +16,14 @@ import Stays from '../components/Stays.astro';
 import Pricing from '../components/Pricing.astro';
 import Reviews from '../components/Reviews.astro';
 import Contact from '../components/Contact.astro';
+import Motion from '../components/Motion.astro';
 ---
 
 <Layout
   title="Namaste Dandeli — taxi, trips and resort bookings in Dandeli"
   description="Irshad drives tourists around Dandeli — rafting at Ganeshgudi, jungle safari in Kali Tiger Reserve, airport pickups from Hubballi and Goa — and books the resort too. 4.9 stars from 160 Google reviews."
 >
+  <Nav />
   <Hero />
   <main id="main">
     <SoloTravel />
@@ -32,4 +35,5 @@ import Contact from '../components/Contact.astro';
     <Reviews />
   </main>
   <Contact />
+  <Motion />
 </Layout>

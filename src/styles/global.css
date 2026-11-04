@@ -15,6 +15,8 @@
    against green.
 ---------------------------------------------------------------- */
 @theme {
+  --breakpoint-xs: 25rem;   /* 400px — narrow-phone tweaks */
+
   /* surfaces */
   --color-background:        #FCFBF7;  /* warm paper */
   --color-foreground:        #122019;  /* green-black body text, not pure black */
@@ -61,6 +63,9 @@
 html {
   -webkit-text-size-adjust: 100%;   /* stop iOS inflating text on rotate */
   scroll-behavior: smooth;
+  /* Jump-links must clear the fixed nav, or every anchor lands with
+     its heading hidden behind the bar. */
+  scroll-padding-top: calc(var(--nav-h, 64px) + 1.5rem);
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -135,3 +140,118 @@ p { text-wrap: pretty; }
   }
 }
 a, button, summary { -webkit-tap-highlight-color: transparent; }
+
+/* --- motion system ---------------------------------------------
+   Custom curves: the built-in CSS easings are too weak to read as
+   intentional. ease-out for anything entering (starts fast, feels
+   responsive); never ease-in on UI — it delays the first frame, the
+   exact moment the eye is watching.                                */
+@theme {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Scroll reveal. Sections start slightly low and faded, then settle
+   once. `.is-in` is added by an IntersectionObserver; without JS the
+   .reveal class never hides anything, so content is always readable. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Only hide once the script has confirmed it is running. Without
+     this guard, a blocked or slow script leaves the page blank —
+     the content must never depend on JS to become visible. */
+  [data-reveal-ready] .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 500ms var(--ease-out-strong),
+      transform 500ms var(--ease-out-strong);
+  }
+  [data-reveal-ready] .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  /* Children stagger slightly behind their parent. 60ms reads as one
+     gesture; longer starts to feel like waiting. */
+  [data-reveal-ready] .reveal-child {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 460ms var(--ease-out-strong),
+      transform 460ms var(--ease-out-strong);
+  }
+  [data-reveal-ready] .is-in .reveal-child { opacity: 1; transform: none; }
+  .is-in .reveal-child:nth-child(2) { transition-delay: 60ms; }
+  .is-in .reveal-child:nth-child(3) { transition-delay: 120ms; }
+  .is-in .reveal-child:nth-child(4) { transition-delay: 180ms; }
+  .is-in .reveal-child:nth-child(5) { transition-delay: 240ms; }
+  .is-in .reveal-child:nth-child(6) { transition-delay: 300ms; }
+}
+
+/* --- buttons ----------------------------------------------------
+   brightness alone is invisible on a dark green, so a real hover
+   needs a lift + shadow. Press feedback is the important half: it
+   tells the user the interface heard them.                         */
+.btn {
+  transition:
+    transform 160ms var(--ease-out-strong),
+    box-shadow 200ms var(--ease-out-strong),
+    background-color 200ms ease;
+}
+.btn:active { transform: scale(0.97); }
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -6px rgb(8 34 25 / 0.35);
+  }
+  .btn-primary:hover { background-color: #15523d; }
+  /* Hover DARKENS. Lightening it dropped white text to 3.61:1 —
+     a hover state has to meet contrast too. #9C5918 = 5.45:1. */
+  .btn-accent:hover  { background-color: #9C5918; }
+  .btn-ghost:hover   { background-color: rgb(255 255 255 / 0.14); }
+}
+
+/* --- image frames ----------------------------------------------- */
+.img-frame { overflow: hidden; }
+.img-frame img { transition: transform 600ms var(--ease-out-strong); }
+@media (hover: hover) and (pointer: fine) {
+  .img-frame:hover img { transform: scale(1.04); }
+}
+
+/* --- horizontal carousel (scroll-snap, zero JS) ------------------ */
+.rail {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 1.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* bleed to the screen edge so cards run off, signalling "more" */
+  margin-inline: calc(-1 * var(--gutter, 1.25rem));
+  padding-inline: var(--gutter, 1.25rem);
+  padding-bottom: 0.5rem;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+/* --- marquee: DECORATIVE content only ---------------------------
+   Never used for text people must read — auto-moving copy is a WCAG
+   failure. Here it carries place-name chips only, and it pauses on
+   hover and for reduced-motion.                                    */
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.marquee-track { display: flex; gap: 0.6rem; width: max-content; animation: marquee 44s linear infinite; }
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .marquee { overflow-x: auto; }
+}
+
+/* --- sticky column ----------------------------------------------- */
+@media (min-width: 1024px) {
+  .sticky-col { position: sticky; top: 6rem; }
+}

@@ -22,18 +22,20 @@ const art: Record<string, typeof images[keyof typeof images] | undefined> = {
   title="The river, the forest, and the birds"
   lede="Most of it sits twenty to forty minutes out of town, down roads that are easier with someone who drives them every week."
 >
-  <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+  <div class="reveal grid gap-x-8 gap-y-12 sm:grid-cols-2">
     {activities.map((a) => {
       const img = art[a.name];
       return (
-        <article>
+        <article class="reveal-child">
           {img && (
+            <div class="img-frame mb-5 rounded-lg">
             <CommonsImage
               img={img}
               sizes="(min-width: 640px) 44vw, 90vw"
               aspect="aspect-[5/3]"
-              class="mb-5 w-full rounded-lg"
+              class="w-full"
             />
+            </div>
           )}
           <h3 class="text-xl">{a.name}</h3>
           <p class="mt-2.5 text-muted-foreground">{a.blurb}</p>

@@ -1,0 +1,113 @@
+---
+/**
+ * Navbar.
+ *
+ * Transparent over the hero so it does not fight the logo lockup,
+ * then solid green with a blur once you scroll past it. The call
+ * button is always present — on a cab site the phone number should
+ * never be more than one tap away.
+ *
+ * Mobile uses native <details> for the menu: no JS, keyboard and
+ * screen-reader support for free, and Escape closes it.
+ */
+import Logo from './Logo.astro';
+import { getContent, whatsappLink, WA_DEFAULT } from '../content';
+const { site } = await getContent();
+
+const links = [
+  { href: '#solo',         label: 'Travelling alone' },
+  { href: '#cars',         label: 'The cars' },
+  { href: '#dandeli',      label: 'Things to do' },
+  { href: '#getting-here', label: 'Routes' },
+  { href: '#stay',         label: 'Stays' },
+  { href: '#reviews',      label: 'Reviews' },
+];
+---
+
+<nav
+  id="nav"
+  data-nav
+  class="group/nav fixed inset-x-0 top-0 z-50 will-change-transform"
+>
+  <!-- The background is its own layer so the state change is a pure
+       opacity cross-fade: no layout, no paint of the bar contents,
+       and the blur is always mounted rather than animated on. -->
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 -z-10 bg-primary-deep/92 opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-200 ease-out group-data-[stuck]/nav:opacity-100"
+  ></div>
+
+  <div class="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5">
+    <a href="#top" class="flex shrink-0 items-center gap-2.5 text-primary-foreground" aria-label={`${site.name} — top of page`}>
+      <Logo class="w-9" />
+      <span class="decal hidden text-xs sm:block">Namaste Dandeli</span>
+    </a>
+
+    <!-- desktop links -->
+    <ul class="ml-auto hidden items-center gap-6 lg:flex">
+      {links.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            class="relative text-sm text-primary-foreground/80 transition-colors hover:text-primary-foreground after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent-bright after:transition-[width] after:duration-300 after:ease-out hover:after:w-full"
+          >
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="ml-auto flex items-center gap-2 lg:ml-0">
+      <a
+        href={`tel:${site.phone}`}
+        class="btn btn-ghost hidden items-center gap-2 rounded-lg border border-primary-foreground/25 px-3.5 py-2 text-sm font-medium text-primary-foreground sm:inline-flex"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>
+        Call
+      </a>
+      <a
+        href={whatsappLink(WA_DEFAULT)}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-accent inline-flex items-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+      >
+        Book
+      </a>
+
+      <!-- mobile menu: native disclosure, zero JS -->
+      <details class="group relative lg:hidden" data-menu>
+        <summary
+          class="btn flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-primary-foreground/25 text-primary-foreground [&::-webkit-details-marker]:hidden"
+          aria-label="Open menu"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" class="transition-opacity group-open:opacity-0" />
+            <path d="M5 5l14 14M19 5L5 19" class="opacity-0 transition-opacity group-open:opacity-100" />
+          </svg>
+        </summary>
+
+        <div
+          class="fixed inset-x-0 top-[var(--nav-h,64px)] bottom-0 z-40 origin-top overflow-y-auto border-t border-primary-foreground/10 bg-primary-deep/98 backdrop-blur-lg transition duration-250 ease-out motion-safe:[@starting-style]:opacity-0 motion-safe:[@starting-style]:-translate-y-2"
+        >
+          <ul class="mx-auto max-w-6xl px-5 py-4">
+            {links.map((l) => (
+              <li class="border-b border-primary-foreground/10 last:border-0">
+                <a href={l.href} class="block py-3.5 text-primary-foreground/90 transition-colors hover:text-primary-foreground">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+            <li class="pt-4">
+              <a
+                href={`tel:${site.phone}`}
+                class="btn btn-ghost flex items-center justify-center rounded-lg border border-primary-foreground/25 py-3 font-medium text-primary-foreground"
+              >
+                Call {site.phoneDisplay}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</nav>

@@ -18,9 +18,9 @@ const { slabs, extras, note } = pricing;
   eyebrow="What it costs"
   title="A local day, priced the way he actually quotes it"
 >
-  <div class="grid gap-6 sm:grid-cols-2">
+  <div class="reveal grid gap-6 sm:grid-cols-2">
     {slabs.map((s) => (
-      <div class="rounded-xl border border-border p-6">
+      <div class="reveal-child rounded-xl border border-border p-6">
         <h3 class="text-lg font-display">{s.vehicle}</h3>
         <p class="mt-3 text-2xl font-display tabular-nums">
           ₹{s.price.toLocaleString('en-IN')}
@@ -32,7 +32,7 @@ const { slabs, extras, note } = pricing;
     ))}
   </div>
 
-  <dl class="mt-6 flex flex-wrap gap-x-10 gap-y-2 text-sm">
+  <dl class="reveal mt-6 flex flex-wrap gap-x-10 gap-y-2 text-sm">
     <div class="flex gap-2">
       <dt class="text-muted-foreground">Beyond {slabs[0].km} km</dt>
       <dd class="font-medium tabular-nums">₹{extras.perExtraKm} per km</dd>
@@ -43,7 +43,7 @@ const { slabs, extras, note } = pricing;
     </div>
   </dl>
 
-  <p class="measure mt-8 text-muted-foreground">{note}</p>
+  <p class="measure reveal mt-8 text-muted-foreground">{note}</p>
 
   <a
     href={`tel:${site.phone}`}

@@ -1,27 +1,35 @@
 ---
 /**
- * Transfers.
+ * Routes.
  *
- * ⚠️ Distances render ONLY when route.verified is true. Nothing here
- * invents a drive time — see content/routes.ts for why that rule
- * exists. An unverified route still earns its place on the page
- * because the ROUTE is real; only the number is pending.
+ * Reframed from "here are fixed airport transfers" to "any trip is
+ * planned with Irshad" — which is what the reviews actually show.
+ * The 1600 km Dandeli–Mysore–Ooty week and the Kumta–Udupi–
+ * Murudeshwar–Mangalore run are real customer trips, so this is
+ * evidence rather than a claim.
+ *
+ * ⚠️ Distances render ONLY when route.verified is true. See
+ * content/routes.ts for why that rule exists.
  */
 import Section from './Section.astro';
 import { getContent, whatsappLink } from '../content';
-const { routes, outstation, site } = await getContent();
+const { routes, outstation, site, reviews } = await getContent();
+
+const longTrip = reviews.find((r) => r.role === 'long-distance');
+/* Doubled so the marquee can loop seamlessly at -50%. */
+const chips = [...outstation, ...outstation];
 ---
 
 <Section
   id="getting-here"
-  eyebrow="Getting here"
-  title="Picked up where you land"
-  lede="Flights into Hubballi and Goa, trains into Alnavar and Londa. Night arrivals are normal — tell him the time and he will be there."
+  eyebrow="Getting there and back"
+  title="Anywhere you need to be, worked out on the phone"
+  lede="These are the arrivals people book most often. But the trip is whatever you and Irshad plan together — a single airport run, a week of driving, or a route nobody has asked for before."
   tone="muted"
 >
-  <ul class="divide-y divide-border border-y border-border">
+  <ul class="divide-y divide-border border-y border-border reveal">
     {routes.map((r) => (
-      <li class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+      <li class="reveal-child flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
         <div>
           <span class="font-medium">{r.from}</span>
           <span class="mx-2 text-muted-foreground" aria-hidden="true">→</span>
@@ -35,7 +43,7 @@ const { routes, outstation, site } = await getContent();
         ) : (
           <a
             href={`tel:${site.phone}`}
-            class="link-inline text-sm font-medium text-accent-ink underline decoration-accent underline-offset-4 hover:no-underline"
+            class="link-inline text-sm font-medium text-accent-ink underline decoration-accent underline-offset-4 transition-colors hover:text-foreground hover:no-underline"
           >
             Ask the fare
           </a>
@@ -44,24 +52,46 @@ const { routes, outstation, site } = await getContent();
     ))}
   </ul>
 
-  <div class="mt-10">
-    <h3 class="text-lg font-display">Longer trips he has already driven</h3>
+  <!-- the proof that "anywhere" is not marketing -->
+  {longTrip && (
+    <figure class="reveal mt-12 border-l-2 border-accent pl-5">
+      <blockquote>
+        <p class="measure font-display text-xl leading-snug">
+          &ldquo;A week Ride with Ertiga from Dandeli-Mysore-Ooty 1600KM up and down&rdquo;
+        </p>
+      </blockquote>
+      <figcaption class="mt-2.5 text-sm text-muted-foreground">
+        {longTrip.author} &middot; on Google
+      </figcaption>
+    </figure>
+  )}
+
+  <div class="reveal mt-10">
+    <h3 class="font-display text-lg">Places he has already driven people</h3>
     <p class="mt-2 text-sm text-muted-foreground">
-      All of these appear in his reviews — real trips, not a brochure list.
+      Every one of these comes out of his reviews — real trips, not a brochure list.
     </p>
-    <ul class="mt-4 flex flex-wrap gap-2">
-      {outstation.map((d) => (
-        <li class="rounded-full border border-border px-3.5 py-1.5 text-sm">{d}</li>
-      ))}
-    </ul>
+    <div class="marquee mt-5" role="list" aria-label="Destinations Irshad has driven to">
+      <div class="marquee-track">
+        {chips.map((d, i) => (
+          <span
+            role="listitem"
+            aria-hidden={i >= outstation.length ? 'true' : undefined}
+            class="shrink-0 rounded-full border border-border px-3.5 py-1.5 text-sm"
+          >
+            {d}
+          </span>
+        ))}
+      </div>
+    </div>
   </div>
 
   <a
-    href={whatsappLink('Hello Irshad, I need a pickup.\n\nArriving at: \nDate and time: \nNumber of people: ')}
+    href={whatsappLink('Hello Irshad, I would like to plan a trip.\n\nFrom: \nTo: \nDates: \nNumber of people: ')}
     target="_blank"
     rel="noopener"
-    class="mt-8 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition hover:brightness-110 active:scale-[0.99]"
+    class="btn btn-primary reveal mt-10 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"
   >
-    Arrange a pickup
+    Plan a trip with Irshad
   </a>
 </Section>

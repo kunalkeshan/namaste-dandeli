@@ -23,22 +23,27 @@ const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
   title="Irshad books the room as well as the car"
   lede="He works with resorts, jungle camps and homestays across Dandeli. Tell him the dates, the group and the budget, and he will tell you what is actually free — not what is advertised."
 >
-  <div class="grid gap-6 sm:grid-cols-3">
+  <!-- A rail rather than a grid: as Irshad adds resorts this scrolls
+       instead of growing a very tall page. scroll-snap gives native
+       momentum on touch and costs zero JS. -->
+  <div class="rail reveal" role="region" aria-label="Kinds of stay" tabindex="0">
     {stays.map((s, i) => (
-      <article>
+      <article class="reveal-child w-[78vw] max-w-[22rem] sm:w-[20rem]">
+        <div class="img-frame rounded-lg">
         <CommonsImage
           img={art[i]}
-          sizes="(min-width: 640px) 30vw, 90vw"
+          sizes="(min-width: 640px) 22rem, 78vw"
           aspect="aspect-[4/3]"
-          class="w-full rounded-lg"
+          class="w-full"
         />
+        </div>
         <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
         <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
       </article>
     ))}
   </div>
 
-  <p class="measure mt-10 border-l-2 border-border pl-4 text-sm text-muted-foreground">
+  <p class="measure reveal mt-10 border-l-2 border-border pl-4 text-sm text-muted-foreground">
     {staysDisclosure}
   </p>
 

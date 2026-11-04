@@ -12,9 +12,10 @@
 import Section from './Section.astro';
 import { getContent } from '../content';
 const { reviews, site } = await getContent();
-/* Skip the two quoted elsewhere: solo-safety (its own section) and
-   local-knowledge (the hero). No quote appears twice on the page. */
-const shownAbove = new Set(['solo-safety', 'local-knowledge']);
+/* Skip the three quoted elsewhere: solo-safety (its own section),
+   local-knowledge (the hero) and long-distance (the Routes proof).
+   No customer's words appear twice on the page. */
+const shownAbove = new Set(['solo-safety', 'local-knowledge', 'long-distance']);
 const rest = reviews.filter((r) => !shownAbove.has(r.role));
 ---
 
@@ -25,9 +26,9 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
   lede="Every one of these is on Google under his listing, and he has replied to all of them for three years running."
   tone="dark"
 >
-  <div class="grid gap-6 sm:grid-cols-2">
+  <div class="reveal grid gap-6 sm:grid-cols-2">
     {rest.map((r) => (
-      <figure class="flex flex-col rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6">
+      <figure class="reveal-child flex flex-col rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6">
         <div class="text-accent-bright" aria-label={`${r.rating} out of 5 stars`}>
           <span aria-hidden="true">★★★★★</span>
         </div>
@@ -47,7 +48,7 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
     href={site.google.mapsUrl}
     target="_blank"
     rel="noopener"
-    class="link-inline mt-8 inline-flex items-center gap-2 font-medium underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
+    class="link-inline btn mt-8 inline-flex items-center gap-2 font-medium underline decoration-accent decoration-2 underline-offset-4 transition-opacity hover:opacity-80 hover:no-underline"
   >
     Read all {site.google.reviewCount} on Google
   </a>

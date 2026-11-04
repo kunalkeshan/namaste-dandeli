@@ -1,0 +1,84 @@
+---
+/**
+ * The site's only JavaScript.
+ *
+ * Three jobs, all progressive enhancement — with JS disabled every
+ * section is fully visible and the nav simply stays transparent:
+ *   1. mark the nav as "stuck" once you scroll past the hero
+ *   2. reveal sections once as they enter view
+ *   3. close the mobile menu after a jump-link is tapped
+ *
+ * is:inline keeps it in the HTML rather than emitting a module file,
+ * so the page still ships zero .js assets.
+ */
+---
+<script is:inline>
+  (() => {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* 1. nav state ------------------------------------------------ */
+    const nav = document.querySelector('[data-nav]');
+    if (nav) {
+      const setH = () =>
+        document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+      setH();
+      addEventListener('resize', setH, { passive: true });
+
+      // A sentinel beats a scroll listener: the browser does the work
+      // off the main thread and we never run on every frame.
+      //
+      // Its height is the nav's own height, NOT a slice of the
+      // viewport. The bar has to become opaque the moment content
+      // starts passing under it — a taller probe leaves a long
+      // stretch where transparent nav text sits on top of hero text.
+      const probe = document.createElement('div');
+      probe.setAttribute('aria-hidden', 'true');
+      probe.style.cssText =
+        'position:absolute;top:0;left:0;width:1px;pointer-events:none;' +
+        'height:var(--nav-h,64px)';
+      document.body.prepend(probe);
+      new IntersectionObserver(
+        ([e]) => nav.toggleAttribute('data-stuck', !e.isIntersecting),
+        { threshold: 0 },
+      ).observe(probe);
+    }
+
+    /* 2. scroll reveals -------------------------------------------
+       The hide-rule is gated on [data-reveal-ready], set here, so the
+       page renders fully visible if this script never runs. Anything
+       already on screen is revealed immediately rather than animated
+       in — the first paint should not wait on an observer.          */
+    const targets = document.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      targets.forEach((t) => t.classList.add('is-in'));
+    } else {
+      document.documentElement.setAttribute('data-reveal-ready', '');
+      targets.forEach((t) => {
+        const r = t.getBoundingClientRect();
+        if (r.top < innerHeight * 0.9) t.classList.add('is-in');
+      });
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);   // reveal once, never re-animate
+          }
+        },
+        { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
+      );
+      targets.forEach((t) => io.observe(t));
+    }
+
+    /* 3. close the mobile menu on navigate ------------------------ */
+    const menu = document.querySelector('[data-menu]');
+    if (menu) {
+      menu.addEventListener('click', (e) => {
+        if (e.target.closest('a')) menu.open = false;
+      });
+      addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') menu.open = false;
+      });
+    }
+  })();
+</script>

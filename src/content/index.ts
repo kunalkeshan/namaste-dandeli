@@ -12,7 +12,7 @@
  * file later.
  */
 import { site, whatsappLink, WA_DEFAULT } from './site';
-import { images, ownPhotos, imageCredits } from './images';
+import { images, carImages, carImageNote, ownPhotos, imageCredits } from './images';
 import { reviews, featuredReview } from './reviews';
 import { vehicles } from './vehicles';
 import { activities } from './activities';
@@ -24,6 +24,8 @@ export async function getContent() {
   return {
     site,
     images,
+    carImages,
+    carImageNote,
     ownPhotos,
     imageCredits,
     reviews,

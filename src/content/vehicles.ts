@@ -5,7 +5,8 @@
  */
 export interface Vehicle {
   name: string;
-  kind: string;
+  /** Key into carImages in content/images.ts */
+  kind: 'sedan' | 'ertiga' | 'cruiser';
   seats: string;
   suits: string;
   note: string;
@@ -21,7 +22,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     name: 'Ertiga',
-    kind: 'suv',
+    kind: 'ertiga',
     seats: '6 passengers',
     suits: 'Families with luggage, and anyone heading to the rafting point.',
     note: 'The car customers name most often in reviews. Higher clearance for the forest roads.',

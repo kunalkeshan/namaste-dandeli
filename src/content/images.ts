@@ -97,6 +97,38 @@ export const images = {
 } as const;
 
 /**
+ * Vehicle cutouts.
+ *
+ * Background-removed model photographs from Wikimedia Commons —
+ * the right models (Dzire, Ertiga, Force Traveller), but NOT
+ * Irshad's actual cars. The page says so under the grid; the same
+ * honesty standard as the stays section.
+ *
+ * Swap these files for cutouts of his real vehicles and nothing
+ * else changes.
+ */
+export const carImages = {
+  sedan: {
+    src: '/photos/car-sedan.webp',
+    width: 1014, height: 569,
+    alt: 'A silver Maruti Suzuki Dzire sedan, three-quarter front view',
+  } satisfies Img,
+  ertiga: {
+    src: '/photos/car-ertiga.webp',
+    width: 590, height: 411,
+    alt: 'A white Maruti Suzuki Ertiga, three-quarter front view, Karnataka registration',
+  } satisfies Img,
+  cruiser: {
+    src: '/photos/car-cruiser.webp',
+    width: 1100, height: 658,
+    alt: 'A white Force Traveller minibus, side view',
+  } satisfies Img,
+};
+
+export const carImageNote =
+  'Model photographs. Ask Irshad for pictures of the actual vehicle on your dates.';
+
+/**
  * Irshad's own photographs.
  * TODO: these are the most valuable images on the page — his face is
  * the trust asset. Drop the files into /public/photos/ and set `ready`.
