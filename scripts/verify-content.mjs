@@ -138,22 +138,38 @@ if (tooStrong.length) {
   ok('forest texture', `faint (max ${Math.max(...texMatches, ...texUses, 0)})`);
 }
 
-/* 7. No og:image pointing at a missing file ------------------------- */
+/* 7. og:image must point at a file that actually exists -----------
+   This check previously only asserted the file was on disk, which
+   passed locally while production advertised og:image at a domain
+   that did not resolve — WhatsApp fetched it, 404'd, and fell back
+   to the favicon. Now it also checks that the declared ORIGIN is one
+   this build can satisfy. */
 const ogMatch = html.match(/property="og:image"\s+content="([^"]+)"/);
-if (ogMatch) {
-  const path = ogMatch[1].replace(/^https?:\/\/[^/]+/, '');
-  if (!existsSync(join(DIST, path))) {
-    fail('og:image', `declared as ${ogMatch[1]} but the file does not exist`);
-  } else {
-    ok('og:image', `present (${path})`);
-  }
+if (!ogMatch) {
+  fail('og:image', 'not declared — social shares will fall back to the favicon');
 } else {
-  notes.push('· og:image not declared yet');
+  const url = ogMatch[1];
+  const path = url.replace(/^https?:\/\/[^/]+/, '');
+  const origin = url.slice(0, url.length - path.length);
+
+  if (!existsSync(join(DIST, path))) {
+    fail('og:image', `declared as ${url} but ${path} is not in dist/`);
+  } else if (/namastedandeli\.com/.test(origin) && !process.env.SITE_URL) {
+    // The custom domain is not live yet. Advertising it means the
+    // card 404s for every share.
+    fail(
+      'og:image',
+      `points at ${origin}, which does not resolve yet. Set SITE_URL once the domain is live, or let the Vercel fallback handle it`,
+    );
+  } else {
+    ok('og:image', `${path} served from ${origin || 'relative'}`);
+  }
 }
+
 const jsonLdImage = html.match(/"image"\s*:\s*"([^"]+)"/);
 if (jsonLdImage) {
-  const p = jsonLdImage[1].replace(/^https?:\/\/[^/]+/, '');
-  if (!existsSync(join(DIST, p))) {
+  const p2 = jsonLdImage[1].replace(/^https?:\/\/[^/]+/, '');
+  if (!existsSync(join(DIST, p2))) {
     fail('JSON-LD image', `references ${jsonLdImage[1]} which does not exist`);
   }
 }

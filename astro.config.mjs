@@ -4,12 +4,30 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 /**
- * `site` is required for canonical URLs and is what makes the sitemap
- * integration work at all — without it, @astrojs/sitemap emits
- * nothing. Override per-deploy with SITE_URL so Vercel previews
- * generate correct absolute URLs instead of pointing at production.
+ * `site` drives every absolute URL: canonical, og:image, og:url and
+ * the sitemap (which @astrojs/sitemap will not emit at all without
+ * it).
+ *
+ * The order below matters, and the default is deliberately NOT the
+ * production domain. Hardcoding namastedandeli.com meant the live
+ * Vercel deployment advertised og:image at a domain that does not
+ * resolve yet — WhatsApp fetched it, got a 404, and fell back to the
+ * favicon. Falling back to the deployment's own URL means previews
+ * and the pre-domain production site both describe themselves
+ * correctly.
+ *
+ *   1. SITE_URL              — set this once the domain is live
+ *   2. VERCEL_PROJECT_PRODUCTION_URL — stable prod URL on Vercel
+ *   3. VERCEL_URL            — the per-deployment preview URL
+ *   4. localhost             — local builds
  */
-const SITE = process.env.SITE_URL ?? 'https://namastedandeli.com';
+const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const vercelAny = process.env.VERCEL_URL;
+const SITE =
+  process.env.SITE_URL ??
+  (vercelProd && `https://${vercelProd}`) ??
+  (vercelAny && `https://${vercelAny}`) ??
+  'http://localhost:4321';
 
 export default defineConfig({
   site: SITE,
