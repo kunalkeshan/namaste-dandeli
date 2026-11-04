@@ -12,6 +12,7 @@
  */
 import Logo from './Logo.astro';
 import CommonsImage from './CommonsImage.astro';
+import ForestTexture from './ForestTexture.astro';
 import { getContent, whatsappLink, telLink } from '../content';
 
 const { site, images, reviews, copy } = await getContent();
@@ -33,6 +34,7 @@ const heroQuote = reviews.find((r) => r.role === 'local-knowledge')!;
     class="absolute inset-0 h-full w-full object-cover opacity-[0.6]"
   />
   <div class="absolute inset-0 bg-gradient-to-b from-primary-deep/75 via-primary-deep/55 to-primary-deep"></div>
+  <ForestTexture opacity={0.045} />
 
   <div class="relative mx-auto w-full max-w-5xl px-5 pt-[calc(var(--nav-h,64px)+1.5rem)] pb-10">
     <!-- the decal, as it sits on the car -->

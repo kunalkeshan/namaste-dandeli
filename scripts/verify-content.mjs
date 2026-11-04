@@ -114,7 +114,31 @@ for (const pull of pulls) {
 if (badPull === 0)
   ok('verbatim quotes', `${pulls.length} pull-quote(s) verified against source`);
 
-/* 6. No og:image pointing at a missing file ------------------------- */
+/* 6. The forest texture stays faint --------------------------------
+   The token-level a11y check cannot see a texture, because a texture
+   is not a token. Measured on the rendered page, white text over the
+   brightest texture stroke is 10.47:1 — against 12.16:1 on the bare
+   band, so the texture costs 1.7 points. Opacity above ~0.07 starts
+   eating into that margin. */
+const texMatches = [
+  ...readFileSync('src/components/ForestTexture.astro', 'utf8').matchAll(
+    /opacity\s*=\s*([0-9.]+)/g,
+  ),
+].map((m) => parseFloat(m[1]));
+const texUses = [...html.matchAll(/opacity:([0-9.]+)/g)]
+  .map((m) => parseFloat(m[1]))
+  .filter((o) => o > 0 && o < 0.2);
+const tooStrong = [...texMatches, ...texUses].filter((o) => o > 0.07);
+if (tooStrong.length) {
+  fail(
+    'forest texture',
+    `opacity ${tooStrong.join(', ')} exceeds 0.07 — re-measure text contrast over the band`,
+  );
+} else {
+  ok('forest texture', `faint (max ${Math.max(...texMatches, ...texUses, 0)})`);
+}
+
+/* 7. No og:image pointing at a missing file ------------------------- */
 const ogMatch = html.match(/property="og:image"\s+content="([^"]+)"/);
 if (ogMatch) {
   const path = ogMatch[1].replace(/^https?:\/\/[^/]+/, '');

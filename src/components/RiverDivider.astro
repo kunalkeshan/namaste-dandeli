@@ -1,0 +1,73 @@
+---
+/**
+ * A river-contour section divider.
+ *
+ * The edge between two sections, drawn as a meander rather than a
+ * straight rule — the shape of a river bend, which is the one
+ * landform this whole business is organised around.
+ *
+ * Three lines at different weights read as a channel and its banks,
+ * the way a contour map draws water. It is decorative: aria-hidden,
+ * and it carries no information the copy does not already give.
+ *
+ * `from`/`to` are the band colours on either side, so the divider
+ * sits flush against both without a seam.
+ */
+interface Props {
+  /** Colour of the band above. */
+  from: string;
+  /** Colour of the band below — the divider is filled with this. */
+  to: string;
+  /** Flip vertically, for a bend running the other way. */
+  flip?: boolean;
+  class?: string;
+}
+const { from, to, flip = false, class: className = '' } = Astro.props;
+---
+
+<div
+  aria-hidden="true"
+  class={`relative w-full overflow-hidden leading-[0] ${className}`}
+  style={`background:${from}`}
+>
+  <svg
+    viewBox="0 0 1440 90"
+    preserveAspectRatio="none"
+    class="block h-[52px] w-full sm:h-[72px]"
+    style={flip ? 'transform:scaleY(-1)' : undefined}
+  >
+    <!-- the water: fills down into the next band -->
+    <path
+      d="M0 46
+         C 160 18, 300 74, 470 58
+         C 640 42, 760 8, 940 26
+         C 1110 43, 1240 76, 1440 52
+         L 1440 90 L 0 90 Z"
+      fill={to}
+    />
+    <!-- near bank: a brighter line where the water meets the land -->
+    <path
+      d="M0 46
+         C 160 18, 300 74, 470 58
+         C 640 42, 760 8, 940 26
+         C 1110 43, 1240 76, 1440 52"
+      fill="none"
+      stroke={to}
+      stroke-width="2.5"
+      opacity="0.55"
+      transform="translate(0,-9)"
+    />
+    <!-- far bank: fainter, further out, the way a contour map thins -->
+    <path
+      d="M0 46
+         C 160 18, 300 74, 470 58
+         C 640 42, 760 8, 940 26
+         C 1110 43, 1240 76, 1440 52"
+      fill="none"
+      stroke={to}
+      stroke-width="1.5"
+      opacity="0.3"
+      transform="translate(0,-19)"
+    />
+  </svg>
+</div>

@@ -4,13 +4,15 @@
  * that local SEO depends on — as real text, not an image.
  */
 import Logo from './Logo.astro';
+import ForestTexture from './ForestTexture.astro';
 import { getContent, whatsappLink, telLink } from '../content';
 import { render } from '../content/confirmed';
 const { site, imageCredits, copy } = await getContent();
 ---
 
-<section id="contact" class="bg-primary-deep text-primary-foreground">
-  <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
+<section id="contact" class="relative bg-primary-deep text-primary-foreground">
+  <ForestTexture opacity={0.045} />
+  <div class="relative mx-auto max-w-5xl px-5 py-16 sm:py-24">
     <div class="reveal grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="decal text-xs text-primary-foreground/55">
@@ -89,7 +91,7 @@ const { site, imageCredits, copy } = await getContent();
     </div>
   </div>
 
-  <footer class="border-t border-primary-foreground/15">
+  <footer class="relative border-t border-primary-foreground/15">
     <div class="mx-auto max-w-5xl px-5 py-10">
       <div class="flex flex-wrap items-center justify-between gap-6">
         <div class="flex items-center gap-4">

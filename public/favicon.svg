@@ -1,42 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <!--
-    Namaste Dandeli tab icon.
+    Namaste Dandeli tab icon — the real monogram, not a redraw.
+    Same geometry as src/components/Logo.astro, scaled from its
+    200x170 viewBox into 64x64 and thickened so it survives 16px.
 
-    Two earlier attempts kept the full ND lockup and both failed at
-    16px: the first collapsed into a smudge, the second read as a
-    "no entry" strike-through — worse than meaningless for a business.
+    Two earlier attempts were wrong and both are worth recording:
+      1. a lone D with a red mark — lost the N entirely
+      2. a D and an N side by side — read "DN", the wrong order, and
+         was not the interlocked mark at all
 
-    A favicon is one glyph at 16px. This is the D alone, drawn in the
-    logo's serif with a red hairline on the bowl as the only trace of
-    the N's swash. It holds its shape at every size and cannot be
-    misread.
+    The logo is ONE monogram: the N's swash sweeps behind the D and
+    its upright stands to the right. That interlock is the mark; two
+    separate letters is a different logo.
+
+    Drawn on brand green so the white D holds against light and dark
+    browser chrome.
   -->
   <rect width="64" height="64" rx="13" fill="#0F3D2E"/>
 
-  <g fill="#FFFFFF">
-    <!-- slab serifs, top and bottom -->
-    <rect x="13" y="14" width="27" height="5.5"/>
-    <rect x="13" y="44.5" width="27" height="5.5"/>
-    <!-- stem -->
-    <rect x="19" y="14" width="10" height="36"/>
-    <!-- bowl: open enough to stay a D when the pixels get coarse -->
-    <path d="M29 19.5
-             C 44 19.5, 51 24.5, 51 32
-             C 51 39.5, 44 44.5, 29 44.5
-             L 29 37.5
-             C 38 37.5, 42 35.5, 42 32
-             C 42 28.5, 38 26.5, 29 26.5
-             Z"/>
-  </g>
-
   <!--
-    The swash, reduced to a diagonal glimpsed through the counter —
-    the same read as the full logo, where the N passes behind the D.
-    Clipped to the counter so it never touches the outer silhouette
-    and cannot turn the mark into a strike-through at small sizes.
+    Scale: the logo occupies roughly x 20–186, y 33–152 of its
+    200x170 box. Mapped to 6–58 / 10–54 here, then every stroke
+    widened — the original's hairlines vanish below about 24px.
   -->
-  <clipPath id="counter">
-    <path d="M29 26.5 C 38 26.5, 42 28.5, 42 32 C 42 35.5, 38 37.5, 29 37.5 Z"/>
-  </clipPath>
-  <path d="M24 40 L 31 22 L 38 24 L 31 42 Z" fill="#E63A2E" clip-path="url(#counter)"/>
+  <g transform="translate(2.6,6.2) scale(0.296,0.296)">
+
+    <!-- N, underneath: swash + upright, thickened -->
+    <g fill="#E63A2E">
+      <path d="M20 36
+               C 44 25, 63 40, 87 71
+               C 112 103, 138 126, 165 134
+               C 174 137, 182 137, 188 135
+               L 188 156
+               C 176 160, 162 158, 148 153
+               C 117 141, 92 112, 68 82
+               C 49 58, 38 50, 27 56
+               Z"/>
+      <rect x="148" y="36" width="20" height="84"/>
+      <rect x="133" y="36" width="50" height="11"/>
+    </g>
+
+    <!-- D, on top: stem and bowl both heavier than the original -->
+    <g fill="#FFFFFF">
+      <rect x="30" y="30" width="78" height="13"/>
+      <rect x="30" y="126" width="78" height="13"/>
+      <rect x="48" y="30" width="30" height="109"/>
+      <path d="M78 43
+               C 121 43, 145 60, 145 84
+               C 145 108, 121 126, 78 126
+               L 78 101
+               C 107 101, 118 95, 118 84
+               C 118 73, 107 67, 78 67
+               Z"/>
+    </g>
+  </g>
 </svg>

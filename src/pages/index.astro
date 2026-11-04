@@ -17,6 +17,20 @@ import Pricing from '../components/Pricing.astro';
 import Reviews from '../components/Reviews.astro';
 import Contact from '../components/Contact.astro';
 import Motion from '../components/Motion.astro';
+import RiverDivider from '../components/RiverDivider.astro';
+
+/**
+ * Band colours for the river dividers. A divider is only placed where
+ * the background actually changes — using one between two bands of
+ * the same colour would be decoration for its own sake.
+ *
+ * hero(deep) │ solo(bg) │ cars(muted) │ activities(bg) │ routes(muted)
+ *            │ stays(bg) │ pricing(bg) │ reviews(primary) │ contact(deep)
+ */
+const DEEP = '#082219';
+const BG = '#FCFBF7';
+const MUTED = '#EEF2ED';
+const PRIMARY = '#0F3D2E';
 ---
 
 <Layout
@@ -25,6 +39,7 @@ import Motion from '../components/Motion.astro';
 >
   <Nav />
   <Hero />
+  <RiverDivider from={DEEP} to={BG} />
   <main id="main">
     <SoloTravel />
     <Vehicles />
@@ -32,8 +47,10 @@ import Motion from '../components/Motion.astro';
     <Routes />
     <Stays />
     <Pricing />
+    <RiverDivider from={BG} to={PRIMARY} />
     <Reviews />
   </main>
+  <RiverDivider from={PRIMARY} to={DEEP} flip />
   <Contact />
   <Motion />
 </Layout>
