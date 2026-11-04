@@ -1,0 +1,54 @@
+---
+/**
+ * Pricing.
+ *
+ * We have exactly one real package, so the section explains HOW the
+ * pricing works rather than faking a tariff table. Honest and, as it
+ * happens, more useful — the slab structure is the part people do
+ * not understand.
+ */
+import Section from './Section.astro';
+import { getContent } from '../content';
+const { pricing, site } = await getContent();
+const { slabs, extras, note } = pricing;
+---
+
+<Section
+  id="fares"
+  eyebrow="What it costs"
+  title="A local day, priced the way he actually quotes it"
+>
+  <div class="grid gap-6 sm:grid-cols-2">
+    {slabs.map((s) => (
+      <div class="rounded-xl border border-border p-6">
+        <h3 class="text-lg font-display">{s.vehicle}</h3>
+        <p class="mt-3 text-2xl font-display tabular-nums">
+          ₹{s.price.toLocaleString('en-IN')}
+        </p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          {s.hours} hours &middot; {s.km} km
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <dl class="mt-6 flex flex-wrap gap-x-10 gap-y-2 text-sm">
+    <div class="flex gap-2">
+      <dt class="text-muted-foreground">Beyond {slabs[0].km} km</dt>
+      <dd class="font-medium tabular-nums">₹{extras.perExtraKm} per km</dd>
+    </div>
+    <div class="flex gap-2">
+      <dt class="text-muted-foreground">Beyond {slabs[0].hours} hours</dt>
+      <dd class="font-medium tabular-nums">₹{extras.perExtraHour} per hour</dd>
+    </div>
+  </dl>
+
+  <p class="measure mt-8 text-muted-foreground">{note}</p>
+
+  <a
+    href={`tel:${site.phone}`}
+    class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
+  >
+    Call for a quote on your route
+  </a>
+</Section>

@@ -1,0 +1,67 @@
+---
+/**
+ * Transfers.
+ *
+ * ⚠️ Distances render ONLY when route.verified is true. Nothing here
+ * invents a drive time — see content/routes.ts for why that rule
+ * exists. An unverified route still earns its place on the page
+ * because the ROUTE is real; only the number is pending.
+ */
+import Section from './Section.astro';
+import { getContent, whatsappLink } from '../content';
+const { routes, outstation, site } = await getContent();
+---
+
+<Section
+  id="getting-here"
+  eyebrow="Getting here"
+  title="Picked up where you land"
+  lede="Flights into Hubballi and Goa, trains into Alnavar and Londa. Night arrivals are normal — tell him the time and he will be there."
+  tone="muted"
+>
+  <ul class="divide-y divide-border border-y border-border">
+    {routes.map((r) => (
+      <li class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+        <div>
+          <span class="font-medium">{r.from}</span>
+          <span class="mx-2 text-muted-foreground" aria-hidden="true">→</span>
+          <span class="text-muted-foreground">{r.to}</span>
+          {r.note && <p class="mt-1 text-sm text-muted-foreground">{r.note}</p>}
+        </div>
+        {r.verified && r.km && r.drive ? (
+          <span class="text-sm tabular-nums text-muted-foreground">
+            {r.km} km &middot; about {r.drive}
+          </span>
+        ) : (
+          <a
+            href={`tel:${site.phone}`}
+            class="link-inline text-sm font-medium text-accent-ink underline decoration-accent underline-offset-4 hover:no-underline"
+          >
+            Ask the fare
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+
+  <div class="mt-10">
+    <h3 class="text-lg font-display">Longer trips he has already driven</h3>
+    <p class="mt-2 text-sm text-muted-foreground">
+      All of these appear in his reviews — real trips, not a brochure list.
+    </p>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {outstation.map((d) => (
+        <li class="rounded-full border border-border px-3.5 py-1.5 text-sm">{d}</li>
+      ))}
+    </ul>
+  </div>
+
+  <a
+    href={whatsappLink('Hello Irshad, I need a pickup.\n\nArriving at: \nDate and time: \nNumber of people: ')}
+    target="_blank"
+    rel="noopener"
+    class="mt-8 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition hover:brightness-110 active:scale-[0.99]"
+  >
+    Arrange a pickup
+  </a>
+</Section>

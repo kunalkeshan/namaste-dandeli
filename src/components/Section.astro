@@ -1,0 +1,40 @@
+---
+/**
+ * A section wrapper. Keeps rhythm and heading structure consistent so
+ * individual sections hold only their own content.
+ */
+interface Props {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  tone?: 'base' | 'muted' | 'dark';
+  class?: string;
+}
+const { id, eyebrow, title, lede, tone = 'base', class: className = '' } = Astro.props;
+
+const tones = {
+  base:  'bg-background text-foreground',
+  muted: 'bg-muted text-foreground',
+  dark:  'bg-primary text-primary-foreground',
+};
+---
+
+<section id={id} class={`${tones[tone]} ${className}`}>
+  <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
+    <header class="mb-10">
+      {eyebrow && (
+        <p class={`decal text-xs mb-3 ${tone === 'dark' ? 'text-primary-foreground/55' : 'text-accent-ink'}`}>
+          {eyebrow}
+        </p>
+      )}
+      <h2 class="text-2xl">{title}</h2>
+      {lede && (
+        <p class={`measure mt-4 text-lg ${tone === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+          {lede}
+        </p>
+      )}
+    </header>
+    <slot />
+  </div>
+</section>

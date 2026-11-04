@@ -1,0 +1,60 @@
+---
+/**
+ * The ND monogram, rebuilt as vector.
+ *
+ * Irshad's mark: a high-contrast serif D with a bold red calligraphic
+ * swash sweeping from upper-left, down across the bowl, and out to
+ * lower-right — the diagonal of the N — with the N's upright tucked
+ * against the D's right side.
+ *
+ * Draw order matters: the swash goes down FIRST so the D's stem sits
+ * on top of it, exactly as the vinyl is layered on the car. The D
+ * takes `currentColor` (white on glass, dark on paper); only the
+ * swash is fixed red — the one place brand red is allowed.
+ *
+ * Outlines, not live text: a logo must not reflow if a webfont fails.
+ */
+interface Props {
+  class?: string;
+  title?: string;
+}
+const { class: className = '', title = 'Namaste Dandeli' } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 200 170"
+  role="img"
+  aria-label={title}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- 1. The N, underneath — swash plus upright -->
+  <g fill="var(--color-brand, #C3160D)">
+    <path
+      d="M20 42
+         C 42 33, 61 46, 85 75
+         C 110 105, 136 127, 163 135
+         C 172 138, 180 138, 186 136
+         L 186 149
+         C 176 152, 164 151, 151 147
+         C 120 136, 94 109, 70 80
+         C 51 57, 39 48, 26 54
+         Z" />
+    <rect x="150" y="42" width="11" height="74" />
+    <rect x="139" y="42" width="33" height="6" />
+  </g>
+
+  <!-- 2. The D, on top — Didone: thick stem, hairline bowl, slab serifs -->
+  <g fill="currentColor">
+    <rect x="36" y="38" width="66" height="6" />
+    <rect x="36" y="124" width="66" height="6" />
+    <rect x="53" y="38" width="19" height="92" />
+    <path d="M72 44
+             C 115 44, 137 61, 137 84
+             C 137 107, 115 124, 72 124
+             L 72 117
+             C 107 117, 124 104, 124 84
+             C 124 64, 107 51, 72 51
+             Z" />
+  </g>
+</svg>

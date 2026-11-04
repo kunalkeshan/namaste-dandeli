@@ -1,0 +1,119 @@
+---
+/**
+ * The page shell.
+ *
+ * A LAYOUT in Astro wraps pages: everything common (head, fonts,
+ * structured data, footer chrome) lives here so pages hold only
+ * content. `<slot />` is where the page's own markup lands.
+ */
+import '../styles/global.css';
+import { getContent } from '../content';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const { site } = await getContent();
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://namastedandeli.com');
+
+/**
+ * Structured data.
+ *
+ * NOTE the deliberate omission: there is NO `aggregateRating` here.
+ * Google's policy makes a business marking up reviews about itself
+ * ineligible for star snippets, and explicitly bars aggregating
+ * ratings from other sites. Including it renders nothing — pure
+ * downside. The 4.9 is shown as visible HTML instead, which is both
+ * allowed and what actually converts.
+ */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['LocalBusiness', 'TaxiService'],
+      '@id': `${canonical.origin}/#business`,
+      name: site.name,
+      alternateName: [site.legalName, site.googleName],
+      description,
+      url: canonical.origin,
+      telephone: site.phone,
+      email: site.email,
+      image: `${canonical.origin}/og.jpg`,
+      priceRange: '₹₹',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: site.address.street,
+        addressLocality: site.address.locality,
+        addressRegion: site.address.region,
+        postalCode: site.address.postalCode,
+        addressCountry: site.address.country,
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: site.address.lat,
+        longitude: site.address.lng,
+      },
+      areaServed: site.serviceAreas.map((n) => ({ '@type': 'Place', name: n })),
+      sameAs: [site.google.mapsUrl],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${canonical.origin}/#website`,
+      url: canonical.origin,
+      name: site.name,
+      publisher: { '@id': `${canonical.origin}/#business` },
+      inLanguage: 'en-IN',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="en_IN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0F3D2E" />
+
+    <!-- Fonts. preconnect first so the handshake overlaps parsing. -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=bespoke-serif@700,800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap"
+    />
+    <!-- Images are hotlinked from Commons; warm that connection too. -->
+    <link rel="preconnect" href="https://commons.wikimedia.org" />
+    <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded"
+    >
+      Skip to content
+    </a>
+    <slot />
+  </body>
+</html>

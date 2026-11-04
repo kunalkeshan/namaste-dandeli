@@ -1,0 +1,23 @@
+---
+import Section from './Section.astro';
+import { getContent } from '../content';
+const { vehicles } = await getContent();
+---
+
+<Section
+  id="cars"
+  eyebrow="The cars"
+  title="Three vehicles, so you are not paying for seats you do not need"
+  tone="muted"
+>
+  <div class="grid gap-6 sm:grid-cols-3">
+    {vehicles.map((v) => (
+      <article class="flex flex-col rounded-xl border border-border bg-background p-6">
+        <h3 class="text-xl">{v.name}</h3>
+        <p class="decal mt-1.5 text-xs text-accent-ink">{v.seats}</p>
+        <p class="mt-4 flex-1 text-muted-foreground">{v.suits}</p>
+        <p class="mt-4 border-t border-rule pt-4 text-sm text-muted-foreground">{v.note}</p>
+      </article>
+    ))}
+  </div>
+</Section>

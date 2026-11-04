@@ -1,0 +1,52 @@
+---
+/**
+ * An image hotlinked from Wikimedia Commons.
+ *
+ * Not using astro:assets: these files are remote by choice (the "low
+ * asset dependency" call), so Astro cannot optimise them at build.
+ * We recover most of that by hand — a real srcset, width/height to
+ * reserve space, and per-position loading hints.
+ *
+ * On `aspect`: width/height attributes give the browser the file's
+ * INTRINSIC ratio, which is what prevents layout shift. But when we
+ * also want a CSS crop, the two fight and the attributes win until
+ * the image loads. So a cropped image gets `height: auto` via
+ * `h-auto`, which hands the ratio to CSS while width/height still
+ * tell the browser the shape. No shift, correct crop.
+ */
+import type { Img } from '../content/images';
+
+interface Props {
+  img: Img;
+  sizes?: string;
+  /** Tailwind aspect utility, e.g. "aspect-[5/3]". Omit to keep the file's own ratio. */
+  aspect?: string;
+  /** Hero only — it is the LCP element. */
+  priority?: boolean;
+  class?: string;
+}
+const {
+  img,
+  sizes = '100vw',
+  aspect,
+  priority = false,
+  class: className = '',
+} = Astro.props;
+
+const cls = [aspect, aspect && 'h-auto object-cover', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<img
+  src={img.src}
+  srcset={img.srcset}
+  sizes={sizes}
+  width={img.width}
+  height={img.height}
+  alt={img.alt}
+  class={cls}
+  loading={priority ? 'eager' : 'lazy'}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : 'auto'}
+/>

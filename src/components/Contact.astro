@@ -1,0 +1,102 @@
+---
+/**
+ * Contact + footer. Carries the crawlable NAP (name, address, phone)
+ * that local SEO depends on — as real text, not an image.
+ */
+import Logo from './Logo.astro';
+import { getContent, whatsappLink, WA_DEFAULT } from '../content';
+const { site, imageCredits } = await getContent();
+---
+
+<section id="contact" class="bg-primary-deep text-primary-foreground">
+  <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <p class="decal text-xs text-primary-foreground/55">Ask Irshad</p>
+        <h2 class="mt-3 text-2xl">
+          Tell him the dates and he will tell you what is possible
+        </h2>
+        <p class="measure mt-4 text-primary-foreground/80">
+          Not sure whether the rafting is running, or which resort suits a
+          family with small children? That is the conversation — ask before
+          you commit to anything.
+        </p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a
+            href={whatsappLink(WA_DEFAULT)}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center justify-center rounded-xl bg-accent px-6 py-4 font-semibold text-accent-foreground transition hover:brightness-110 active:scale-[0.99]"
+          >
+            WhatsApp
+          </a>
+          <a
+            href={`tel:${site.phone}`}
+            class="inline-flex items-center justify-center rounded-xl border border-primary-foreground/30 px-6 py-4 font-semibold transition hover:bg-primary-foreground/10"
+          >
+            {site.phoneDisplay}
+          </a>
+        </div>
+      </div>
+
+      <!-- NAP — plain crawlable text, exactly as on Google -->
+      <div class="text-sm text-primary-foreground/70">
+        <h3 class="decal text-xs text-primary-foreground/55">Where he is based</h3>
+        <address class="mt-3 not-italic leading-relaxed">
+          <strong class="block font-semibold text-primary-foreground">{site.legalName}</strong>
+          {site.address.street}<br />
+          {site.address.locality}, {site.address.region} {site.address.postalCode}<br />
+          <a href={`tel:${site.phone}`} class="link-inline underline underline-offset-4 hover:no-underline">
+            {site.phoneDisplay}
+          </a><br />
+          <a href={`mailto:${site.email}`} class="link-inline underline underline-offset-4 hover:no-underline">
+            {site.email}
+          </a>
+        </address>
+
+        <p class="mt-5">
+          <span class="text-primary-foreground/55">Hours</span><br />
+          {site.hours}
+        </p>
+
+        <p class="mt-5">
+          <span class="text-primary-foreground/55">Serving</span><br />
+          {site.serviceAreas.join(' · ')}
+        </p>
+
+        <p class="mt-5 text-primary-foreground/55">
+          Some customers know him as {site.alsoKnownAs}.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-primary-foreground/15">
+    <div class="mx-auto max-w-5xl px-5 py-10">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <Logo class="w-16 text-primary-foreground" />
+          <div>
+            <p class="decal text-xs">Namaste Dandeli</p>
+            <p lang="kn" class="mt-0.5 text-sm text-primary-foreground/55">ನಮಸ್ತೆ ದಾಂಡೇಲಿ</p>
+          </div>
+        </div>
+        <p class="text-xs text-primary-foreground/45">
+          &copy; {new Date().getFullYear()} {site.legalName}
+        </p>
+      </div>
+
+      {imageCredits.length > 0 && (
+        <details class="mt-8 text-xs text-primary-foreground/45">
+          <summary class="cursor-pointer hover:text-primary-foreground/70">
+            Photograph credits
+          </summary>
+          <ul class="mt-3 space-y-1.5">
+            {imageCredits.map((c) => <li>{c}</li>)}
+          </ul>
+        </details>
+      )}
+    </div>
+  </footer>
+</section>

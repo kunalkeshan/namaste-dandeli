@@ -1,0 +1,67 @@
+---
+import Section from './Section.astro';
+import CommonsImage from './CommonsImage.astro';
+import { getContent } from '../content';
+const { activities, images } = await getContent();
+
+/* Images paired to the activities that have a genuine Dandeli photo. */
+const art: Record<string, typeof images[keyof typeof images] | undefined> = {
+  'White water rafting': images.kaliHabitat,
+  'Coracle ride': images.coracle,
+  'Birdwatching': images.hornbill,
+  'Syntheri Rocks': images.syntheri,
+  'Supa Dam & Sykes Point': images.sykesPoint,
+  // riverDawn is kept for the Stays section, where atmosphere is the point.
+  'Jungle safari': images.forestRoad,
+};
+---
+
+<Section
+  id="dandeli"
+  eyebrow="What you came for"
+  title="The river, the forest, and the birds"
+  lede="Most of it sits twenty to forty minutes out of town, down roads that are easier with someone who drives them every week."
+>
+  <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+    {activities.map((a) => {
+      const img = art[a.name];
+      return (
+        <article>
+          {img && (
+            <CommonsImage
+              img={img}
+              sizes="(min-width: 640px) 44vw, 90vw"
+              aspect="aspect-[5/3]"
+              class="mb-5 w-full rounded-lg"
+            />
+          )}
+          <h3 class="text-xl">{a.name}</h3>
+          <p class="mt-2.5 text-muted-foreground">{a.blurb}</p>
+
+          {(a.duration || a.season) && (
+            <dl class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+              {a.duration && (
+                <div class="flex gap-2">
+                  <dt class="text-muted-foreground">Takes</dt>
+                  <dd class="font-medium">{a.duration}</dd>
+                </div>
+              )}
+              {a.season && (
+                <div class="flex gap-2">
+                  <dt class="text-muted-foreground">Season</dt>
+                  <dd class="font-medium">{a.season}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+
+          {a.caveat && (
+            <p class="mt-4 border-l-2 border-accent pl-4 text-sm text-muted-foreground">
+              {a.caveat}
+            </p>
+          )}
+        </article>
+      );
+    })}
+  </div>
+</Section>

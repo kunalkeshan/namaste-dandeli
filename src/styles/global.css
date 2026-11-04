@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Namaste Dandeli — design tokens
+   Semantic names (shadcn/Starwind convention): the token says what a
+   colour is FOR, not what colour it is. Swap the hex later and
+   `bg-primary` still reads correctly.
+
+   Palette "Canopy & Signal". Verified contrast:
+     foreground on background        16.27:1  AAA
+     primary-foreground on primary   11.74:1  AAA
+     accent-foreground on accent      5.89:1  AA
+   Colour-blindness rule: hue NEVER carries meaning alone. The brand
+   red appears exactly once (the logo) and is never a choice-pair
+   against green.
+---------------------------------------------------------------- */
+@theme {
+  /* surfaces */
+  --color-background:        #FCFBF7;  /* warm paper */
+  --color-foreground:        #122019;  /* green-black body text, not pure black */
+  --color-muted:             #EEF2ED;  /* cards, alternating bands */
+  --color-muted-foreground:  #46574D;  /* secondary text — 7.1:1 on background */
+
+  /* primary: the forest. Headings, main buttons, footer. */
+  --color-primary:            #0F3D2E;
+  --color-primary-foreground: #FFFFFF;
+  --color-primary-deep:       #082219;  /* deepest field */
+
+  /* accent: laterite soil. Secondary actions.
+     Darkened from #C8721F so WHITE TEXT clears 4.5:1 — the original
+     only reached 3.57:1 and failed AA on the primary CTA. */
+  --color-accent:             #AE631B;  /* white on this: 4.56:1 AA */
+  --color-accent-foreground:  #FFFFFF;
+  --color-accent-ink:         #9A5614;  /* accent as TEXT on light — 5.46:1 AA */
+  --color-accent-bright:      #E08A2B;  /* graphics on dark only — 4.54:1 on primary */
+
+  /* brand: the logo's red. NEVER a UI colour. Logo mark only. */
+  --color-brand:              #C3160D;
+
+  /* lines */
+  --color-border: #798E79;  /* real UI borders — 3.40:1 on bg, 3.11:1 on muted */
+  --color-rule:   #D4DCD4;  /* DECORATIVE hairlines only — never a control edge */
+
+  /* type */
+  --font-display: 'Bespoke Serif', Georgia, 'Times New Roman', serif;
+  --font-body:    'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-decal:   'Rajdhani', 'Satoshi', sans-serif;
+
+  /* fluid scale — 1.25 at the small end opening to 1.333 */
+  --text-xs:    0.8125rem;
+  --text-sm:    0.9375rem;
+  --text-base:  1.0625rem;
+  --text-lg:    1.1875rem;
+  --text-xl:    clamp(1.35rem, 1.1rem + 1.1vw, 1.75rem);
+  --text-2xl:   clamp(1.7rem,  1.3rem + 1.9vw, 2.5rem);
+  --text-3xl:   clamp(2.2rem,  1.5rem + 3.2vw, 3.75rem);
+  --text-hero:  clamp(2.9rem,  1.6rem + 5.6vw, 6rem);
+}
+
+/* --- base ------------------------------------------------------ */
+html {
+  -webkit-text-size-adjust: 100%;   /* stop iOS inflating text on rotate */
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.021em;
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+/* Body copy stays under ~70 characters */
+.measure       { max-width: 64ch; }
+.measure-tight { max-width: 46ch; }
+
+/* --- focus: visible on every control, never removed ------------- */
+:where(a, button, summary, [tabindex], input, textarea):focus-visible {
+  outline: 3px solid var(--color-accent-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- the decal voice: the car's lettering, short caps only ------- */
+.decal {
+  font-family: var(--font-decal);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* --- touch ------------------------------------------------------
+   min-height does nothing to an inline link, so inline links get a
+   pseudo-element that pads the HIT AREA out to 44px without changing
+   the layout. Block-level controls keep min-height as before.       */
+@media (pointer: coarse) {
+  button,
+  summary,
+  a:not(.link-inline) {
+    min-height: 44px;
+  }
+
+  .link-inline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-inline::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}
+a, button, summary { -webkit-tap-highlight-color: transparent; }

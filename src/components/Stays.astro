@@ -1,0 +1,53 @@
+---
+/**
+ * Stays — deliberately unnamed.
+ *
+ * Naming a partner resort means the guest books it direct and Irshad
+ * loses the introduction he made. So the grid sorts by what the stay
+ * is LIKE, which is what a guest is choosing between anyway.
+ *
+ * The disclosure is body text, not small print: the photographs show
+ * the region, not the properties, and the page says so plainly.
+ */
+import Section from './Section.astro';
+import CommonsImage from './CommonsImage.astro';
+import { getContent, whatsappLink } from '../content';
+const { stays, staysDisclosure, images } = await getContent();
+
+const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
+---
+
+<Section
+  id="stay"
+  eyebrow="Where you'll stay"
+  title="Irshad books the room as well as the car"
+  lede="He works with resorts, jungle camps and homestays across Dandeli. Tell him the dates, the group and the budget, and he will tell you what is actually free — not what is advertised."
+>
+  <div class="grid gap-6 sm:grid-cols-3">
+    {stays.map((s, i) => (
+      <article>
+        <CommonsImage
+          img={art[i]}
+          sizes="(min-width: 640px) 30vw, 90vw"
+          aspect="aspect-[4/3]"
+          class="w-full rounded-lg"
+        />
+        <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
+        <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
+      </article>
+    ))}
+  </div>
+
+  <p class="measure mt-10 border-l-2 border-border pl-4 text-sm text-muted-foreground">
+    {staysDisclosure}
+  </p>
+
+  <a
+    href={whatsappLink('Hello Irshad, I need a place to stay in Dandeli.\n\nDates: \nNumber of people: \nBudget per night: ')}
+    target="_blank"
+    rel="noopener"
+    class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
+  >
+    Ask what is free on your dates
+  </a>
+</Section>
