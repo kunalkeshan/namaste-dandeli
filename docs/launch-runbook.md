@@ -53,8 +53,14 @@ vercel --prod
 `vercel.json` sets the build, security headers and immutable caching for
 `/photos` and `/_astro`.
 
-**Set `SITE_URL`** in Vercel so canonical URLs and the sitemap are correct. PR previews
-get their own URL automatically — use those to show Irshad real pages.
+**No `SITE_URL` needed.** `astro.config.mjs` reads
+`VERCEL_PROJECT_PRODUCTION_URL`, which Vercel sets to the shortest production custom
+domain automatically — so attaching the domain in Vercel is enough, and canonical
+URLs, og:image and the sitemap all follow on the next deploy. Previews get their own
+URL the same way; use those to show Irshad real pages.
+
+Only set `SITE_URL` to override that, e.g. to pin a specific domain when several are
+attached.
 
 ## 4. Immediately after deploy — the highest-value step
 

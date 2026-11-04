@@ -8,18 +8,27 @@ import sitemap from '@astrojs/sitemap';
  * the sitemap (which @astrojs/sitemap will not emit at all without
  * it).
  *
- * The order below matters, and the default is deliberately NOT the
- * production domain. Hardcoding namastedandeli.com meant the live
- * Vercel deployment advertised og:image at a domain that does not
- * resolve yet — WhatsApp fetched it, got a 404, and fell back to the
- * favicon. Falling back to the deployment's own URL means previews
- * and the pre-domain production site both describe themselves
- * correctly.
+ * This is self-configuring — attaching a custom domain in Vercel is
+ * enough, no env var to set. Per Vercel's docs,
+ * VERCEL_PROJECT_PRODUCTION_URL is "the shortest production custom
+ * domain, or vercel.app domain if no custom domain is available",
+ * and it is set on preview deployments too, which is exactly what an
+ * OG image URL needs. None of these carry the protocol scheme, hence
+ * the https:// prefix.
  *
- *   1. SITE_URL              — set this once the domain is live
- *   2. VERCEL_PROJECT_PRODUCTION_URL — stable prod URL on Vercel
- *   3. VERCEL_URL            — the per-deployment preview URL
- *   4. localhost             — local builds
+ *   1. SITE_URL                       — manual override, rarely needed
+ *   2. VERCEL_PROJECT_PRODUCTION_URL  — becomes the custom domain automatically
+ *   3. VERCEL_URL                     — per-deployment preview URL
+ *   4. localhost                      — local builds
+ *
+ * The default was previously hardcoded to namastedandeli.com, a
+ * domain that does not resolve yet. Production advertised og:image
+ * there, WhatsApp fetched it, got a 404, and fell back to the
+ * favicon. Never default this to a domain you do not yet serve.
+ *
+ * Requires "Automatically expose System Environment Variables" in
+ * Project Settings → Environment Variables. It is on by default and
+ * confirmed on for this project.
  */
 const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const vercelAny = process.env.VERCEL_URL;

@@ -154,12 +154,22 @@ if (!ogMatch) {
 
   if (!existsSync(join(DIST, path))) {
     fail('og:image', `declared as ${url} but ${path} is not in dist/`);
-  } else if (/namastedandeli\.com/.test(origin) && !process.env.SITE_URL) {
-    // The custom domain is not live yet. Advertising it means the
-    // card 404s for every share.
+  } else if (
+    origin &&
+    !process.env.SITE_URL &&
+    !process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+    !process.env.VERCEL_URL &&
+    !/^https?:\/\/localhost/.test(origin)
+  ) {
+    /* A non-localhost origin on a build where no deployment variable
+       was set means `site` came from a hardcoded guess. That is what
+       shipped a dead og:image URL to production. Checking for the
+       absence of a real source beats checking for one bad hostname:
+       the hostname check would turn into a false failure the moment
+       the domain is actually attached. */
     fail(
       'og:image',
-      `points at ${origin}, which does not resolve yet. Set SITE_URL once the domain is live, or let the Vercel fallback handle it`,
+      `points at ${origin}, but no SITE_URL or Vercel deployment variable was set — this origin is a hardcoded guess and may not resolve`,
     );
   } else {
     ok('og:image', `${path} served from ${origin || 'relative'}`);
