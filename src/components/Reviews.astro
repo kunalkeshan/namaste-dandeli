@@ -11,7 +11,7 @@
  */
 import Section from './Section.astro';
 import { getContent } from '../content';
-const { reviews, site } = await getContent();
+const { reviews, site, copy } = await getContent();
 /* Skip the three quoted elsewhere: solo-safety (its own section),
    local-knowledge (the hero) and long-distance (the Routes proof).
    No customer's words appear twice on the page. */
@@ -21,9 +21,9 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
 
 <Section
   id="reviews"
-  eyebrow="What people say"
+  eyebrow={copy.sections.reviews.eyebrow}
   title={`${site.google.rating} out of 5, from ${site.google.reviewCount} people`}
-  lede="Every one of these is on Google under his listing, and he has replied to all of them for three years running."
+  lede={copy.sections.reviews.lede}
   tone="dark"
 >
   <div class="reveal grid gap-6 sm:grid-cols-2">

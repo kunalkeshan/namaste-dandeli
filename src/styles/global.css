@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ---------------------------------------------------------------
    Namaste Dandeli — design tokens
@@ -15,61 +15,65 @@
    against green.
 ---------------------------------------------------------------- */
 @theme {
-  --breakpoint-xs: 25rem;   /* 400px — narrow-phone tweaks */
+  --breakpoint-xs: 25rem; /* 400px — narrow-phone tweaks */
 
   /* surfaces */
-  --color-background:        #FCFBF7;  /* warm paper */
-  --color-foreground:        #122019;  /* green-black body text, not pure black */
-  --color-muted:             #EEF2ED;  /* cards, alternating bands */
-  --color-muted-foreground:  #46574D;  /* secondary text — 7.1:1 on background */
+  --color-background: #fcfbf7; /* warm paper */
+  --color-foreground: #122019; /* green-black body text, not pure black */
+  --color-muted: #eef2ed; /* cards, alternating bands */
+  --color-muted-foreground: #46574d; /* secondary text — 7.1:1 on background */
 
   /* primary: the forest. Headings, main buttons, footer. */
-  --color-primary:            #0F3D2E;
-  --color-primary-foreground: #FFFFFF;
-  --color-primary-deep:       #082219;  /* deepest field */
+  --color-primary: #0f3d2e;
+  --color-primary-foreground: #ffffff;
+  --color-primary-deep: #082219; /* deepest field */
 
   /* accent: laterite soil. Secondary actions.
      Darkened from #C8721F so WHITE TEXT clears 4.5:1 — the original
      only reached 3.57:1 and failed AA on the primary CTA. */
-  --color-accent:             #AE631B;  /* white on this: 4.56:1 AA */
-  --color-accent-foreground:  #FFFFFF;
-  --color-accent-ink:         #9A5614;  /* accent as TEXT on light — 5.46:1 AA */
-  --color-accent-bright:      #E08A2B;  /* graphics on dark only — 4.54:1 on primary */
+  --color-accent: #ae631b; /* white on this: 4.56:1 AA */
+  --color-accent-foreground: #ffffff;
+  --color-accent-ink: #9a5614; /* accent as TEXT on light — 5.46:1 AA */
+  --color-accent-bright: #e08a2b; /* graphics on dark only — 4.54:1 on primary */
 
   /* brand: the logo's red. NEVER a UI colour. Logo mark only. */
-  --color-brand:              #C3160D;
+  --color-brand: #c3160d;
 
   /* lines */
-  --color-border: #798E79;  /* real UI borders — 3.40:1 on bg, 3.11:1 on muted */
-  --color-rule:   #D4DCD4;  /* DECORATIVE hairlines only — never a control edge */
+  --color-border: #798e79; /* real UI borders — 3.40:1 on bg, 3.11:1 on muted */
+  --color-rule: #d4dcd4; /* DECORATIVE hairlines only — never a control edge */
 
   /* type */
   --font-display: 'Bespoke Serif', Georgia, 'Times New Roman', serif;
-  --font-body:    'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-decal:   'Rajdhani', 'Satoshi', sans-serif;
+  --font-body: 'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-decal: 'Rajdhani', 'Satoshi', sans-serif;
 
   /* fluid scale — 1.25 at the small end opening to 1.333 */
-  --text-xs:    0.8125rem;
-  --text-sm:    0.9375rem;
-  --text-base:  1.0625rem;
-  --text-lg:    1.1875rem;
-  --text-xl:    clamp(1.35rem, 1.1rem + 1.1vw, 1.75rem);
-  --text-2xl:   clamp(1.7rem,  1.3rem + 1.9vw, 2.5rem);
-  --text-3xl:   clamp(2.2rem,  1.5rem + 3.2vw, 3.75rem);
-  --text-hero:  clamp(2.9rem,  1.6rem + 5.6vw, 6rem);
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: clamp(1.35rem, 1.1rem + 1.1vw, 1.75rem);
+  --text-2xl: clamp(1.7rem, 1.3rem + 1.9vw, 2.5rem);
+  --text-3xl: clamp(2.2rem, 1.5rem + 3.2vw, 3.75rem);
+  --text-hero: clamp(2.9rem, 1.6rem + 5.6vw, 6rem);
 }
 
 /* --- base ------------------------------------------------------ */
 html {
-  -webkit-text-size-adjust: 100%;   /* stop iOS inflating text on rotate */
+  -webkit-text-size-adjust: 100%; /* stop iOS inflating text on rotate */
   scroll-behavior: smooth;
   /* Jump-links must clear the fixed nav, or every anchor lands with
      its heading hidden behind the bar. */
   scroll-padding-top: calc(var(--nav-h, 64px) + 1.5rem);
 }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -87,7 +91,9 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-display);
   font-weight: 800;
   line-height: 1.04;
@@ -95,11 +101,17 @@ h1, h2, h3 {
   text-wrap: balance;
 }
 
-p { text-wrap: pretty; }
+p {
+  text-wrap: pretty;
+}
 
 /* Body copy stays under ~70 characters */
-.measure       { max-width: 64ch; }
-.measure-tight { max-width: 46ch; }
+.measure {
+  max-width: 64ch;
+}
+.measure-tight {
+  max-width: 46ch;
+}
 
 /* --- focus: visible on every control, never removed ------------- */
 :where(a, button, summary, [tabindex], input, textarea):focus-visible {
@@ -139,7 +151,11 @@ p { text-wrap: pretty; }
     transform: translateY(-50%);
   }
 }
-a, button, summary { -webkit-tap-highlight-color: transparent; }
+a,
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* --- motion system ---------------------------------------------
    Custom curves: the built-in CSS easings are too weak to read as
@@ -178,12 +194,25 @@ a, button, summary { -webkit-tap-highlight-color: transparent; }
       opacity 460ms var(--ease-out-strong),
       transform 460ms var(--ease-out-strong);
   }
-  [data-reveal-ready] .is-in .reveal-child { opacity: 1; transform: none; }
-  .is-in .reveal-child:nth-child(2) { transition-delay: 60ms; }
-  .is-in .reveal-child:nth-child(3) { transition-delay: 120ms; }
-  .is-in .reveal-child:nth-child(4) { transition-delay: 180ms; }
-  .is-in .reveal-child:nth-child(5) { transition-delay: 240ms; }
-  .is-in .reveal-child:nth-child(6) { transition-delay: 300ms; }
+  [data-reveal-ready] .is-in .reveal-child {
+    opacity: 1;
+    transform: none;
+  }
+  .is-in .reveal-child:nth-child(2) {
+    transition-delay: 60ms;
+  }
+  .is-in .reveal-child:nth-child(3) {
+    transition-delay: 120ms;
+  }
+  .is-in .reveal-child:nth-child(4) {
+    transition-delay: 180ms;
+  }
+  .is-in .reveal-child:nth-child(5) {
+    transition-delay: 240ms;
+  }
+  .is-in .reveal-child:nth-child(6) {
+    transition-delay: 300ms;
+  }
 }
 
 /* --- buttons ----------------------------------------------------
@@ -196,25 +225,39 @@ a, button, summary { -webkit-tap-highlight-color: transparent; }
     box-shadow 200ms var(--ease-out-strong),
     background-color 200ms ease;
 }
-.btn:active { transform: scale(0.97); }
+.btn:active {
+  transform: scale(0.97);
+}
 
 @media (hover: hover) and (pointer: fine) {
   .btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px -6px rgb(8 34 25 / 0.35);
   }
-  .btn-primary:hover { background-color: #15523d; }
+  .btn-primary:hover {
+    background-color: #15523d;
+  }
   /* Hover DARKENS. Lightening it dropped white text to 3.61:1 —
      a hover state has to meet contrast too. #9C5918 = 5.45:1. */
-  .btn-accent:hover  { background-color: #9C5918; }
-  .btn-ghost:hover   { background-color: rgb(255 255 255 / 0.14); }
+  .btn-accent:hover {
+    background-color: #9c5918;
+  }
+  .btn-ghost:hover {
+    background-color: rgb(255 255 255 / 0.14);
+  }
 }
 
 /* --- image frames ----------------------------------------------- */
-.img-frame { overflow: hidden; }
-.img-frame img { transition: transform 600ms var(--ease-out-strong); }
+.img-frame {
+  overflow: hidden;
+}
+.img-frame img {
+  transition: transform 600ms var(--ease-out-strong);
+}
 @media (hover: hover) and (pointer: fine) {
-  .img-frame:hover img { transform: scale(1.04); }
+  .img-frame:hover img {
+    transform: scale(1.04);
+  }
 }
 
 /* --- horizontal carousel (scroll-snap, zero JS) ------------------ */
@@ -231,7 +274,9 @@ a, button, summary { -webkit-tap-highlight-color: transparent; }
   padding-inline: var(--gutter, 1.25rem);
   padding-bottom: 0.5rem;
 }
-.rail::-webkit-scrollbar { display: none; }
+.rail::-webkit-scrollbar {
+  display: none;
+}
 .rail > * {
   scroll-snap-align: start;
   flex: 0 0 auto;
@@ -241,17 +286,39 @@ a, button, summary { -webkit-tap-highlight-color: transparent; }
    Never used for text people must read — auto-moving copy is a WCAG
    failure. Here it carries place-name chips only, and it pauses on
    hover and for reduced-motion.                                    */
-.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.marquee-track { display: flex; gap: 0.6rem; width: max-content; animation: marquee 44s linear infinite; }
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  gap: 0.6rem;
+  width: max-content;
+  animation: marquee 44s linear infinite;
+}
 .marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-  .marquee { overflow-x: auto; }
+  .marquee-track {
+    animation: none;
+  }
+  .marquee {
+    overflow-x: auto;
+  }
 }
 
 /* --- sticky column ----------------------------------------------- */
 @media (min-width: 1024px) {
-  .sticky-col { position: sticky; top: 6rem; }
+  .sticky-col {
+    position: sticky;
+    top: 6rem;
+  }
 }

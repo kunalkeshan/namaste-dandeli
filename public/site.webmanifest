@@ -1,0 +1,13 @@
+{
+  "name": "Namaste Dandeli",
+  "short_name": "Namaste Dandeli",
+  "description": "Cabs, trips and stays across Dandeli.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FCFBF7",
+  "theme_color": "#0F3D2E",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180" }
+  ]
+}

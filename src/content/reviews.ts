@@ -14,8 +14,8 @@
 export interface Review {
   author: string;
   rating: 5;
-  date: string;          // ISO
-  dateLabel: string;     // as Google shows it
+  date: string; // ISO
+  dateLabel: string; // as Google shows it
   text: string;
   /** Why this one earns its place on the page. */
   role: string;
@@ -43,6 +43,7 @@ export const reviews: Review[] = [
     dateLabel: '2 years ago',
     text: 'Extremely happy and satisfied with the service, A week Ride with Ertiga from Dandeli-Mysore-Ooty 1600KM up and down , The cab was kept clean and neat every morning before resume the journey Entire trip was simply awesome , I am really happy with the driver Irshad he is very good human, very helpful and extremely cooperative and active The sincerity and the driving skills of the driver is much appreciated.',
     role: 'long-distance',
+    pull: 'A week Ride with Ertiga from Dandeli-Mysore-Ooty 1600KM up and down',
   },
   {
     author: 'Balu Chaturvedula',
@@ -68,7 +69,7 @@ export const reviews: Review[] = [
     dateLabel: 'a year ago',
     // Google stores this with a <br> before "He is a great driver";
     // rendered as a paragraph break, not pasted as markup.
-    text: 'I drove with Mr. Irshad twice; from Goa to Dandeli and back. It was a great experience. He is a very well experienced driver and also very knowledgeable. We spoke on everything from road rules to our families to politics and everything in between. He is a great driver and I didn\'t even realise when the route was finished because the journey was so smooth!',
+    text: "I drove with Mr. Irshad twice; from Goa to Dandeli and back. It was a great experience. He is a very well experienced driver and also very knowledgeable. We spoke on everything from road rules to our families to politics and everything in between. He is a great driver and I didn't even realise when the route was finished because the journey was so smooth!",
     role: 'goa-route',
   },
   {
@@ -76,7 +77,7 @@ export const reviews: Review[] = [
     rating: 5,
     date: '2023-06-18',
     dateLabel: '3 years ago',
-    text: 'The owner himself came for driving. We didn\'t know hindi or kanada and the driver know good enough english which was really helpful. We planned to go to gokarna last minute and we started searching for cabs and within 10 mins we confirmed booking with bare minimum deposit and got ourselves a fair deal. On time pick up and drop. He was kind and humble enough not ask money in between the ride at the end only he asked for the entire amount.',
+    text: "The owner himself came for driving. We didn't know hindi or kanada and the driver know good enough english which was really helpful. We planned to go to gokarna last minute and we started searching for cabs and within 10 mins we confirmed booking with bare minimum deposit and got ourselves a fair deal. On time pick up and drop. He was kind and humble enough not ask money in between the ride at the end only he asked for the entire amount.",
     role: 'trust-and-language',
   },
   {
@@ -99,8 +100,6 @@ export const featuredReview = reviews[0];
  */
 for (const r of reviews) {
   if (r.pull && !r.text.includes(r.pull)) {
-    throw new Error(
-      `Pull-quote for ${r.author} is not a verbatim span of the review.`,
-    );
+    throw new Error(`Pull-quote for ${r.author} is not a verbatim span of the review.`);
   }
 }

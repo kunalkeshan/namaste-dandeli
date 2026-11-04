@@ -8,15 +8,15 @@
  * not understand.
  */
 import Section from './Section.astro';
-import { getContent } from '../content';
-const { pricing, site } = await getContent();
+import { getContent, telLink } from '../content';
+const { pricing, site, copy } = await getContent();
 const { slabs, extras, note } = pricing;
 ---
 
 <Section
   id="fares"
-  eyebrow="What it costs"
-  title="A local day, priced the way he actually quotes it"
+  eyebrow={copy.sections.pricing.eyebrow}
+  title={copy.sections.pricing.title}
 >
   <div class="reveal grid gap-6 sm:grid-cols-2">
     {slabs.map((s) => (
@@ -46,9 +46,9 @@ const { slabs, extras, note } = pricing;
   <p class="measure reveal mt-8 text-muted-foreground">{note}</p>
 
   <a
-    href={`tel:${site.phone}`}
+    href={telLink()}
     class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
   >
-    Call for a quote on your route
+    {copy.sections.pricing.cta}
   </a>
 </Section>

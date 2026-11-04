@@ -9,11 +9,32 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "astro check",
+    "check": "pnpm format:check && pnpm typecheck",
+    "verify:content": "node scripts/verify-content.mjs",
+    "verify:a11y": "node scripts/verify-a11y.mjs",
+    "verify": "pnpm check && pnpm build && pnpm verify:content && pnpm verify:a11y",
+    "blockers": "node scripts/report-blockers.mjs",
+    "og": "node scripts/render-og.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.4",
     "astro": "^7.4.5",
     "tailwindcss": "^4.3.4"
-  }
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5"
+  },
+  "packageManager": "pnpm@11.1.3"
 }

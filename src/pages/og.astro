@@ -1,0 +1,93 @@
+---
+/**
+ * The OG card — 1200×630, rendered headless to /public/og.jpg by
+ * `scripts/render-og.mjs`.
+ *
+ * This is what appears in every WhatsApp, Facebook and X share, so
+ * it carries the three things that matter in a preview: who he is,
+ * what he does, and the proof. The rating is a static image so it
+ * ages — the launch runbook notes regenerating it as the count grows.
+ *
+ * Not linked from anywhere; it exists to be screenshotted.
+ */
+import Logo from '../components/Logo.astro';
+import { getContent } from '../content';
+import '../styles/global.css';
+
+const { site, images } = await getContent();
+export const prerender = true;
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <title>OG card</title>
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=bespoke-serif@700,800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #og {
+        width: 1200px;
+        height: 630px;
+        position: relative;
+        overflow: hidden;
+        background: var(--color-primary-deep);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="og"
+      class="flex flex-col items-center justify-center text-primary-foreground"
+    >
+      <!-- the river, behind glass -->
+      <img
+        src={images.rafting.src}
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover opacity-[0.42]"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-primary-deep/80 via-primary-deep/60 to-primary-deep"></div>
+
+      <div class="relative flex flex-col items-center px-20 text-center">
+        <Logo class="w-[108px] text-primary-foreground" />
+
+        <p class="decal mt-7 text-[30px] leading-none text-primary-foreground">
+          Namaste Dandeli
+        </p>
+
+        <p class="mt-6 font-display text-[46px] leading-[1.15] text-primary-foreground">
+          Cabs, trips and stays
+          <br />
+          across Dandeli
+        </p>
+
+        <div class="mt-9 flex items-center gap-3 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-7 py-3">
+          <span class="text-[22px] text-accent-bright" aria-hidden="true">
+            ★★★★★
+          </span>
+          <span class="text-[21px]">
+            <strong class="font-semibold">{site.google.rating}</strong> &middot;{' '}
+            {site.google.reviewCount} Google reviews
+          </span>
+        </div>
+
+        <p class="decal mt-8 text-[15px] text-primary-foreground/55">
+          Alur &middot; Dandeli &middot; Karnataka
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

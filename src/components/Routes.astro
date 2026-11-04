@@ -12,8 +12,9 @@
  * content/routes.ts for why that rule exists.
  */
 import Section from './Section.astro';
-import { getContent, whatsappLink } from '../content';
-const { routes, outstation, site, reviews } = await getContent();
+import { getContent, whatsappLink, telLink } from '../content';
+import { render } from '../content/confirmed';
+const { routes, outstation, site, reviews, copy } = await getContent();
 
 const longTrip = reviews.find((r) => r.role === 'long-distance');
 /* Doubled so the marquee can loop seamlessly at -50%. */
@@ -22,9 +23,9 @@ const chips = [...outstation, ...outstation];
 
 <Section
   id="getting-here"
-  eyebrow="Getting there and back"
-  title="Anywhere you need to be, worked out on the phone"
-  lede="These are the arrivals people book most often. But the trip is whatever you and Irshad plan together — a single airport run, a week of driving, or a route nobody has asked for before."
+  eyebrow={copy.sections.routes.eyebrow}
+  title={copy.sections.routes.title}
+  lede={copy.sections.routes.lede}
   tone="muted"
 >
   <ul class="divide-y divide-border border-y border-border reveal">
@@ -32,17 +33,19 @@ const chips = [...outstation, ...outstation];
       <li class="reveal-child flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
         <div>
           <span class="font-medium">{r.from}</span>
-          <span class="mx-2 text-muted-foreground" aria-hidden="true">→</span>
+          <span class="mx-2 text-muted-foreground" aria-hidden="true">
+            →
+          </span>
           <span class="text-muted-foreground">{r.to}</span>
           {r.note && <p class="mt-1 text-sm text-muted-foreground">{r.note}</p>}
         </div>
-        {r.verified && r.km && r.drive ? (
+        {r.distance.confirmed ? (
           <span class="text-sm tabular-nums text-muted-foreground">
-            {r.km} km &middot; about {r.drive}
+            {r.distance.value.km} km &middot; about {r.distance.value.drive}
           </span>
         ) : (
           <a
-            href={`tel:${site.phone}`}
+            href={telLink()}
             class="link-inline text-sm font-medium text-accent-ink underline decoration-accent underline-offset-4 transition-colors hover:text-foreground hover:no-underline"
           >
             Ask the fare
@@ -57,7 +60,7 @@ const chips = [...outstation, ...outstation];
     <figure class="reveal mt-12 border-l-2 border-accent pl-5">
       <blockquote>
         <p class="measure font-display text-xl leading-snug">
-          &ldquo;A week Ride with Ertiga from Dandeli-Mysore-Ooty 1600KM up and down&rdquo;
+          &ldquo;{longTrip.pull ?? longTrip.text}&rdquo;
         </p>
       </blockquote>
       <figcaption class="mt-2.5 text-sm text-muted-foreground">
@@ -67,7 +70,7 @@ const chips = [...outstation, ...outstation];
   )}
 
   <div class="reveal mt-10">
-    <h3 class="font-display text-lg">Places he has already driven people</h3>
+    <h3 class="font-display text-lg">{copy.sections.routes.outstationTitle}</h3>
     <p class="mt-2 text-sm text-muted-foreground">
       Every one of these comes out of his reviews — real trips, not a brochure list.
     </p>
@@ -87,11 +90,11 @@ const chips = [...outstation, ...outstation];
   </div>
 
   <a
-    href={whatsappLink('Hello Irshad, I would like to plan a trip.\n\nFrom: \nTo: \nDates: \nNumber of people: ')}
+    href={whatsappLink(copy.waMessages.trip)}
     target="_blank"
     rel="noopener"
     class="btn btn-primary reveal mt-10 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"
   >
-    Plan a trip with Irshad
+    {copy.sections.routes.cta}
   </a>
 </Section>

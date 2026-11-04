@@ -1,0 +1,4 @@
+# Fast gate (~2s). Anything slower belongs in pre-push — a hook that
+# takes a minute gets bypassed with --no-verify, and a bypassed gate
+# is no gate.
+pnpm exec lint-staged

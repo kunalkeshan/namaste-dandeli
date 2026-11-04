@@ -1,0 +1,11 @@
+# Slow gate (~60s): the checks that need a real build.
+#
+# This is where the content-truth and accessibility validators run,
+# because both read dist/ or the compiled tokens. Keeping them here
+# means a broken build or a leaked unconfirmed claim cannot reach the
+# remote, while commits stay fast.
+echo "→ building and verifying before push…"
+pnpm build || exit 1
+pnpm verify:content || exit 1
+pnpm verify:a11y || exit 1
+echo "✓ build, content and accessibility checks passed"

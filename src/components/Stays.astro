@@ -12,15 +12,15 @@
 import Section from './Section.astro';
 import CommonsImage from './CommonsImage.astro';
 import { getContent, whatsappLink } from '../content';
-const { stays, staysDisclosure, images } = await getContent();
+const { stays, staysDisclosure, images, copy } = await getContent();
 
 const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
 ---
 
 <Section
   id="stay"
-  eyebrow="Where you'll stay"
-  title="Irshad books the room as well as the car"
+  eyebrow={copy.sections.stays.eyebrow}
+  title={copy.sections.stays.title}
   lede="He works with resorts, jungle camps and homestays across Dandeli. Tell him the dates, the group and the budget, and he will tell you what is actually free — not what is advertised."
 >
   <!-- A rail rather than a grid: as Irshad adds resorts this scrolls
@@ -30,12 +30,12 @@ const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
     {stays.map((s, i) => (
       <article class="reveal-child w-[78vw] max-w-[22rem] sm:w-[20rem]">
         <div class="img-frame rounded-lg">
-        <CommonsImage
-          img={art[i]}
-          sizes="(min-width: 640px) 22rem, 78vw"
-          aspect="aspect-[4/3]"
-          class="w-full"
-        />
+          <CommonsImage
+            img={art[i]}
+            sizes="(min-width: 640px) 22rem, 78vw"
+            aspect="aspect-[4/3]"
+            class="w-full"
+          />
         </div>
         <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
         <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
@@ -48,11 +48,11 @@ const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
   </p>
 
   <a
-    href={whatsappLink('Hello Irshad, I need a place to stay in Dandeli.\n\nDates: \nNumber of people: \nBudget per night: ')}
+    href={whatsappLink(copy.waMessages.stay)}
     target="_blank"
     rel="noopener"
     class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
   >
-    Ask what is free on your dates
+    {copy.sections.stays.cta}
   </a>
 </Section>

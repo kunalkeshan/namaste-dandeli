@@ -17,7 +17,7 @@ export interface Slab {
 }
 
 export const slabs: Slab[] = [
-  { vehicle: 'Sedan',  hours: 8, km: 80, price: 2500 },
+  { vehicle: 'Sedan', hours: 8, km: 80, price: 2500 },
   { vehicle: 'Ertiga', hours: 8, km: 80, price: 3200 },
 ];
 

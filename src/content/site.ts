@@ -1,22 +1,38 @@
 /**
- * Business facts. Every value here is VERIFIED from Irshad's Google
- * Business Profile (2026-11-04) unless marked TODO.
+ * Business facts.
  *
- * When Sanity lands, this object is what the adapter returns —
- * the components never change.
+ * Values typed `Confirmed<T>` are gated: if Irshad has not confirmed
+ * them, the page shows the fallback and never the claim. See
+ * ./confirmed.ts for why that guard exists.
+ *
+ * Plain values are verified from his Google Business Profile
+ * (2026-11-04) and safe to render directly.
  */
+// `confirmed()` is imported by the modules that have confirmed facts;
+// everything here is still waiting on Irshad.
+import { unconfirmed, type Confirmed } from './confirmed';
 export const site = {
   name: 'Namaste Dandeli',
   legalName: 'Namaste Dandeli Hotel Bookings and Taxi Services',
   googleName: 'Dandeli taxi service',
-  alsoKnownAs: 'Humsafar Taxi',           // several reviews use this name
+  alsoKnownAs: 'Humsafar Taxi', // several reviews use this name
   owner: 'Irshad Khan',
   ownerShort: 'Irshad',
 
+  // Verified on his Google Business Profile.
   phone: '+919449006326',
   phoneDisplay: '+91 94490 06326',
-  whatsapp: '919449006326',               // TODO: confirm same as phone
   email: 'humsafartaxi@gmail.com',
+
+  /**
+   * The WhatsApp number may differ from the listed phone — many
+   * operators keep a separate business line. Until he confirms,
+   * WhatsApp CTAs fall back to the verified phone number.
+   */
+  whatsapp: unconfirmed<string>(
+    '919449006326',
+    'Is WhatsApp on +91 94490 06326, or a different number?',
+  ) as Confirmed<string>,
 
   address: {
     street: 'Haliyal - Dandeli Rd, 3No Gate',
@@ -33,24 +49,54 @@ export const site = {
     reviewCount: 160,
     placeId: 'ChIJS9xlA1YhvzsRhn3XMMMsNnY',
     mapsUrl: 'https://maps.google.com/maps?cid=8518044962067545478',
-    reviewsUrl: 'https://search.google.com/local/reviews?placeid=ChIJS9xlA1YhvzsRhn3XMMMsNnY',
+    reviewsUrl:
+      'https://search.google.com/local/reviews?placeid=ChIJS9xlA1YhvzsRhn3XMMMsNnY',
   },
 
-  // TODO: confirm with Irshad. Reviews repeatedly say "available anytime
-  // on the phone", which suggests 24/7 — a strong claim worth making
-  // explicitly, but only once he confirms it.
-  hours: '24 hours, every day',
-  hoursConfirmed: false,
+  /**
+   * Reviews repeatedly say he is "available anytime on the phone",
+   * which suggests 24/7 — a strong claim, and exactly why it must
+   * not be published on a guess.
+   *
+   * This previously rendered "24 hours, every day" on the live page
+   * behind a `hoursConfirmed: false` flag that no component read.
+   */
+  hours: unconfirmed<string>(
+    'Call to check availability — he answers early and late',
+    'Are you genuinely available 24/7, or are there hours you do not drive?',
+  ) as Confirmed<string>,
 
   serviceAreas: [
-    'Dandeli', 'Alur', 'Haliyal', 'Ganeshgudi', 'Hubballi', 'Dharwad',
-    'Belagavi', 'Alnavar', 'Londa', 'Karwar', 'Gokarna', 'Goa',
+    'Dandeli',
+    'Alur',
+    'Haliyal',
+    'Ganeshgudi',
+    'Hubballi',
+    'Dharwad',
+    'Belagavi',
+    'Alnavar',
+    'Londa',
+    'Karwar',
+    'Gokarna',
+    'Goa',
   ],
 } as const;
 
-/** Opens WhatsApp with the message already typed. */
+/**
+ * Opens WhatsApp with the message already typed.
+ *
+ * Single source for every wa.me link on the site — components must
+ * not build these by hand. Falls back to the verified phone number
+ * while the WhatsApp number is unconfirmed, so the link always works.
+ */
 export function whatsappLink(message: string): string {
-  return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`;
+  const number = site.whatsapp.confirmed ? site.whatsapp.value : site.whatsapp.fallback;
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+
+/** Single source for tel: links. */
+export function telLink(): string {
+  return `tel:${site.phone}`;
 }
 
 export const WA_DEFAULT =

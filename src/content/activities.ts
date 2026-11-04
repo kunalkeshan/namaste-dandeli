@@ -46,7 +46,7 @@ export const activities: Activity[] = [
   {
     name: 'Birdwatching',
     blurb:
-      'Around 270 species, including four of India\'s nine hornbills — great, Malabar pied, Malabar grey and Indian grey. Ganeshgudi is where serious birders go.',
+      "Around 270 species, including four of India's nine hornbills — great, Malabar pied, Malabar grey and Indian grey. Ganeshgudi is where serious birders go.",
     duration: 'Early morning, 3–4 hours',
     season: 'Peak November to February',
   },

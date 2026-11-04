@@ -3,59 +3,51 @@
  * Travelling alone.
  *
  * Solo female travel safety is a real and underserved concern in
- * Indian tourism, and his reviews already evidence it rather than
- * claim it.
+ * Indian tourism, and his reviews evidence it rather than claim it.
  *
- * ⚠️ Everything asserted here must be confirmed by Irshad before
- * launch — these are promises made on his behalf. Kept deliberately
- * to things a one-man operator can actually guarantee.
+ * ⚠️ The three assurances that used to be hardcoded here were
+ * promises made on Irshad's behalf — that he always drives, that he
+ * sends the vehicle number before pickup, that one number is always
+ * answered. None is confirmed, so none renders. The section instead
+ * shows only what is independently checkable: his public listing and
+ * his reviews.
+ *
+ * Confirm them in content/assurances.ts and they appear automatically.
  */
 import { getContent, whatsappLink } from '../content';
-const { site, featuredReview } = await getContent();
+import { isConfirmed } from '../content/confirmed';
 
-const assurances = [
-  {
-    title: 'You know who is driving',
-    body: 'The same person you spoke to on the phone is the person who turns up. Not a rotating pool, not a subcontractor.',
-  },
-  {
-    title: 'Share the trip with someone',
-    body: 'He will send the vehicle number and his own number before pickup, so you can forward both to whoever is expecting you.',
-  },
-  {
-    title: 'Reachable the whole way',
-    body: 'One number, answered. Reviews from three years back say the same thing: he picks up.',
-  },
-];
+const { featuredReview, assurances, soloFallback, copy } = await getContent();
+
+/* Unconfirmed assurances are OMITTED, not hedged — a softened safety
+   promise is worse than none at all. */
+const confirmedAssurances = assurances.filter(isConfirmed).map((a) => a.value);
+const points =
+  confirmedAssurances.length > 0 ? confirmedAssurances : soloFallback.evidence;
 ---
 
 <section id="solo" class="bg-background">
   <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
     <div class="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
       <div class="reveal">
-        <p class="decal text-xs text-accent-ink">Travelling alone</p>
-        <h2 class="mt-3 text-2xl">
-          Booking a stranger to drive you through a forest is a real decision
-        </h2>
-        <p class="measure mt-4 text-lg text-muted-foreground">
-          Especially alone, and especially as a woman. Irshad cannot remove
-          that calculation, but he can be the kind of operator it is easy to
-          check on — a named person, a listed number, and three years of
-          reviews anyone can read.
-        </p>
+        <p class="decal text-xs text-accent-ink">{copy.sections.solo.eyebrow}</p>
+        <h2 class="mt-3 text-2xl">{soloFallback.title}</h2>
+        <p class="measure mt-4 text-lg text-muted-foreground">{soloFallback.lede}</p>
 
         <ul class="mt-8 space-y-6">
-          {assurances.map((a) => (
+          {points.map((p) => (
             <li class="reveal-child">
-              <h3 class="font-display text-lg">{a.title}</h3>
-              <p class="measure mt-1.5 text-muted-foreground">{a.body}</p>
+              <h3 class="font-display text-lg">{p.title}</h3>
+              <p class="measure mt-1.5 text-muted-foreground">{p.body}</p>
             </li>
           ))}
         </ul>
       </div>
 
       <figure class="sticky-col reveal self-start rounded-xl border border-border bg-muted p-7">
-        <div class="text-accent-ink" aria-hidden="true">★★★★★</div>
+        <div class="text-accent-ink" aria-hidden="true">
+          ★★★★★
+        </div>
         <blockquote class="mt-3">
           <p class="font-display text-xl leading-snug">
             &ldquo;{featuredReview.text}&rdquo;
@@ -65,12 +57,12 @@ const assurances = [
           {featuredReview.author} &middot; {featuredReview.dateLabel} &middot; on Google
         </figcaption>
         <a
-          href={whatsappLink('Hello Irshad, I am travelling on my own and would like to ask a few questions before booking.')}
+          href={whatsappLink(copy.waMessages.solo)}
           target="_blank"
           rel="noopener"
           class="btn btn-primary mt-6 inline-flex w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"
         >
-          Ask before you book
+          {copy.sections.solo.cta}
         </a>
       </figure>
     </div>

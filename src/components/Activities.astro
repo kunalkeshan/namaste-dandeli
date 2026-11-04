@@ -2,13 +2,13 @@
 import Section from './Section.astro';
 import CommonsImage from './CommonsImage.astro';
 import { getContent } from '../content';
-const { activities, images } = await getContent();
+const { activities, images, copy } = await getContent();
 
 /* Images paired to the activities that have a genuine Dandeli photo. */
-const art: Record<string, typeof images[keyof typeof images] | undefined> = {
+const art: Record<string, (typeof images)[keyof typeof images] | undefined> = {
   'White water rafting': images.kaliHabitat,
   'Coracle ride': images.coracle,
-  'Birdwatching': images.hornbill,
+  Birdwatching: images.hornbill,
   'Syntheri Rocks': images.syntheri,
   'Supa Dam & Sykes Point': images.sykesPoint,
   // riverDawn is kept for the Stays section, where atmosphere is the point.
@@ -18,9 +18,9 @@ const art: Record<string, typeof images[keyof typeof images] | undefined> = {
 
 <Section
   id="dandeli"
-  eyebrow="What you came for"
-  title="The river, the forest, and the birds"
-  lede="Most of it sits twenty to forty minutes out of town, down roads that are easier with someone who drives them every week."
+  eyebrow={copy.sections.activities.eyebrow}
+  title={copy.sections.activities.title}
+  lede={copy.sections.activities.lede}
 >
   <div class="reveal grid gap-x-8 gap-y-12 sm:grid-cols-2">
     {activities.map((a) => {
@@ -29,12 +29,12 @@ const art: Record<string, typeof images[keyof typeof images] | undefined> = {
         <article class="reveal-child">
           {img && (
             <div class="img-frame mb-5 rounded-lg">
-            <CommonsImage
-              img={img}
-              sizes="(min-width: 640px) 44vw, 90vw"
-              aspect="aspect-[5/3]"
-              class="w-full"
-            />
+              <CommonsImage
+                img={img}
+                sizes="(min-width: 640px) 44vw, 90vw"
+                aspect="aspect-[5/3]"
+                class="w-full"
+              />
             </div>
           )}
           <h3 class="text-xl">{a.name}</h3>

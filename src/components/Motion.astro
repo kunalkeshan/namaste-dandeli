@@ -12,6 +12,7 @@
  * so the page still ships zero .js assets.
  */
 ---
+
 <script is:inline>
   (() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -62,7 +63,7 @@
           for (const e of entries) {
             if (!e.isIntersecting) continue;
             e.target.classList.add('is-in');
-            io.unobserve(e.target);   // reveal once, never re-animate
+            io.unobserve(e.target); // reveal once, never re-animate
           }
         },
         { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },

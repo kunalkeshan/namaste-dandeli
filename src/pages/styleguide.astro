@@ -1,0 +1,288 @@
+---
+/**
+ * The living style guide.
+ *
+ * Renders every token, state and motion curve from the real CSS, so
+ * drift between the written rules and the shipped site becomes
+ * visible instead of silent. Excluded from the sitemap and robots.
+ *
+ * Contrast ratios are computed here rather than copied, for the same
+ * reason: a hardcoded number would keep reading "16.27:1" long after
+ * someone changed the token.
+ */
+import Layout from '../layouts/Layout.astro';
+import Logo from '../components/Logo.astro';
+
+export const prerender = true;
+
+/* A dev reference, not a public page. Excluded from the sitemap and
+   robots.txt; this also keeps it out of production deploys. */
+if (import.meta.env.PROD && !import.meta.env.STYLEGUIDE) {
+  return Astro.redirect('/');
+}
+
+/* --- contrast maths, mirrored from scripts/verify-a11y.mjs -------- */
+const s2l = (c: number) => {
+  c /= 255;
+  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+};
+const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const lum = (h: string) => {
+  const [r, g, b] = rgb(h).map(s2l);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const ratio = (a: string, b: string) => {
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+};
+const grade = (r: number, kind: string) => {
+  if (kind === 'decorative') return 'n/a';
+  if (kind === 'nontext') return r >= 3 ? 'pass' : 'FAIL';
+  return r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : 'FAIL';
+};
+
+const T = {
+  background: '#FCFBF7',
+  foreground: '#122019',
+  muted: '#EEF2ED',
+  'muted-foreground': '#46574D',
+  primary: '#0F3D2E',
+  'primary-foreground': '#FFFFFF',
+  'primary-deep': '#082219',
+  accent: '#AE631B',
+  'accent-ink': '#9A5614',
+  'accent-bright': '#E08A2B',
+  brand: '#C3160D',
+  border: '#798E79',
+  rule: '#D4DCD4',
+};
+
+/**
+ * `kind` picks the threshold: text pairs need 4.5:1, non-text UI
+ * (borders, graphics) needs 3:1, and decorative rules carry no
+ * information so contrast does not apply to them at all. Grading a
+ * hairline against the text threshold would show a permanent false
+ * failure, which teaches people to ignore the page.
+ */
+const swatches = [
+  { name: 'background', role: 'page base', on: 'foreground', kind: 'text' },
+  { name: 'foreground', role: 'body text', on: 'background', kind: 'text' },
+  { name: 'muted', role: 'cards, bands', on: 'foreground', kind: 'text' },
+  { name: 'muted-foreground', role: 'secondary text', on: 'background', kind: 'text' },
+  {
+    name: 'primary',
+    role: 'headings, buttons, footer',
+    on: 'primary-foreground',
+    kind: 'text',
+  },
+  {
+    name: 'primary-deep',
+    role: 'hero, deepest field',
+    on: 'primary-foreground',
+    kind: 'text',
+  },
+  { name: 'accent', role: 'primary CTA', on: 'primary-foreground', kind: 'text' },
+  { name: 'accent-ink', role: 'accent as text on light', on: 'background', kind: 'text' },
+  { name: 'accent-bright', role: 'graphics on dark', on: 'primary', kind: 'nontext' },
+  { name: 'brand', role: 'LOGO ONLY — never UI', on: 'background', kind: 'nontext' },
+  { name: 'border', role: 'control edges', on: 'background', kind: 'nontext' },
+  {
+    name: 'rule',
+    role: 'decorative hairlines — no contrast requirement',
+    on: 'background',
+    kind: 'decorative',
+  },
+] as const;
+
+const typeScale = [
+  ['text-xs', '0.8125rem', 'labels'],
+  ['text-sm', '0.9375rem', 'captions, credits'],
+  ['text-base', '1.0625rem', 'body'],
+  ['text-lg', '1.1875rem', 'lede'],
+  ['text-xl', 'clamp(1.35→1.75rem)', 'card titles'],
+  ['text-2xl', 'clamp(1.7→2.5rem)', 'section headings'],
+] as const;
+---
+
+<Layout
+  title="Style guide — Namaste Dandeli"
+  description="Design tokens, states and motion for the Namaste Dandeli site."
+>
+  <main class="mx-auto max-w-5xl px-5 py-16">
+    <header class="mb-16">
+      <div class="flex items-center gap-4">
+        <Logo class="w-16 text-foreground" />
+        <div>
+          <p class="decal text-xs text-accent-ink">Design system</p>
+          <h1 class="mt-1 text-2xl">Namaste Dandeli</h1>
+        </div>
+      </div>
+      <p class="measure mt-5 text-muted-foreground">
+        Everything here renders from the real tokens. Ratios are computed, not copied — a
+        hardcoded number would keep reading correct long after someone changed a colour.
+      </p>
+    </header>
+
+    <!-- COLOUR -->
+    <section class="mb-16">
+      <h2 class="text-xl">Colour</h2>
+      <p class="measure mt-2 text-sm text-muted-foreground">
+        Palette "Canopy &amp; Signal". The brand red converges with the primary green to
+        1.25:1 under protanopia, which is why it appears only inside the logo and never
+        encodes meaning.
+      </p>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {swatches.map((s) => {
+          const hex = T[s.name as keyof typeof T];
+          const onHex = T[s.on as keyof typeof T];
+          const r = ratio(hex, onHex);
+          return (
+            <li class="flex items-center gap-4 rounded-lg border border-border p-3">
+              <span
+                class="h-14 w-14 shrink-0 rounded-md border border-rule"
+                style={`background:${hex}`}
+              ></span>
+              <span class="min-w-0">
+                <code class="text-sm font-semibold">{s.name}</code>
+                <span class="ml-2 text-xs tabular-nums text-muted-foreground">{hex}</span>
+                <span class="block text-xs text-muted-foreground">{s.role}</span>
+                <span class="mt-0.5 block text-xs tabular-nums">
+                  {r.toFixed(2)}:1 on <code>{s.on}</code>
+                  <span
+                    class={
+                      grade(r, s.kind) === 'FAIL'
+                        ? 'ml-1 font-semibold text-brand'
+                        : 'ml-1 text-muted-foreground'
+                    }
+                  >
+                    {grade(r, s.kind)}
+                  </span>
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <!-- TYPE -->
+    <section class="mb-16">
+      <h2 class="text-xl">Type</h2>
+      <p class="measure mt-2 text-sm text-muted-foreground">
+        Bespoke Serif for display, Satoshi for body, Rajdhani for the decal voice — the
+        bridge to the lettering on his car, kept to short uppercase strings.
+      </p>
+      <div class="mt-6 space-y-5 border-t border-border pt-6">
+        <p class="decal text-sm text-accent-ink">Decal · Rajdhani 700 · 0.1em</p>
+        <p class="font-display text-2xl">Display · Bespoke Serif ExtraBold</p>
+        <p class="text-base">
+          Body · Satoshi Regular, set at 1.0625rem with 1.6 leading.
+        </p>
+        {typeScale.map(([token, size, use]) => (
+          <div class="flex flex-wrap items-baseline gap-x-4 border-t border-rule pt-3">
+            <code class="w-28 text-xs text-muted-foreground">{token}</code>
+            <code class="w-44 text-xs tabular-nums text-muted-foreground">{size}</code>
+            <span class="text-xs text-muted-foreground">{use}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="mb-16">
+      <h2 class="text-xl">Buttons</h2>
+      <p class="measure mt-2 text-sm text-muted-foreground">
+        Hover lifts 1px with a shadow and shifts colour; press scales to 0.97. Hover is
+        gated behind <code>(hover: hover)</code> so touch devices do not get stuck states.
+        <strong> Hover colours must meet contrast too</strong> — the accent hover once
+        shipped at 3.61:1 because it lightened instead of darkening.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <button class="btn btn-accent rounded-xl bg-accent px-6 py-3.5 font-semibold text-accent-foreground">
+          Accent — primary CTA
+        </button>
+        <button class="btn btn-primary rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground">
+          Primary
+        </button>
+        <a
+          href="#"
+          class="link-inline font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4"
+        >
+          Inline link
+        </a>
+      </div>
+      <div class="mt-4 rounded-lg bg-primary-deep p-5">
+        <button class="btn btn-ghost rounded-xl border border-primary-foreground/30 px-6 py-3.5 font-semibold text-primary-foreground">
+          Ghost — on dark only
+        </button>
+      </div>
+    </section>
+
+    <!-- MOTION -->
+    <section class="mb-16">
+      <h2 class="text-xl">Motion</h2>
+      <p class="measure mt-2 text-sm text-muted-foreground">
+        Custom curves — the built-in easings are too weak to read as intentional. Nothing
+        uses <code>ease-in</code>, which delays the first frame, the exact moment the eye
+        is watching. All of it stops under
+        <code>prefers-reduced-motion</code>.
+      </p>
+      <dl class="mt-6 grid gap-x-8 gap-y-3 border-t border-border pt-6 sm:grid-cols-2">
+        <div>
+          <dt class="text-sm font-semibold">--ease-out-strong</dt>
+          <dd class="text-xs text-muted-foreground">
+            cubic-bezier(.23, 1, .32, 1) — entrances, hovers
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-semibold">--ease-in-out-strong</dt>
+          <dd class="text-xs text-muted-foreground">
+            cubic-bezier(.77, 0, .175, 1) — on-screen movement
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-semibold">Scroll reveal</dt>
+          <dd class="text-xs text-muted-foreground">opacity + 8px rise, 500ms, once</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-semibold">Press</dt>
+          <dd class="text-xs text-muted-foreground">scale(0.97), 160ms</dd>
+        </div>
+        <div>
+          <dt class="text-sm font-semibold">Image hover</dt>
+          <dd class="text-xs text-muted-foreground">
+            scale(1.04), 600ms, inside .img-frame
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-semibold">Marquee</dt>
+          <dd class="text-xs text-muted-foreground">
+            44s linear, decorative content only
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- RULES -->
+    <section>
+      <h2 class="text-xl">The rules that are enforced</h2>
+      <ul class="measure mt-4 space-y-2 text-sm text-muted-foreground">
+        <li>
+          · Brand red appears only inside the logo SVG — <code>pnpm verify:content</code>
+        </li>
+        <li>
+          · Every text pair ≥ AA including hover — <code>pnpm verify:a11y</code>
+        </li>
+        <li>
+          · Zero separate .js files in <code>dist/</code>
+        </li>
+        <li>
+          · No <code>aggregateRating</code> in structured data
+        </li>
+        <li>· Hue never carries meaning alone</li>
+        <li>· 44px minimum tap target on coarse pointers</li>
+        <li>· Visible 3px focus ring on every control</li>
+      </ul>
+    </section>
+  </main>
+</Layout>

@@ -14,9 +14,9 @@ interface Props {
 const { id, eyebrow, title, lede, tone = 'base', class: className = '' } = Astro.props;
 
 const tones = {
-  base:  'bg-background text-foreground',
+  base: 'bg-background text-foreground',
   muted: 'bg-muted text-foreground',
-  dark:  'bg-primary text-primary-foreground',
+  dark: 'bg-primary text-primary-foreground',
 };
 ---
 
@@ -24,13 +24,17 @@ const tones = {
   <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
     <header class="reveal mb-10">
       {eyebrow && (
-        <p class={`decal text-xs mb-3 ${tone === 'dark' ? 'text-primary-foreground/55' : 'text-accent-ink'}`}>
+        <p
+          class={`decal text-xs mb-3 ${tone === 'dark' ? 'text-primary-foreground/55' : 'text-accent-ink'}`}
+        >
           {eyebrow}
         </p>
       )}
       <h2 class="text-2xl">{title}</h2>
       {lede && (
-        <p class={`measure mt-4 text-lg ${tone === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+        <p
+          class={`measure mt-4 text-lg ${tone === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
+        >
           {lede}
         </p>
       )}

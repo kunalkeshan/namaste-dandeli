@@ -1,0 +1,4 @@
+{
+  "*.{astro,ts,js,mjs,json,css,md}": ["prettier --write"],
+  "src/**/*.{astro,ts}": ["bash -c 'pnpm typecheck'"]
+}
