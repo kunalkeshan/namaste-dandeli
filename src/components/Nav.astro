@@ -75,7 +75,7 @@ const links = copy.nav.links;
       </a>
 
       <!-- mobile menu: native disclosure, zero JS -->
-      <details class="group relative lg:hidden" data-menu>
+      <details class="group lg:hidden" data-menu>
         <summary
           class="btn flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-primary-foreground/25 text-primary-foreground [&::-webkit-details-marker]:hidden"
           aria-label={copy.nav.menuOpen}
@@ -101,7 +101,10 @@ const links = copy.nav.links;
           </svg>
         </summary>
 
-        <div class="fixed inset-x-0 top-[var(--nav-h,64px)] bottom-0 z-40 origin-top overflow-y-auto border-t border-primary-foreground/10 bg-primary-deep/98 backdrop-blur-lg transition duration-250 ease-out motion-safe:[@starting-style]:opacity-0 motion-safe:[@starting-style]:-translate-y-2">
+        <!-- Absolute, not fixed: the <nav> has will-change-transform, which
+             makes it the containing block for fixed children and collapsed
+             this panel to zero height. top-full hangs it under the bar. -->
+        <div class="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--nav-h,64px))] origin-top overflow-y-auto border-t border-primary-foreground/10 bg-primary-deep/98 backdrop-blur-lg transition duration-250 ease-out motion-safe:[@starting-style]:opacity-0 motion-safe:[@starting-style]:-translate-y-2">
           <ul class="mx-auto max-w-6xl px-5 py-4">
             {links.map((l) => (
               <li class="border-b border-primary-foreground/10 last:border-0">
