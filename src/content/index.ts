@@ -23,7 +23,40 @@ import { assurances, soloFallback } from './assurances';
 import { nav, hero, sections, waMessages } from './copy';
 import { blockers } from './confirmed';
 
-export async function getContent() {
+/**
+ * The resolved content, cached as a PROMISE.
+ *
+ * Twelve call sites await getContent() independently — ten components,
+ * the layout, and the OG card. Against local modules that is free.
+ * Against GROQ it is twelve network round-trips per page render, which
+ * is the thing that turns a fast build into a slow one.
+ *
+ * Caching the promise rather than the resolved value is what makes it
+ * safe: Astro renders components concurrently, so a cache written only
+ * after the first fetch RESOLVES would let every caller miss and fire
+ * its own request before the first one lands. Assigning the promise
+ * synchronously collapses them into one.
+ *
+ * Module-level state is correct here because a static build is a
+ * single process. In `astro dev`, HMR re-evaluates the module, which
+ * is exactly the invalidation we want.
+ */
+let cache: Promise<ContentShape> | null = null;
+
+export function getContent(): Promise<ContentShape> {
+  cache ??= loadContent();
+  return cache;
+}
+
+/**
+ * Drops the cache. For tests and scripts that need a second, fresh
+ * read within one process — never call this from a component.
+ */
+export function __resetContentCache(): void {
+  cache = null;
+}
+
+async function loadContent() {
   return {
     site,
     images,
@@ -46,7 +79,8 @@ export async function getContent() {
   };
 }
 
-export type Content = Awaited<ReturnType<typeof getContent>>;
+type ContentShape = Awaited<ReturnType<typeof loadContent>>;
+export type Content = ContentShape;
 export { whatsappLink, telLink, WA_DEFAULT };
 
 /**
