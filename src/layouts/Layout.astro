@@ -14,7 +14,18 @@ interface Props {
   description: string;
 }
 const { title, description } = Astro.props;
-const { site } = await getContent();
+const { site, images } = await getContent();
+
+/**
+ * The hero is the LCP element. `fetchpriority="high"` on the <img>
+ * only helps once the browser has FOUND it, which is after CSS. A
+ * preload moves discovery into the head.
+ *
+ * imagesrcset/imagesizes must mirror the <img> exactly — a preload
+ * that disagrees with the candidate the browser eventually picks
+ * downloads the image twice, which is slower than no preload at all.
+ */
+const heroImg = images.rafting;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://namastedandeli.com');
 
@@ -110,9 +121,24 @@ const jsonLd = {
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap"
     />
-    <!-- Images are hotlinked from Commons; warm that connection too. -->
+    <!--
+      Images are hotlinked from Commons, which 302s from
+      commons.wikimedia.org to thumb.wikimedia.org — two hosts, two
+      round-trips. We previously warmed `upload.` which never serves
+      the bytes; `thumb.` is the one that does.
+    -->
     <link rel="preconnect" href="https://commons.wikimedia.org" />
-    <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
+    <link rel="preconnect" href="https://thumb.wikimedia.org" crossorigin />
+
+    <!-- Discover the LCP image in the head, not after CSS. -->
+    <link
+      rel="preload"
+      as="image"
+      href={heroImg.src}
+      imagesrcset={heroImg.srcset}
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
