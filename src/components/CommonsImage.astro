@@ -14,7 +14,7 @@
  * `h-auto`, which hands the ratio to CSS while width/height still
  * tell the browser the shape. No shift, correct crop.
  */
-import type { Img } from '../content/images';
+import type { Img } from '../content';
 
 interface Props {
   img: Img;
@@ -36,6 +36,23 @@ const {
 const cls = [aspect, aspect && 'h-auto object-cover', className]
   .filter(Boolean)
   .join(' ');
+
+/**
+ * LQIP: a ~500-byte base64 thumbnail Sanity generates per asset,
+ * painted as the element's own background.
+ *
+ * This is what removes the blank rectangle. Sanity transcodes on the
+ * first request for a given width — measured at 0.77s TTFB cold,
+ * 0.24s once warm — so even a well-optimised image has a visible gap
+ * on a cold CDN. The placeholder fills it with the real colours of
+ * the photograph, inline in the HTML, needing no request at all.
+ *
+ * It costs ~0.5KB per image and is painted under the <img>, so the
+ * real photo simply resolves over it.
+ */
+const placeholder = img.lqip
+  ? `background-image:url(${img.lqip});background-size:cover;background-position:center`
+  : undefined;
 ---
 
 <img
@@ -49,4 +66,5 @@ const cls = [aspect, aspect && 'h-auto object-cover', className]
   loading={priority ? 'eager' : 'lazy'}
   decoding={priority ? 'sync' : 'async'}
   fetchpriority={priority ? 'high' : 'auto'}
+  style={placeholder}
 />

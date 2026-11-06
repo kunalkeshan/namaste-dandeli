@@ -30,6 +30,12 @@ interface AssetRow {
   metadata?: { dimensions?: { width: number; height: number }; lqip?: string };
 }
 
+/**
+ * The hero is a backdrop at 60% opacity, not a photograph anyone
+ * studies — it carries a lower quality setting than the rest.
+ */
+const QUALITY: Partial<Record<RegionKey, number>> = { rafting: 55 };
+
 export async function regionImages() {
   const rows: AssetRow[] = await client.fetch(
     `*[_type == "sanity.imageAsset" && originalFilename match "commons-*"]{
@@ -49,6 +55,7 @@ export async function regionImages() {
           credit: row.creditLine,
         } as SanityImg,
         row.description ?? '',
+        { quality: QUALITY[slot] },
       );
     if (!img) {
       missing.push(slot);

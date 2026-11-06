@@ -41,7 +41,10 @@ const builder = createImageUrlBuilder({ projectId, dataset });
  * anywhere. There is no runtime signal for this bug, which is why
  * scripts/verify-sanity.mjs checks for it statically.
  */
-export const IMAGE_FIELDS = `asset->, hotspot, crop, alt, credit, licence, subject`;
+export const IMAGE_FIELDS = `
+  "asset": asset->{ _id, url, metadata { dimensions, lqip } },
+  hotspot, crop, alt, credit, licence, subject
+`;
 
 export interface SanityImg {
   asset?: {
@@ -70,16 +73,28 @@ const WIDTHS = [480, 800, 1200, 1600, 2000] as const;
  * rounded every request UP to its own bucket sizes, so the srcset
  * width descriptors understated the bytes actually delivered.
  */
-export function toImg(src: SanityImg | null | undefined, fallbackAlt = '') {
+export function toImg(
+  src: SanityImg | null | undefined,
+  fallbackAlt = '',
+  opts: { quality?: number } = {},
+) {
   if (!src?.asset) return null;
   const dim = src.asset.metadata?.dimensions;
-  const url = (w: number) =>
-    builder
+  /**
+   * Quality is per-image on purpose. The default (~82) is right for a
+   * photograph someone looks AT; the hero sits at 60% opacity behind
+   * white text and is looked THROUGH, where q=55 is indistinguishable
+   * and ~30% smaller. One global setting would either waste bytes on
+   * the backdrop or visibly degrade the photographs.
+   */
+  const url = (w: number) => {
+    const b = builder
       .image(src as Parameters<typeof builder.image>[0])
       .width(w)
       .auto('format')
-      .fit('crop')
-      .url();
+      .fit('crop');
+    return (opts.quality ? b.quality(opts.quality) : b).url();
+  };
   return {
     src: url(1600),
     srcset: WIDTHS.map((w) => `${url(w)} ${w}w`).join(', '),
