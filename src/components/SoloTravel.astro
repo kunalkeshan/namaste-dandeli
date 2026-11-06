@@ -36,7 +36,7 @@ const points =
 ---
 
 <section id="solo" class="bg-background">
-  <div class="mx-auto max-w-5xl px-5 py-16 sm:py-24">
+  <div class="mx-auto max-w-5xl px-5 pt-16 pb-12 sm:pt-24">
     <div class="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
       <div class="reveal">
         <p class="decal text-xs text-accent-ink">{copy.sections.solo.eyebrow}</p>
@@ -53,64 +53,73 @@ const points =
         </ul>
       </div>
 
-      <figure class="sticky-col reveal self-start overflow-hidden rounded-xl border border-border bg-muted">
-        {/* The photo is the card's header, not an object floating over
-            it. Floating it meant a bordered frame on a bordered card —
-            a nested card, and two elevation systems at once. Here one
-            border wraps the whole thing and the image runs to its
-            edges, so the face, the name and the review read as one
-            object.
-
-            Landscape, not portrait: these are phone 3:4 shots where he
-            stands beside the car, so a tall crop wastes most of its
-            height on tree. A 16:9 band keeps him and the car and drops
-            the canopy. */}
-        {portrait && (
-          <img
-            src={portrait.src}
-            srcset={portrait.srcset}
-            sizes="(min-width: 1024px) 26rem, 90vw"
-            width={portrait.width}
-            height={portrait.height}
-            alt={portrait.alt}
-            class="aspect-[16/9] w-full object-cover"
-            style={`object-position: 30% 42%${
-              portrait.lqip
-                ? `; background-image:url(${portrait.lqip}); background-size:cover`
-                : ''
-            }`}
-            loading="lazy"
-            decoding="async"
-          />
-        )}
-
-        <div class="p-7">
-          <p class="font-display text-lg">{site.owner}</p>
-          <p class="mt-0.5 text-sm text-muted-foreground">
-            {site.address.locality} &middot; {site.address.region}
-          </p>
-
-          <div class="mt-5 text-accent-ink" aria-hidden="true">
-            ★★★★★
-          </div>
-          <blockquote class="mt-3">
-            <p class="font-display text-xl leading-snug">
-              &ldquo;{featuredReview.text}&rdquo;
-            </p>
-          </blockquote>
-          <figcaption class="mt-4 text-sm text-muted-foreground">
-            {featuredReview.author} &middot; {featuredReview.dateLabel} &middot; on Google
-          </figcaption>
-          <a
-            href={whatsappLink(copy.waMessages.solo)}
-            target="_blank"
-            rel="noopener"
-            class="btn btn-primary mt-6 inline-flex w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"
-          >
-            {copy.sections.solo.cta}
-          </a>
+      <figure class="sticky-col reveal self-start">
+        <div class="text-accent-ink" aria-hidden="true">
+          ★★★★★
         </div>
+        <blockquote class="mt-3">
+          <p class="font-display text-[1.375rem] leading-snug">
+            &ldquo;{featuredReview.text}&rdquo;
+          </p>
+        </blockquote>
+        <figcaption class="mt-4 text-sm text-muted-foreground">
+          {featuredReview.author} &middot; {featuredReview.dateLabel} &middot; on Google
+        </figcaption>
+        <a
+          href={whatsappLink(copy.waMessages.solo)}
+          target="_blank"
+          rel="noopener"
+          class="btn btn-primary mt-7 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"
+        >
+          {copy.sections.solo.cta}
+        </a>
       </figure>
     </div>
   </div>
+
+  {/* The evidence, at full width.
+
+      The argument above is "he is a real person you can check on", so
+      the photograph is not an illustration beside that claim — it IS
+      the claim. Boxing it into the card made it decorative; running it
+      edge to edge makes it the thing you look at, and the plate and
+      the windscreen sticker are legible at this size.
+
+      The caption sits on paper rather than over the image: the photo
+      averages 113–149/255 luminance, too bright for white text
+      without a heavy scrim, and a scrim that exists only to rescue
+      contrast is decoration. */}
+  {portrait && (
+    <figure class="reveal mt-4">
+      <img
+        src={portrait.src}
+        srcset={portrait.srcset}
+        sizes="100vw"
+        width={portrait.width}
+        height={portrait.height}
+        alt={portrait.alt}
+        class="aspect-[21/9] w-full object-cover sm:aspect-[3/1]"
+        style={`object-position: 32% 40%${
+          portrait.lqip
+            ? `; background-image:url(${portrait.lqip}); background-size:cover`
+            : ''
+        }`}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption class="mx-auto max-w-5xl px-5 pt-4 pb-16 sm:pb-24">
+        <p class="text-sm text-muted-foreground">
+          {site.owner} &middot; {site.address.locality}, {site.address.region} &middot;{' '}
+          <a
+            href={site.google.mapsUrl}
+            target="_blank"
+            rel="noopener"
+            class="link-inline text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
+          >
+            {site.google.rating} from {site.google.reviewCount} reviews on Google
+          </a>
+        </p>
+      </figcaption>
+    </figure>
+  )}
 </section>
