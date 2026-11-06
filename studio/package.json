@@ -1,0 +1,22 @@
+{
+  "name": "namaste-dandeli-studio",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Sanity Studio for Namaste Dandeli. Standalone — deployed to *.sanity.studio, never mounted on the Astro site, which ships zero client JS.",
+  "scripts": {
+    "dev": "sanity dev --port 3333",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "extract": "sanity schemas extract --force --path ../schema.json",
+    "typegen": "sanity typegen generate"
+  },
+  "dependencies": {
+    "@sanity/vision": "^6.22.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sanity": "^6.22.0",
+    "styled-components": "^6.1.19"
+  }
+}

@@ -322,3 +322,122 @@ summary {
     top: 6rem;
   }
 }
+
+/* Carousel inside a card.
+   A scoped variant of .rail: no negative margin bleed (wrong inside a
+   card) and a tighter gap. Zero JS — scroll-snap and native momentum.
+   Nesting this inside the outer .rail would make two horizontal
+   scrollers fight for the same swipe, so Stays uses one per card and
+   the outer rail was removed. */
+.carousel {
+  position: relative;
+  border-radius: var(--radius-lg, 0.5rem);
+  /* Clips the slide run AND the fade overlay to the card's corners. */
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+.rail-inset {
+  display: flex;
+  /* The gap sits on the SECTION background, so it must be a warm-paper
+     seam, not the grey the browser paints by default. Keeping it tight
+     makes the strip read as one continuous photo run rather than two
+     floating cards. */
+  gap: 2px;
+  background: var(--color-background);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+.rail-inset::-webkit-scrollbar {
+  display: none;
+}
+.rail-inset:focus-visible {
+  outline: 3px solid var(--color-accent-ink);
+  outline-offset: 3px;
+}
+
+/* THE SCROLL AFFORDANCE.
+   A carousel that looks like a static image gets treated like one, so
+   three cues say "there is more", none of which need JavaScript:
+
+   1. The next slide PEEKS. flex-basis under 100% leaves a sliver of
+      the following image at the right edge. This is the strongest
+      cue — a cut-off image is unambiguous, and it survives both
+      reduced-motion and a failed stylesheet.
+   2. A soft fade over that edge, so the peek reads as "continues"
+      rather than "misaligned".
+   3. A count badge, which also tells you HOW MANY there are —
+      something arrows and dots never communicate.
+
+   No dots and no arrows: both need JS to track position, and a
+   control that lies about where you are is worse than none. */
+.rail-slide {
+  flex: 0 0 88%;
+  scroll-snap-align: center;
+  margin: 0;
+  /* Corners belong to the carousel, not to each slide. Rounding every
+     slide made the peek look like a separate floating card; the
+     wrapper clips the run instead. */
+  overflow: hidden;
+}
+.rail-slide img {
+  border-radius: 0;
+}
+@media (min-width: 640px) {
+  .rail-slide {
+    /* Still under 100% so the next image peeks on desktop too.
+       88% leaves enough of the next photo to read as an image rather
+       than a rendering artifact — a 3% sliver looks like a bug. */
+    flex-basis: 88%;
+  }
+}
+
+.carousel-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3.5rem;
+  pointer-events: none;
+  border-radius: 0 var(--radius-lg, 0.5rem) var(--radius-lg, 0.5rem) 0;
+  background: linear-gradient(to right, transparent, rgb(0 0 0 / 0.28));
+}
+
+.carousel-count {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #fff;
+  /* 0.62 alpha over any photograph clears 4.5:1 for white text. */
+  background: rgb(8 34 25 / 0.72);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+/* The hint slides a touch on hover, so a pointer user learns the
+   gesture. Gated behind hover:hover so a tap never triggers it, and
+   transform-only so it stays off the main thread. */
+@media (hover: hover) and (pointer: fine) {
+  .carousel-count {
+    transition: transform 200ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+  .carousel:hover .carousel-count {
+    transform: translateX(-0.2rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-count {
+    transition: none;
+  }
+}

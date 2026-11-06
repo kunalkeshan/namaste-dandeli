@@ -14,8 +14,13 @@ pnpm-debug.log*
 
 
 # environment variables
+# .env.local is where Sanity's own docs tell you to put a read token,
+# so it must be ignored BEFORE any token exists.
 .env
 .env.production
+.env.local
+.env*.local
+studio/.env.local
 
 # macOS-specific files
 .DS_Store
@@ -23,3 +28,20 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .scratch/
+
+# Sanity Studio build artefacts (studio/ has its own dependency tree)
+studio/dist/
+studio/node_modules/
+
+# Irshad's source photographs. ~29MB of WhatsApp-compressed JPEGs and
+# vehicle illustrations, of a real, identifiable person. Sanity is the
+# asset store; these are the local originals and must not enter git.
+irshad-images/
+
+# Downloaded Wikimedia originals, staged for the one-off Sanity upload.
+# Sanity is the asset store; these are transient.
+assets-staging/
+
+# Asset ids from the one-off upload; regenerate by re-running the script.
+scripts/asset-ids.json
+scripts/.seed.ndjson

@@ -6,7 +6,7 @@
     "node": ">=22.23.4"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "concurrently --names astro,studio --prefix-colors green,magenta --kill-others-on-fail false \"astro dev\" \"pnpm --dir studio dev\"",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -19,20 +19,31 @@
     "verify": "pnpm check && pnpm build && pnpm verify:content && pnpm verify:a11y",
     "blockers": "node scripts/report-blockers.mjs",
     "og": "node scripts/render-og.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:site": "astro dev",
+    "dev:studio": "pnpm --dir studio dev",
+    "studio:extract": "pnpm --dir studio extract",
+    "studio:typegen": "pnpm studio:extract && sanity typegen generate",
+    "studio:deploy": "pnpm --dir studio deploy",
+    "icons": "node scripts/render-icons.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@sanity/client": "^8.14.1",
+    "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.3.4",
     "astro": "^7.4.5",
     "tailwindcss": "^4.3.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "concurrently": "^10.0.6",
+    "groq": "^6.22.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
+    "sanity": "^6.22.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.5"
   },

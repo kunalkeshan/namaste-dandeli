@@ -1,0 +1,103 @@
+---
+/**
+ * A multi-image card. ZERO JavaScript — scroll-snap only, the same
+ * mechanism the .rail pattern already uses.
+ *
+ * Accessibility: the scroller is focusable (tabindex="0") so arrow
+ * keys scroll it natively, role="group" plus an aria-label names it,
+ * and every slide carries its own alt text.
+ *
+ * There are deliberately no dots and no arrows. Both would need JS to
+ * reflect position, and a decorative control that lies about where you
+ * are is worse than none — the partially visible next slide is the
+ * affordance.
+ *
+ * The FIRST slide is eager: it is what a visitor sees the moment the
+ * section scrolls in. Everything after it is lazy, so an image-heavy
+ * page never blocks the landing view.
+ */
+import type { Img } from '../content';
+
+interface Props {
+  photos: Img[];
+  label: string;
+  sizes: string;
+  aspect?: string;
+  class?: string;
+}
+const {
+  photos,
+  label,
+  sizes,
+  aspect = 'aspect-[4/3]',
+  class: className = '',
+} = Astro.props;
+const many = photos.length > 1;
+---
+
+{many ? (
+  <div class:list={['carousel', className]}>
+    <div
+      class="rail-inset"
+      role="group"
+      aria-label={`${label} — ${photos.length} photographs, scroll for more`}
+      tabindex="0"
+    >
+      {photos.map((p, i) => (
+        <figure class="rail-slide">
+          <img
+            src={p.src}
+            srcset={p.srcset}
+            sizes={sizes}
+            width={p.width}
+            height={p.height}
+            alt={p.alt}
+            class:list={['w-full rounded-lg object-cover', aspect]}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            style={
+              p.lqip
+                ? `background-image:url(${p.lqip});background-size:cover;background-position:center`
+                : undefined
+            }
+          />
+        </figure>
+      ))}
+    </div>
+    {/* The affordance. Decorative, so aria-hidden — the scroller's own
+        label already tells assistive tech how many there are and that
+        it scrolls. */}
+    <span class="carousel-fade" aria-hidden="true" />
+    <span class="carousel-count" aria-hidden="true">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
+        <path
+          d="M6 3.5 10.5 8 6 12.5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      {photos.length}
+    </span>
+  </div>
+) : (
+  photos[0] && (
+    <img
+      src={photos[0].src}
+      srcset={photos[0].srcset}
+      sizes={sizes}
+      width={photos[0].width}
+      height={photos[0].height}
+      alt={photos[0].alt}
+      class:list={['w-full rounded-lg object-cover', aspect, className]}
+      loading="lazy"
+      decoding="async"
+      style={
+        photos[0].lqip
+          ? `background-image:url(${photos[0].lqip});background-size:cover;background-position:center`
+          : undefined
+      }
+    />
+  )
+)}

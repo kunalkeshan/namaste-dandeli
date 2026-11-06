@@ -141,8 +141,17 @@ export const carImages = {
   } satisfies Img,
 };
 
+/**
+ * The vehicle cards show commissioned ILLUSTRATIONS of Irshad with
+ * each vehicle, not photographs. content-rules.md §4 is "say whose
+ * photo it is", and a synthetic likeness presented as a photograph
+ * would be a worse version of the bug that rule was written for.
+ *
+ * The previous note ("Model photographs…") became false the moment
+ * the illustrations landed.
+ */
 export const carImageNote =
-  'Model photographs. Ask Irshad for pictures of the actual vehicle on your dates.';
+  'Illustrations of Irshad and the three vehicles. Ask him for a photograph of the actual car on your dates.';
 
 /**
  * Irshad's own photographs.
