@@ -120,3 +120,29 @@ visible.
 - zero separate `.js` files in `dist/`
 
 `pnpm verify` checks all of it.
+
+## Icons
+
+`public/favicon.svg` is the canonical source for every raster icon. Run `pnpm icons`
+to regenerate them; never hand-edit a PNG or the `.ico`.
+
+| File                   | Size     | Used by                        |
+| ---------------------- | -------- | ------------------------------ |
+| `favicon.svg`          | vector   | modern browsers                |
+| `favicon.ico`          | 16/32/48 | tab icon, legacy browsers      |
+| `apple-touch-icon.png` | 180      | iOS home screen                |
+| `icon-192.png`         | 192      | Android launcher               |
+| `icon.png`             | 512      | PWA / manifest, incl. maskable |
+
+**Why a generator exists.** The `.ico` and the apple-touch icon had drifted into two
+different drawings: the `.ico` carried the solid white D that `favicon.svg` defines,
+while the touch icon had been produced from `Logo.astro` and rendered as a thin hollow
+outline. Same mark, two shapes.
+
+The raster source is `favicon.svg`, **not** `Logo.astro`. The SVG is deliberately
+thickened to survive 16px; `Logo.astro` is drawn for a page at full size and its
+hairlines disappear when scaled down. They are not interchangeable.
+
+Rendering goes through headless Chrome, so the SVG is rasterised by the same engine
+that displays it. The script launches its own browser — unlike `pnpm og`, it needs no
+preview server. Output is deterministic: re-running produces byte-identical files.

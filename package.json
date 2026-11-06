@@ -24,7 +24,8 @@
     "dev:studio": "pnpm --dir studio dev",
     "studio:extract": "pnpm --dir studio extract",
     "studio:typegen": "pnpm studio:extract && sanity typegen generate",
-    "studio:deploy": "pnpm --dir studio deploy"
+    "studio:deploy": "pnpm --dir studio deploy",
+    "icons": "node scripts/render-icons.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

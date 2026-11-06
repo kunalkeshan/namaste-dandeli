@@ -35,6 +35,7 @@ pnpm verify:content   # content truth validators
 pnpm verify:a11y      # contrast + colour-blindness
 pnpm blockers         # every fact still waiting on Irshad
 pnpm og               # regenerate public/og.jpg (needs preview + headless chrome)
+pnpm icons            # regenerate every raster icon from public/favicon.svg
 
 pnpm dev:site         # Astro only, without the Studio
 pnpm dev:studio       # Studio only (localhost:3333)
