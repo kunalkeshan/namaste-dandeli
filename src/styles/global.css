@@ -322,3 +322,36 @@ summary {
     top: 6rem;
   }
 }
+
+/* Carousel inside a card.
+   A scoped variant of .rail: no negative margin bleed (wrong inside a
+   card) and a tighter gap. Zero JS — scroll-snap and native momentum.
+   Nesting this inside the outer .rail would make two horizontal
+   scrollers fight for the same swipe, so Stays uses one per card and
+   the outer rail was removed. */
+.rail-inset {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+.rail-inset::-webkit-scrollbar {
+  display: none;
+}
+.rail-inset:focus-visible {
+  outline: 3px solid var(--color-accent-ink);
+  outline-offset: 3px;
+}
+.rail-slide {
+  flex: 0 0 92%;
+  scroll-snap-align: center;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .rail-slide {
+    flex-basis: 100%;
+  }
+}

@@ -32,8 +32,19 @@ export const stays: Stay[] = [
   },
 ];
 
+/**
+ * The disclosure had to change when real photographs of partner
+ * properties replaced the region shots: "Photographs show the Dandeli
+ * region, not any specific property" became FALSE, which is exactly
+ * the kind of drift content-rules.md §4 exists to catch.
+ *
+ * The replacement turns the constraint into the argument. Not naming
+ * the resorts is not evasion — it is the reason Irshad still gets paid
+ * for the introduction, and saying so plainly is more persuasive than
+ * hiding it.
+ */
 export const staysDisclosure =
-  'Photographs show the Dandeli region, not any specific property. ' +
-  'I work with resorts, jungle camps and homestays across the area and ' +
-  'match you to one on your dates, your group and your budget — tell me ' +
-  'what you want and I will tell you what is actually free.';
+  'These are real photographs of places Irshad books people into. They are ' +
+  'not named here on purpose — a named resort gets booked direct and he ' +
+  'loses the introduction he made. Tell him your dates, your group and your ' +
+  'budget, and he will tell you what is actually free.';

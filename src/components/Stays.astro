@@ -10,11 +10,9 @@
  * the region, not the properties, and the page says so plainly.
  */
 import Section from './Section.astro';
-import CommonsImage from './CommonsImage.astro';
-import { getContent, whatsappLink } from '../content';
-const { stays, staysDisclosure, images, copy } = await getContent();
-
-const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
+import Carousel from './Carousel.astro';
+import { getContent } from '../content';
+const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
 ---
 
 <Section
@@ -23,18 +21,19 @@ const art = [images.riverDawn, images.forestRoad, images.kaliHabitat];
   title={copy.sections.stays.title}
   lede="He works with resorts, jungle camps and homestays across Dandeli. Tell him the dates, the group and the budget, and he will tell you what is actually free — not what is advertised."
 >
-  <!-- A rail rather than a grid: as Irshad adds resorts this scrolls
-       instead of growing a very tall page. scroll-snap gives native
-       momentum on touch and costs zero JS. -->
-  <div class="rail reveal" role="region" aria-label="Kinds of stay" tabindex="0">
-    {stays.map((s, i) => (
-      <article class="reveal-child w-[78vw] max-w-[22rem] sm:w-[20rem]">
+  <!-- A grid of cards, each with its OWN carousel of that kind of
+       property. Previously a single outer rail indexed a shared image
+       array by POSITION (art[i]), so a fourth stay crashed the build;
+       photographs now live on the stay document itself. -->
+  <div class="reveal grid gap-6 sm:grid-cols-3">
+    {stays.map((s) => (
+      <article class="reveal-child">
         <div class="img-frame rounded-lg">
-          <CommonsImage
-            img={art[i]}
-            sizes="(min-width: 640px) 22rem, 78vw"
+          <Carousel
+            photos={s.photos}
+            label={s.kind}
+            sizes="(min-width: 640px) 30vw, 90vw"
             aspect="aspect-[4/3]"
-            class="w-full"
           />
         </div>
         <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
