@@ -83,18 +83,36 @@ export const site = {
 } as const;
 
 /**
- * Opens WhatsApp with the message already typed.
+ * Link builders.
  *
- * Single source for every wa.me link on the site — components must
- * not build these by hand. Falls back to the verified phone number
- * while the WhatsApp number is unconfirmed, so the link always works.
+ * These DERIVE from data rather than being data, so they stay in code.
+ * They now take the fetched site object: the module-level `site`
+ * constant is gone once content comes from Sanity, and a builder that
+ * closed over it would silently use stale local values.
+ *
+ * WhatsApp falls back to the verified phone number while the WhatsApp
+ * number is unconfirmed, so the link always works.
  */
-export function whatsappLink(message: string): string {
-  const number = site.whatsapp.confirmed ? site.whatsapp.value : site.whatsapp.fallback;
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+interface LinkSite {
+  phone: string;
+  whatsapp: Confirmed<string>;
 }
 
-/** Single source for tel: links. */
+export function siteLinks(s: LinkSite) {
+  return {
+    whatsappLink: (message: string) =>
+      `https://wa.me/${s.whatsapp.confirmed ? s.whatsapp.value : s.whatsapp.fallback}` +
+      `?text=${encodeURIComponent(message)}`,
+    telLink: () => `tel:${s.phone}`,
+  };
+}
+
+/** Kept for the OG card and any module-scope use. */
+export function whatsappLink(message: string): string {
+  const n = site.whatsapp.confirmed ? site.whatsapp.value : site.whatsapp.fallback;
+  return `https://wa.me/${n}?text=${encodeURIComponent(message)}`;
+}
+
 export function telLink(): string {
   return `tel:${site.phone}`;
 }

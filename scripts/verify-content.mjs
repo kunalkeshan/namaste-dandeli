@@ -93,26 +93,103 @@ for (const [needle, what] of MUST_NOT_RENDER) {
 }
 if (leaked === 0) ok('unconfirmed facts', 'none leaked into the page');
 
-/* 5. Every rendered quote is verbatim ------------------------------- */
-const reviewsSrc = readFileSync('src/content/reviews.ts', 'utf8');
-const texts = [...reviewsSrc.matchAll(/text:\s*'((?:[^'\\]|\\.)*)'/g)].map((m) =>
-  m[1].replace(/\\'/g, "'"),
-);
-const pulls = [...reviewsSrc.matchAll(/pull:\s*'((?:[^'\\]|\\.)*)'/g)].map((m) =>
-  m[1].replace(/\\'/g, "'"),
-);
-let badPull = 0;
-for (const pull of pulls) {
-  if (!texts.some((t) => t.includes(pull))) {
-    fail(
-      'verbatim quote',
-      `pull-quote is not a span of any review: "${pull.slice(0, 60)}…"`,
+/* 5. Every rendered quote is verbatim -------------------------------
+   REWRITTEN for Sanity.
+
+   The old version regexed src/content/reviews.ts as TEXT. Once reviews
+   moved to the CMS that file stopped being what renders — the check
+   would either read a stale file (passing while the page showed
+   something else) or, when the file is deleted, find zero pull-quotes
+   and pass VACUOUSLY. A gate that cannot fail is not a gate.
+
+   Now it validates the content the build actually fetched, plus every
+   blockquote in the shipped HTML — which also closes the original bug
+   this check was written for: Routes.astro hardcoding a review as a
+   string literal, bypassing the data entirely. */
+const SNAPSHOT = '.astro/content-snapshot.json';
+let snapshot;
+try {
+  snapshot = JSON.parse(readFileSync(SNAPSHOT, 'utf8'));
+} catch {
+  fail('verbatim quote', `${SNAPSHOT} is missing — run \`pnpm build\` first`);
+  snapshot = { reviews: [] };
+}
+
+if (!snapshot.reviews?.length) {
+  fail(
+    'verbatim quote',
+    'no reviews in the content snapshot — the check would pass vacuously',
+  );
+} else {
+  let badPull = 0;
+  for (const r of snapshot.reviews) {
+    if (r.pull && !r.text.includes(r.pull)) {
+      fail(
+        'verbatim quote',
+        `${r.author}: pull-quote is not a contiguous span of the review`,
+      );
+      badPull++;
+    }
+  }
+
+  /* Any long quotation on the page must come from a real review. */
+  const decode = (t) =>
+    t
+      .replace(/&#8217;|&rsquo;|&lsquo;|&#39;/g, "'")
+      .replace(/&ldquo;|&rdquo;|&quot;|&#34;/g, '"')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201C\u201D]/g, '"');
+  const quoted = [...html.matchAll(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/g)]
+    .map((m) =>
+      decode(m[1].replace(/<[^>]+>/g, ''))
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/^["']+|["']+$/g, ''),
+    )
+    .filter((q) => q.length > 40);
+  for (const q of quoted) {
+    if (!snapshot.reviews.some((r) => decode(r.text).includes(q))) {
+      fail(
+        'verbatim quote',
+        `a rendered blockquote is not a span of any review: "${q.slice(0, 60)}…"`,
+      );
+      badPull++;
+    }
+  }
+
+  if (badPull === 0) {
+    const pulls = snapshot.reviews.filter((r) => r.pull).length;
+    ok(
+      'verbatim quotes',
+      `${pulls} pull-quote(s) and ${quoted.length} rendered quote(s) verified`,
     );
-    badPull++;
   }
 }
-if (badPull === 0)
-  ok('verbatim quotes', `${pulls.length} pull-quote(s) verified against source`);
+
+/* 5b. Nothing excluded for provenance may reach the page ------------
+   Thirteen of Irshad's photographs were deliberately never uploaded:
+   seven screenshots watermarked with a named partner resort, one
+   credited to a third party, three stock promo graphics, one showing a
+   child, one unusable crop. If an asset URL for any of them appears,
+   someone re-uploaded it. */
+const FORBIDDEN = /jungle[-\s]?edge|ranjith|screenshot/i;
+const assetUrls = [...html.matchAll(/cdn\.sanity\.io\/images\/[^"'\s]+/g)].map(
+  (m) => m[0],
+);
+const badAsset = assetUrls.filter((u) => FORBIDDEN.test(u));
+if (badAsset.length) {
+  fail(
+    'image provenance',
+    `${badAsset.length} excluded asset(s) rendering: ${badAsset[0]}`,
+  );
+} else {
+  ok(
+    'image provenance',
+    `${assetUrls.length} Sanity image(s), none from the excluded set`,
+  );
+}
 
 /* 6. The forest texture stays faint --------------------------------
    The token-level a11y check cannot see a texture, because a texture

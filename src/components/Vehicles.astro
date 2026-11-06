@@ -2,9 +2,16 @@
 /**
  * The fleet.
  *
- * Cars are local cutout WebPs served from /public, so they are NOT
- * routed through CommonsImage — width/height are set inline to
- * reserve space and prevent layout shift.
+ * Each card leads with the commissioned illustration of Irshad beside
+ * that vehicle, served from Sanity's CDN with a responsive srcset.
+ *
+ * All three illustrations are 3:2, so the frame is a fixed
+ * aspect-[3/2] — the old cutouts were three different ratios
+ * (1014x569, 590x411, 1100x658), which is why the cards never lined
+ * up. Transparent PNG over the card gradient.
+ *
+ * Motion is CSS only, gated behind (hover:hover) by the global
+ * .img-zoom rule: no JS, and the zero-.js gate stays green.
  */
 import Section from './Section.astro';
 import { getContent } from '../content';
@@ -19,15 +26,17 @@ const { vehicles, carImages, carImageNote, copy } = await getContent();
 >
   <div class="reveal grid gap-6 sm:grid-cols-3">
     {vehicles.map((v) => {
-      const img = carImages[v.kind];
+      const img = v.photos[0];
       return (
         <article class="reveal-child group flex flex-col overflow-hidden rounded-xl border border-border bg-background">
-          <div class="flex items-center justify-center bg-gradient-to-b from-muted to-background px-4 pt-6 pb-2">
+          <div class="flex aspect-[3/2] items-center justify-center bg-gradient-to-b from-muted to-background px-4">
             <img
-              src={img.src}
-              width={img.width}
-              height={img.height}
-              alt={img.alt}
+              src={img?.src}
+              srcset={img?.srcset}
+              sizes="(min-width: 640px) 30vw, 90vw"
+              width={img?.width}
+              height={img?.height}
+              alt={img?.alt}
               loading="lazy"
               decoding="async"
               class="h-32 w-auto object-contain transition-transform duration-500 ease-out motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:scale-[1.04]"
