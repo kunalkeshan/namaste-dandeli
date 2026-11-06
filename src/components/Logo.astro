@@ -1,16 +1,28 @@
 ---
 /**
- * The ND monogram, rebuilt as vector.
+ * The ND monogram — Airsaat's original artwork, vector-traced.
  *
- * Irshad's mark: a high-contrast serif D with a bold red calligraphic
- * swash sweeping from upper-left, down across the bowl, and out to
- * lower-right — the diagonal of the N — with the N's upright tucked
- * against the D's right side.
+ * This replaces a hand redraw. The source the designer delivered
+ * (`source-logo.webp`) is a 1588px greyscale raster: black ink, no
+ * colour information at all. The two letters were separated by
+ * connected-component analysis — the N's swash and upright form two
+ * blobs, the D's stem, bowl and hairline three more — and each group
+ * was traced to a single path. `scripts/trace-logo.mjs` reproduces
+ * this and FAILS if the source's topology ever changes, because the
+ * colour split is keyed to it.
  *
- * Draw order matters: the swash goes down FIRST so the D's stem sits
- * on top of it, exactly as the vinyl is layered on the car. The D
- * takes `currentColor` (white on glass, dark on paper); only the
- * swash is fixed red — the one place brand red is allowed.
+ * Colour follows Irshad's signboard exactly: the N is red, the D is
+ * white. The D is a literal #FFFFFF, NOT `currentColor` — the mark
+ * is only ever placed on a dark band, and the one light-background
+ * placement (the style guide) carries its own dark plate. A
+ * `currentColor` D would have been a quieter bug: it renders
+ * invisible, not wrong.
+ *
+ * Draw order is load-bearing: the N goes down first so the D's top
+ * serif cuts across the swash, which is how the sign is layered.
+ *
+ * ONE red group, so each rendered logo contributes exactly one
+ * `#C3160D` to the HTML — `verify-content` counts them.
  *
  * Outlines, not live text: a logo must not reflow if a webfont fails.
  */
@@ -23,41 +35,18 @@ const { class: className = '', title = 'Namaste Dandeli' } = Astro.props;
 
 <svg
   class={className}
-  viewBox="0 0 200 170"
+  viewBox="0 0 1142 1142"
   role="img"
   aria-label={title}
   xmlns="http://www.w3.org/2000/svg"
 >
-  <!-- 1. The N, underneath — swash plus upright -->
+  <!-- 1. The N, underneath — swash and upright, one path -->
   <g fill="var(--color-brand, #C3160D)">
-    <path
-      d="M20 42
-         C 42 33, 61 46, 85 75
-         C 110 105, 136 127, 163 135
-         C 172 138, 180 138, 186 136
-         L 186 149
-         C 176 152, 164 151, 151 147
-         C 120 136, 94 109, 70 80
-         C 51 57, 39 48, 26 54
-         Z"
-    />
-    <rect x="150" y="42" width="11" height="74" />
-    <rect x="139" y="42" width="33" height="6" />
+    <path d="M -1.8 76.7 C -6.2 81.4, -6.2 85.3, -1.5 89.4 C 1.7 92.2, 2.7 92.5, 8.9 92.5 C 12.6 92.5, 22.8 93.2, 31.6 94 C 135.9 103.9, 233.4 147.1, 321 222.1 C 337 235.8, 368.1 267, 384.3 285.6 L 397.8 301.2 435.7 301.8 L 473.5 302.4 476.3 299.6 L 479 296.9 469.9 286 C 439.6 249.5, 400.6 211.3, 365.5 184 C 352.2 173.6, 321.7 153.1, 306.5 144.4 C 290.2 135.1, 257.7 119.6, 240 112.7 C 175.6 87.8, 110.1 75.6, 29.7 73.9 L 1.5 73.3 -1.8 76.7 M 754.2 299.8 C 749.8 304.4, 749.8 309, 754.3 313.2 C 757.5 316.3, 757.7 316.3, 773 317.4 C 788.9 318.6, 795.7 319.9, 802.2 323 C 806.7 325.2, 809.5 331, 811 341.2 C 811.6 345.5, 812 434.7, 812 586 L 812 823.9 804.7 814 C 797.6 804.3, 781.3 780.2, 773.5 768 C 769.8 762.2, 724.1 687, 615.2 507.5 C 540.6 384.6, 535.9 376.9, 523.7 358.5 C 510.2 338.3, 496.1 318.8, 492.6 315.6 C 490 313.2, 490 313.2, 481.3 314.5 C 468.3 316.4, 462.3 318.8, 456.8 324.2 C 449.4 331.5, 447.9 336.3, 447.2 353.5 L 446.7 368.2 458.2 386.6 C 464.5 396.7, 482.7 426.4, 498.5 452.5 C 514.3 478.6, 534.8 512.4, 544 527.5 C 553.2 542.6, 580.6 587.9, 605 628 C 677.8 748.2, 689 766.4, 698.3 780.9 C 769.7 891.7, 854.5 973.2, 946.4 1019.2 C 980.7 1036.4, 1031.7 1053.9, 1066.5 1060.5 C 1089.8 1064.9, 1119 1068.5, 1132.1 1068.5 C 1140.4 1068.5, 1140.7 1068.4, 1143.8 1065.2 C 1145.6 1063.4, 1147 1061, 1147 1059.8 C 1147 1057, 1140.1 1050.9, 1135.9 1050 C 1129.6 1048.6, 1105.6 1040.7, 1086.5 1033.7 C 1056.4 1022.6, 1033.5 1012.3, 1009 998.8 C 944.9 963.6, 890.4 918.6, 840.6 859.8 L 832 849.7 832 599.7 C 832 425.5, 832.3 347.3, 833.1 341.8 C 834.6 330.8, 837.2 325.3, 841.8 323 C 848.3 319.9, 855.1 318.6, 871 317.4 C 886.3 316.3, 886.5 316.3, 889.8 313.2 C 894.3 308.9, 894.3 304.1, 889.7 299.7 L 886.4 296.5 821.9 296.5 L 757.4 296.5 754.2 299.8"></path>
   </g>
 
-  <!-- 2. The D, on top — Didone: thick stem, hairline bowl, slab serifs -->
-  <g fill="currentColor">
-    <rect x="36" y="38" width="66" height="6" />
-    <rect x="36" y="124" width="66" height="6" />
-    <rect x="53" y="38" width="19" height="92" />
-    <path
-      d="M72 44
-             C 115 44, 137 61, 137 84
-             C 137 107, 115 124, 72 124
-             L 72 117
-             C 107 117, 124 104, 124 84
-             C 124 64, 107 51, 72 51
-             Z"
-    />
+  <!-- 2. The D, on top — Didone stem, bowl and hairline, one path -->
+  <g fill="#FFFFFF">
+    <path d="M 425.5 176.6 C 412.6 178.1, 398.3 180.5, 387 183.1 C 379.1 185, 375.9 186.2, 373.8 188.2 C 371.1 190.8, 371.1 190.9, 372.8 192.8 C 373.7 193.9, 377 196.9, 380.1 199.5 L 385.8 204.2 396.9 201.9 C 438.1 193.4, 483.2 193.8, 527.2 203.1 C 576.6 213.5, 620.6 237.8, 647.1 269.3 C 693.7 324.7, 717 407.3, 717 517.3 C 717 566, 712.7 606.4, 703.4 645.7 L 700.8 656.4 703.8 660.2 C 705.4 662.3, 713.8 675.9, 722.5 690.5 C 731.2 705.1, 739.4 718.2, 740.8 719.8 L 743.4 722.5 746.2 719.8 C 754.4 711.9, 773.3 668.6, 782.5 636.5 C 795.5 591.3, 801.4 537.4, 798 496 C 791.8 421.7, 765.6 354.8, 720.5 297.8 C 711.6 286.6, 686.2 260.5, 674.5 250.7 C 625.8 209.7, 570.2 186.1, 503 177.9 C 487.2 176, 437.7 175.1, 425.5 176.6 M 298.3 218.9 C 279.2 230.4, 270.8 236.6, 253 252.1 C 214.4 285.7, 187.6 324.7, 173 368.5 C 164 395.4, 160.6 417.4, 160.6 449 C 160.7 498.9, 169.4 539.9, 188.2 577.5 C 201 603.3, 212.3 618.7, 234.4 640.7 C 248.2 654.4, 264.7 667.6, 279.1 676.3 C 297.1 687.2, 322.7 698.3, 343 704.1 L 352.2 706.7 356.1 702.9 C 364.6 694.6, 359.7 688.1, 340.5 682.1 C 285.5 664.8, 244.8 634.5, 217.6 590.6 C 192.6 550.1, 179.7 497.4, 181.3 441.5 C 182.4 402.1, 191.3 368.8, 209.9 334.7 C 233.1 292.2, 269.7 256.2, 313.2 233 C 317.8 230.6, 322.7 227.4, 324.1 225.9 L 326.5 223.3 320 217.4 C 316.4 214.2, 312.8 211.6, 312 211.5 C 311.1 211.5, 305 214.8, 298.3 218.9 M 316.2 300.8 C 311.8 305.4, 311.8 310, 316.3 314.2 C 319.4 317.2, 319.8 317.3, 332 318 C 346.7 318.8, 357.2 320.6, 363.5 323.4 C 368.9 325.8, 371.2 330.1, 372.9 340.5 C 373.6 344.9, 374 421.8, 374 581 C 374 829.4, 374.1 822.2, 369.5 831.9 C 368.3 834.4, 366.5 835.9, 363.1 837.4 C 355.4 840.7, 350.4 841.5, 335.1 842.2 L 320.7 842.8 316.8 846.3 C 311.6 851, 311.5 855.6, 316.3 860.4 L 319.7 863.6 425.6 863.2 C 516.6 862.9, 533 862.6, 542.5 861.2 C 592.8 853.8, 629.9 838.8, 667.1 810.8 C 675.6 804.5, 701 782.1, 701 781 C 701 779.8, 677.4 741.6, 675.2 739.3 L 672.6 736.5 670.2 738.8 C 668.9 740, 666.6 743, 665.2 745.5 C 657.1 759.6, 644.6 776.7, 634.6 787.5 C 612.9 810.9, 580 830, 548.4 837.6 C 526 842.9, 490 844.2, 457.3 840.9 L 452 840.4 452 591.1 C 452 369.2, 452.2 341.3, 453.6 336 C 454.4 332.7, 455.8 329, 456.6 327.8 C 460.1 322.4, 472.4 319.1, 493 318 L 505.5 317.3 509.3 313.7 C 514.2 309, 514.2 306, 509.2 301.2 L 505.4 297.5 412.4 297.5 L 319.4 297.5 316.2 300.8"></path>
   </g>
 </svg>

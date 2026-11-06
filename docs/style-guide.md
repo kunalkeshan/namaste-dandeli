@@ -30,7 +30,8 @@ Brand red and primary green collapse to **1.25:1 under protanopia** — effectiv
 identical. Shifting the hue does not fix it; a teal/red pair reaches 1.00:1.
 
 **The fix is not a better red. It is that hue never carries meaning alone.** Red
-appears exactly twice on the page, both inside the logo SVG, and encodes nothing.
+appears once per rendered `<Logo>` — three times on the homepage, once on the OG
+card — always inside the mark, and encodes nothing.
 Every accent is paired with a label, icon or underline.
 
 `pnpm verify:content` fails if brand red appears as a UI colour.

@@ -141,7 +141,22 @@ wrong, and two were fabricated by research agents on this very project.
   guard. A wrong drive time means a customer misses a flight.
 - **Never use brand red (`--color-brand`) as a UI colour.** It converges with the
   primary green to 1.25:1 under protanopia; it is safe only because it appears
-  exactly twice, both inside the logo SVG.
+  once per rendered `<Logo>` and nowhere else — three times on the homepage
+  (nav, hero, footer), once on the OG card. `verify-content` fails above four.
+- **The logo is the designer's artwork, not a drawing to edit.** `source-logo.webp`
+  is Airsaat's master; `scripts/trace-logo.mjs` separates the red N from the white D
+  by connected-component analysis and traces each to one path. It asserts the source
+  has exactly five components and throws if it does not — the colour split is keyed to
+  that topology, and a mis-coloured logo still looks like a logo. Never hand-edit the
+  path data; re-run the script.
+- **The D is a literal `#FFFFFF`, never `currentColor`.** Every production placement
+  sits on a dark band. The one light-background placement, the style guide, carries
+  its own dark plate. A `currentColor` D would render invisible on paper rather than
+  wrong — present in the DOM and passing every gate.
+- **`public/favicon.svg` is deliberately NOT the same paths as `Logo.astro`.** The D's
+  hairline bowl is ~1% of the mark's width, which is a third of a pixel at 32px. The
+  icon traces the same artwork dilated 20px, the page 5px. `pnpm icons` rasterises
+  from `favicon.svg` only.
 - **Never name a partner resort.** It is the one thing that would cost Irshad money.
 - **Never put `aria-label` on a plain `<div>` or `<span>`.** A roleless generic
   takes no ARIA label — the browser DISCARDS it. A review's star rating shipped

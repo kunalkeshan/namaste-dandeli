@@ -12,8 +12,8 @@
      primary-foreground on primary   11.74:1  AAA
      accent-foreground on accent      5.89:1  AA
    Colour-blindness rule: hue NEVER carries meaning alone. The brand
-   red appears exactly once (the logo) and is never a choice-pair
-   against green.
+   red appears once per rendered <Logo> and nowhere else, and is never
+   a choice-pair against green.
 ---------------------------------------------------------------- */
 @theme {
   --breakpoint-xs: 25rem; /* 400px — narrow-phone tweaks */

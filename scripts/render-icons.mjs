@@ -7,9 +7,11 @@
  * Logo.astro geometry and read as a hollow outline. At 180px that is
  * merely different; on a home screen it is a weaker mark.
  *
- * favicon.svg is the canonical raster source — not Logo.astro —
- * because it is already thickened to survive 16px, which Logo.astro
- * deliberately is not (it is drawn for a page at full size).
+ * favicon.svg is the canonical raster source — not Logo.astro. Both
+ * are traced from the same artwork by scripts/trace-logo.mjs, but the
+ * icon is dilated 20px against the page's 5px: the D's hairline bowl
+ * is about 1% of the mark's width, a third of a pixel at 32px, and it
+ * simply vanishes at the sizes this script renders.
  *
  * Renders through headless Chrome so the SVG is rasterised by the
  * same engine that will display it. Launches its own browser; no

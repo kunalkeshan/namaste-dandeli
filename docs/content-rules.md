@@ -94,8 +94,9 @@ and the exact opposite of Irshad's no-names requirement.
 ## 5. Colour never carries meaning alone
 
 Brand red and the primary green converge to **1.25:1 under protanopia** — effectively
-identical. Red is safe on this page only because it appears exactly twice, both inside
-the logo SVG, and never encodes state.
+identical. Red is safe on this page only because it appears once per rendered
+`<Logo>` — three times on the homepage — always inside the mark, and never encodes
+state.
 
 `pnpm verify:content` fails if brand red appears as a UI colour.
 

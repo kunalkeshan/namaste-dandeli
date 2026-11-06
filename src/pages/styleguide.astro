@@ -111,7 +111,15 @@ const typeScale = [
   <main class="mx-auto max-w-5xl px-5 py-16">
     <header class="mb-16">
       <div class="flex items-center gap-4">
-        <Logo class="w-16 text-foreground" />
+        <!--
+          The one light-background placement, so it carries its own
+          dark plate. The D is a literal white: on this paper band a
+          bare mark would render a red N and nothing else — present in
+          the DOM, invisible on screen, and passing every gate.
+        -->
+        <div class="bg-primary rounded-xl p-2.5">
+          <Logo class="w-[3.3rem]" />
+        </div>
         <div>
           <p class="decal text-xs text-accent-ink">Design system</p>
           <h1 class="mt-1 text-2xl">Namaste Dandeli</h1>

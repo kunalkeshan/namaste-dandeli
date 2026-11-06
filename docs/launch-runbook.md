@@ -45,8 +45,6 @@ Also needed, not yet in the reporter:
 
 - **Real rates** beyond the one package (cruiser, airport runs, outstation)
 - **Exact vehicle models** — Ertiga, Innova and "toofan" all appear in reviews
-- **The designer's original logo** — the current mark is a redraw from a photo of his
-  rear windscreen. Good enough to ship, but the original should replace it
 - Is **"Humsafar Taxi"** still in use? Several reviews name it
 
 ## 2. Measure the eight routes
@@ -103,5 +101,6 @@ attached.
 - **Hero images are hotlinked** from Wikimedia Commons — a third-party runtime
   dependency, chosen for low asset weight. All URLs sit in one file for a quick swap.
 - **Vehicle photos are model shots**, not his cars. Disclosed on the page.
-- **The logo is a redraw.** Faithful, but not the designer's original.
+- **The logo is the designer's own artwork**, vector-traced from the file Airsaat
+  supplied — no longer a redraw. `scripts/trace-logo.mjs` rebuilds it.
 - **No distances render anywhere** until the eight routes are measured.

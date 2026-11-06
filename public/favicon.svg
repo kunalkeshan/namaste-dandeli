@@ -1,57 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1142 1142">
   <!--
-    Namaste Dandeli tab icon — the real monogram, not a redraw.
-    Same geometry as src/components/Logo.astro, scaled from its
-    200x170 viewBox into 64x64 and thickened so it survives 16px.
+    Tab / home-screen icon. Same monogram as src/components/Logo.astro,
+    but DELIBERATELY NOT the same paths.
+
+    The D's hairline bowl measures a median 12px out of 1142 — about 1%
+    of the mark's width. At a 32px favicon that is a third of a pixel,
+    and at 16px it is a sixth: it disappears, and the D reads as a bare
+    stem. So the masks are dilated 20px at source scale before tracing,
+    which closes the bowl into a legible ring without fusing the
+    letterforms (26px fused them; the page logo's 5px is far too light here).
+
+    Regenerate both from the designer's original with:
+      node scripts/trace-logo.mjs            # page logo, faithful
+      node scripts/trace-logo.mjs --icon     # this file, thickened
+
+    Drawn on the brand green plate so the white D holds against light
+    and dark browser chrome. The plate matches theme_color in
+    site.webmanifest and the meta tag in Layout.astro — change one and
+    you must change all three.
 
     Two earlier attempts were wrong and both are worth recording:
       1. a lone D with a red mark — lost the N entirely
       2. a D and an N side by side — read "DN", the wrong order, and
          was not the interlocked mark at all
-
-    The logo is ONE monogram: the N's swash sweeps behind the D and
-    its upright stands to the right. That interlock is the mark; two
-    separate letters is a different logo.
-
-    Drawn on brand green so the white D holds against light and dark
-    browser chrome.
+    A third was right in shape but was a hand redraw, not the
+    designer's artwork. This is the artwork.
   -->
-  <rect width="64" height="64" rx="13" fill="#0F3D2E"/>
-
-  <!--
-    Scale: the logo occupies roughly x 20–186, y 33–152 of its
-    200x170 box. Mapped to 6–58 / 10–54 here, then every stroke
-    widened — the original's hairlines vanish below about 24px.
-  -->
-  <g transform="translate(2.6,6.2) scale(0.296,0.296)">
-
-    <!-- N, underneath: swash + upright, thickened -->
-    <g fill="#E63A2E">
-      <path d="M20 36
-               C 44 25, 63 40, 87 71
-               C 112 103, 138 126, 165 134
-               C 174 137, 182 137, 188 135
-               L 188 156
-               C 176 160, 162 158, 148 153
-               C 117 141, 92 112, 68 82
-               C 49 58, 38 50, 27 56
-               Z"/>
-      <rect x="148" y="36" width="20" height="84"/>
-      <rect x="133" y="36" width="50" height="11"/>
-    </g>
-
-    <!-- D, on top: stem and bowl both heavier than the original -->
-    <g fill="#FFFFFF">
-      <rect x="30" y="30" width="78" height="13"/>
-      <rect x="30" y="126" width="78" height="13"/>
-      <rect x="48" y="30" width="30" height="109"/>
-      <path d="M78 43
-               C 121 43, 145 60, 145 84
-               C 145 108, 121 126, 78 126
-               L 78 101
-               C 107 101, 118 95, 118 84
-               C 118 73, 107 67, 78 67
-               Z"/>
-    </g>
+  <rect width="1142" height="1142" rx="232" fill="#0F3D2E"/>
+  <g transform="translate(80,80) scale(0.86)">
+    <g fill="#C3160D"><path d="M -9.3 69.2 C -23.4 83.5, -23.4 82.7, -9.1 96.8 L 1.7 107.5 8.7 107.5 C 19.1 107.5, 45.4 110.2, 63 113 C 101.8 119.4, 139.3 130.2, 175.8 145.7 C 246.5 175.6, 318.9 227.5, 366 282 C 371.7 288.6, 381.3 299.1, 387.4 305.3 L 398.5 316.5 424 316.5 L 449.4 316.5 443.3 322.8 C 434.2 331.9, 432.9 335.7, 432.2 353.5 L 431.7 368.2 443.2 386.6 C 449.5 396.7, 467.7 426.4, 483.5 452.5 C 499.3 478.6, 519.8 512.4, 529 527.5 C 538.2 542.6, 565.6 587.9, 590 628 C 691.9 796.1, 692 796.3, 719.8 833.4 C 762 889.8, 820.6 949.6, 870 986.6 C 918.8 1023.2, 961.2 1044.5, 1027 1065.6 C 1055.8 1074.9, 1106.4 1083.5, 1132 1083.5 L 1140.5 1083.5 1151.3 1072.7 C 1157.9 1066.1, 1162 1061.2, 1162 1059.9 C 1162 1058.7, 1157.8 1053.7, 1150.8 1046.8 C 1142.3 1038.5, 1138.6 1035.6, 1136 1035 C 1124.5 1032.6, 1076.6 1015.6, 1056 1006.7 C 1002.2 983.4, 955.5 954.1, 910 915.2 C 890.8 898.7, 874 881.6, 854.7 858.8 L 847 849.6 847.2 594.8 C 847.4 402.7, 847.8 339.4, 848.7 337.4 C 850.1 334.2, 851.9 333.8, 871.5 332.4 L 886.5 331.3 897.3 320.7 C 911.7 306.3, 911.7 306.7, 897.2 292.2 L 886.5 281.5 822 281.5 L 757.5 281.5 746.7 292.3 C 732.3 306.7, 732.3 306.4, 746.8 320.7 L 757.5 331.3 772.5 332.4 C 791.2 333.7, 793.8 334.2, 795.3 336.9 C 796.2 338.5, 796.6 388.8, 796.7 560 L 797 781 790.9 771.5 C 785.1 762.7, 758.7 719.3, 630.2 507.5 C 556.4 385.8, 550.9 376.8, 539.7 360 C 521.6 332.8, 512.8 321.1, 502.2 310.3 C 493.9 301.8, 491.9 299.3, 492.8 298.2 C 495.1 295.5, 464.8 261.5, 425.8 223 C 389.1 186.8, 369.2 170.2, 336 148.1 C 312.6 132.5, 300.5 125.6, 275.5 113.4 C 202.6 78.1, 125.1 60.9, 29.7 58.9 L 1.5 58.3 -9.3 69.2"/></g>
+    <g fill="#FFFFFF"><path d="M 425.5 161.6 C 412.7 163.1, 398.3 165.5, 387 168.1 L 376.5 170.6 366.3 180.8 L 356 191 365.3 200.3 C 370.3 205.5, 377 211.8, 380.1 214.5 L 385.8 219.2 396.9 216.9 C 445.7 206.9, 502.4 209.5, 550.4 224 C 585.7 234.7, 621 255.5, 636.4 274.5 C 679.5 327.9, 702 411, 702 517.3 C 702 566, 697.7 606.4, 688.4 645.7 L 685.8 656.4 688.8 660.2 C 690.4 662.3, 698.8 675.9, 707.5 690.5 C 722.3 715.5, 723.8 717.6, 733.3 727.3 L 743.5 737.5 753.8 727.3 C 765 716.1, 768 711.4, 778.3 688.8 C 790.6 662.1, 800.6 629.8, 806.5 598.5 C 812.8 565.2, 815.4 524.6, 813 496 C 806.8 422, 781.2 356.3, 736 298.3 C 727.9 287.9, 686.6 245.9, 674.5 235.7 C 625.8 194.7, 570.2 171.1, 503 162.9 C 487.2 161, 437.7 160.1, 425.5 161.6 M 298.3 203.9 C 279.2 215.4, 270.7 221.7, 253 237.1 C 241.8 246.9, 215.1 273.8, 205.9 284.5 C 173 322.8, 152.9 368.4, 146.8 418 C 145.3 430.8, 145.3 466.6, 146.8 481.5 C 150.8 519.2, 158.9 548.8, 173.2 577.5 C 187 605.3, 197.2 618.7, 226.5 648 C 254.8 676.2, 272 688.9, 301.1 702.9 C 315.9 710, 329.1 715.1, 343 719.1 L 352.2 721.7 355.6 718.4 L 359.1 715 358.8 768 C 358.6 807.5, 358.2 821.5, 357.3 823.1 C 355.7 825.8, 352.9 826.3, 335 827.1 L 320.5 827.8 309.3 838.8 C 294.2 853.7, 294.2 853.2, 308.8 867.8 L 319.6 878.6 425.6 878.2 C 516.6 877.9, 533 877.6, 542.5 876.2 C 592.9 868.8, 629.9 853.8, 667.2 825.8 C 677.2 818.3, 695.8 801.5, 708.8 788.3 L 716.1 780.8 704.5 761.4 C 694.1 744.2, 691.6 740.8, 682.7 731.8 L 672.5 721.5 662.7 731.3 C 657.3 736.6, 651.7 743, 650.2 745.5 C 640.3 762.5, 626.5 780.8, 618.7 787.4 C 594.8 807.5, 563 821.3, 529.8 826 C 518.7 827.5, 481.4 828.2, 472.3 826.9 L 467 826.2 467.1 583.6 C 467.2 450.2, 467.5 339.9, 467.9 338.5 C 468.5 336.4, 469.5 335.8, 474.3 334.9 C 477.4 334.3, 485.7 333.4, 492.7 333 L 505.5 332.3 516.8 321.2 C 525.2 312.8, 528 309.4, 528 307.5 C 528 305.6, 525.2 302.1, 516.7 293.7 L 505.5 282.5 412.5 282.5 L 319.5 282.5 308.7 293.3 C 294.3 307.7, 294.3 307.4, 308.8 321.7 L 319.5 332.3 331 332.9 C 347.3 333.8, 356.7 335.4, 357.7 337.4 C 358.1 338.3, 358.6 415, 358.8 508 L 359 676.9 355.8 673.9 C 353.4 671.7, 349.2 669.8, 340.5 667.1 C 318 660, 297.3 650.3, 278.7 638.1 C 256.9 623.9, 250.8 617.9, 237.1 597.3 C 208.7 554.8, 194.6 500.9, 196.3 441.5 C 197.4 402.1, 206.3 368.8, 224.9 334.7 C 234.5 317.2, 249.2 296.5, 259.4 286.3 C 270.2 275.5, 295.7 257.3, 313.1 248 C 319.7 244.5, 323.7 241.4, 331.5 233.5 L 341.5 223.3 327.6 209.9 C 320 202.5, 313 196.5, 312.1 196.5 C 311.2 196.5, 305 199.8, 298.3 203.9"/></g>
   </g>
 </svg>

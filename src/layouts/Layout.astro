@@ -78,6 +78,9 @@ const jsonLd = {
       telephone: site.phone,
       email: site.email,
       image: `${canonical.origin}/og.jpg`,
+      /* The monogram on transparency, which is what Google wants for a
+         knowledge panel — og.jpg is a 1200x630 card, not a logo. */
+      logo: `${canonical.origin}/logo.png`,
       priceRange: '₹₹',
       address: {
         '@type': 'PostalAddress',
