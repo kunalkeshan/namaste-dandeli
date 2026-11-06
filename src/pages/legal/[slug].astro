@@ -1,0 +1,118 @@
+---
+/**
+ * The legal pages — privacy policy, terms.
+ *
+ * One dynamic route rather than two files, because the two pages differ
+ * only in their content: same shell, same prose treatment, same footer.
+ * A third legal page is then a Studio action, not a commit.
+ *
+ * MISSING BODY = NO PAGE, not a 404.
+ *
+ * getStaticPaths reads content.legalPages, which the adapter has
+ * already filtered to the published ones — so an unpublished page never
+ * enters the route table and no HTML is emitted for it. The URL simply
+ * does not exist. Building an empty page that soft-404s would be
+ * strictly worse: the footer would advertise it, and a footer link to
+ * an error page is the exact defect this entire site exists to fix (his
+ * Google listing's website URL returns HTTP 404).
+ *
+ * THE TITLE IS THE ONLY <h1>. Every heading inside the body is shifted
+ * one level down — see LegalBody.astro.
+ *
+ * Contact details are read from the adapter, never typed here.
+ * Irshad's phone, WhatsApp and email already live in siteSettings; a
+ * legal page that hardcoded them would be the one place on the site
+ * still claiming an old number after he changed it in the Studio.
+ */
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Motion from '../../components/Motion.astro';
+import Contact from '../../components/Contact.astro';
+import RiverDivider from '../../components/RiverDivider.astro';
+import ForestTexture from '../../components/ForestTexture.astro';
+import LegalBody from '../../components/LegalBody.astro';
+import { getContent } from '../../content';
+import type { LegalPage } from '../../content';
+
+export async function getStaticPaths() {
+  const { legalPages } = await getContent();
+  return legalPages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+interface Props {
+  page: LegalPage;
+}
+const { page } = Astro.props;
+const { site } = await getContent();
+
+/**
+ * en-IN to match the document's lang, and timeZone UTC because Sanity
+ * stores a bare date — without it a build running west of UTC renders
+ * the previous day.
+ */
+const effective =
+  page.effectiveDate &&
+  new Date(page.effectiveDate).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<Layout
+  title={`${page.title} — ${site.name}`}
+  description={page.description}
+  preloadHero={false}
+  pageType="WebPage"
+  pageName={page.title}
+>
+  <Nav />
+  <main id="main" class="bg-background">
+    <!--
+      A dark band behind the nav.
+
+      Nav.astro is white-on-transparent until Motion sets data-stuck,
+      which only happens after ~64px of scroll. On the homepage the hero
+      supplies that dark backdrop. A legal page has no hero, so without
+      this band the white nav text would sit on warm paper at roughly
+      1.1:1 at scroll-0 — unreadable, and an a11y failure rather than a
+      cosmetic one. primary-foreground on primary-deep is a pair
+      verify:a11y already checks.
+    -->
+    <div class="relative bg-primary-deep text-primary-foreground">
+      <ForestTexture opacity={0.045} />
+      <div class="relative mx-auto max-w-5xl px-5 pt-[calc(var(--nav-h,64px)+3rem)] pb-12">
+        <p class="decal mb-3 text-xs text-primary-foreground/55">Legal</p>
+        <h1 class="text-2xl">{page.title}</h1>
+        <p class="measure mt-4 text-primary-foreground/80">{page.description}</p>
+        {effective && (
+          <p class="mt-5 text-sm text-primary-foreground/55">
+            In effect from {effective}
+          </p>
+        )}
+      </div>
+    </div>
+    <RiverDivider from="deep" to="bg" />
+
+    <!-- `prose` owns the rhythm; `measure` caps the line length at the
+         same 64ch the rest of the site uses. -->
+    <div class="mx-auto max-w-5xl px-5 py-12 sm:py-16">
+      <div class="prose measure">
+        <LegalBody body={page.body} />
+      </div>
+    </div>
+  </main>
+  <!-- Every light<->dark edge on this site is a river bend, never a
+       straight cut. See docs/style-guide.md. -->
+  <RiverDivider from="bg" to="deep" />
+  <!-- The same contact block the homepage ends with: one shared
+       section, not a reduced copy that drifts from it. Its <h2> sits
+       at the same level as the clause headings above, so the outline
+       stays h1 -> h2 throughout. -->
+  <Contact />
+  <Motion />
+</Layout>

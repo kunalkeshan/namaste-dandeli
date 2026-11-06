@@ -20,6 +20,7 @@ import { toImg, type Img } from './sanity';
 import { CONTENT_QUERY } from './query';
 import { regionImages, irshadPhotos } from './region';
 import { narrowConfirmed, narrowDistance } from './narrow';
+import { isPublished, type LegalPage, type LegalBlock } from './legal';
 import { whatsappLink, telLink, WA_DEFAULT, siteLinks } from './site';
 import { carImageNote } from './images';
 import { staysDisclosure } from './stays';
@@ -211,6 +212,30 @@ async function loadContent() {
       narrowConfirmed<Assurance>(a.fact as never, `assurances[${i}]`),
   );
 
+  /**
+   * Legal pages, filtered to the PUBLISHED ones here and only here.
+   *
+   * The gate belongs at the boundary, exactly as narrowConfirmed does
+   * it: a component that forgets to check is a component that renders
+   * a footer link to an empty page. getStaticPaths and Footer.astro
+   * both read this array, neither can see an unpublished page, so they
+   * cannot disagree.
+   *
+   * Fails CLOSED — a malformed document is dropped, never rendered.
+   * That matters because MCP writes skip Studio validation, so this,
+   * not the Studio, is the real gate. A reference to a deleted
+   * document dereferences to `null`, hence the null guard.
+   */
+  const legalPages: LegalPage[] = ((raw.legalPages ?? []) as unknown[])
+    .filter((p): p is LegalPage => p != null && isPublished(p as LegalPage))
+    .map((p) => ({
+      title: p.title,
+      slug: p.slug,
+      description: p.description,
+      effectiveDate: p.effectiveDate ?? null,
+      body: p.body as LegalBlock[],
+    }));
+
   /** Credits for every rendered image. CC BY-SA requires attribution. */
   const imageCredits = [
     ...new Set(
@@ -247,6 +272,7 @@ async function loadContent() {
     featuredReview,
     assurances,
     imageCredits,
+    legalPages,
     carImageNote,
     staysDisclosure,
     soloFallback,
@@ -262,6 +288,7 @@ type ContentShape = Awaited<ReturnType<typeof loadContent>>;
 export type Content = ContentShape;
 export { whatsappLink, telLink, WA_DEFAULT };
 export type { Img };
+export type { LegalPage, LegalBlock };
 
 /**
  * Every fact still waiting on Irshad. Generated from the content, so

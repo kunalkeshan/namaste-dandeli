@@ -2,69 +2,105 @@
 /**
  * A river-contour section divider.
  *
- * The edge between two sections, drawn as a meander rather than a
- * straight rule — the shape of a river bend, which is the one
- * landform this whole business is organised around.
+ * The edge between two bands, drawn as a meander rather than a
+ * straight rule — the shape of a river bend, which is the one landform
+ * this whole business is organised around.
  *
  * Three lines at different weights read as a channel and its banks,
  * the way a contour map draws water. It is decorative: aria-hidden,
  * and it carries no information the copy does not already give.
  *
- * `from`/`to` are the band colours on either side, so the divider
- * sits flush against both without a seam.
+ * USE IT AT EVERY LIGHT<->DARK EDGE, on every page. A straight cut
+ * between two bands is the house style's one hard "no" — see
+ * docs/style-guide.md.
+ *
+ * THE PROPS ARE SEMANTIC BAND NAMES, not colours.
+ *
+ *   <RiverDivider from="bg" to="deep" />
+ *
+ * `from`/`to` take a key of BAND ('bg' | 'muted' | 'primary' | 'deep')
+ * and resolve to the hex in src/styles/bands.ts, which mirrors @theme.
+ * Naming the BAND rather than the colour is what stops a page
+ * hardcoding `#082219` and quietly disagreeing with the token the
+ * section next to it actually paints.
+ *
+ * A raw hex still works, for a one-off band that is not a token — but
+ * if you reach for it twice, the colour belongs in BAND.
+ *
+ * WHY THE HEX AT ALL: the fill is an SVG attribute, and an SVG
+ * attribute cannot read a CSS custom property. `fill="var(--color-bg)"`
+ * renders nothing. So the literal value has to reach the element, and
+ * BAND is how it does so from one place.
  */
+import { BAND } from '../styles/bands';
+
+type Band = keyof typeof BAND;
+
 interface Props {
-  /** Colour of the band above. */
-  from: string;
-  /** Colour of the band below — the divider is filled with this. */
-  to: string;
+  /** The band ABOVE: a BAND key, or a raw hex for a one-off. */
+  from: Band | (string & {});
+  /** The band BELOW. The water is filled with this, so it sits flush. */
+  to: Band | (string & {});
   /** Flip vertically, for a bend running the other way. */
   flip?: boolean;
+  /**
+   * Bend depth. `sm` for a tight edge between two close bands, `lg`
+   * where a section change should land. Default `md` — the homepage
+   * value, so existing dividers are unchanged.
+   */
+  size?: 'sm' | 'md' | 'lg';
   class?: string;
 }
-const { from, to, flip = false, class: className = '' } = Astro.props;
+
+const { from, to, flip = false, size = 'md', class: className = '' } = Astro.props;
+
+/** A BAND key resolves to its hex; anything else is passed through. */
+const colour = (c: string) => BAND[c as Band] ?? c;
+const above = colour(from);
+const below = colour(to);
+
+/* Heights are paired mobile/desktop so the bend keeps its proportion
+   on a phone, where a 72px meander would eat the viewport. */
+const HEIGHT = {
+  sm: 'h-[32px] sm:h-[44px]',
+  md: 'h-[52px] sm:h-[72px]',
+  lg: 'h-[76px] sm:h-[104px]',
+} as const;
+
+/** The meander. Shared by the fill and both bank strokes. */
+const BEND = `M0 46
+   C 160 18, 300 74, 470 58
+   C 640 42, 760 8, 940 26
+   C 1110 43, 1240 76, 1440 52`;
 ---
 
 <div
   aria-hidden="true"
   class={`relative w-full overflow-hidden leading-[0] ${className}`}
-  style={`background:${from}`}
+  style={`background:${above}`}
 >
   <svg
     viewBox="0 0 1440 90"
     preserveAspectRatio="none"
-    class="block h-[52px] w-full sm:h-[72px]"
+    class={`block w-full ${HEIGHT[size]}`}
     style={flip ? 'transform:scaleY(-1)' : undefined}
   >
     <!-- the water: fills down into the next band -->
-    <path
-      d="M0 46
-         C 160 18, 300 74, 470 58
-         C 640 42, 760 8, 940 26
-         C 1110 43, 1240 76, 1440 52
-         L 1440 90 L 0 90 Z"
-      fill={to}
-    />
+    <path d={`${BEND} L 1440 90 L 0 90 Z`} fill={below} />
     <!-- near bank: a brighter line where the water meets the land -->
     <path
-      d="M0 46
-         C 160 18, 300 74, 470 58
-         C 640 42, 760 8, 940 26
-         C 1110 43, 1240 76, 1440 52"
+      d={BEND}
       fill="none"
-      stroke={to}
+      stroke={below}
       stroke-width="2.5"
       opacity="0.55"
       transform="translate(0,-9)"
     />
     <!-- far bank: fainter, further out, the way a contour map thins -->
     <path
-      d="M0 46
-         C 160 18, 300 74, 470 58
-         C 640 42, 760 8, 940 26
-         C 1110 43, 1240 76, 1440 52"
+      d={BEND}
       fill="none"
-      stroke={to}
+      stroke={below}
       stroke-width="1.5"
       opacity="0.3"
       transform="translate(0,-19)"

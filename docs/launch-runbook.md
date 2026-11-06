@@ -1,5 +1,24 @@
 # Launch runbook
 
+## Legal pages
+
+Both exist and are live at `/legal/privacy-policy` and
+`/legal/terms-and-conditions`, authored in Sanity and linked from the footer.
+
+Two things to settle before the domain is attached:
+
+- **Irshad should read both.** They describe how he handles a customer's details and
+  what he does and does not promise. Nothing in them was invented — the contact
+  details come from `siteSettings` and the rafting/wildlife wording mirrors the live
+  page — but they are statements about his business and he should agree with them.
+- **They matter for analytics and ads.** The privacy policy is written on the
+  assumption that Google Analytics is installed. Google's own terms require a privacy
+  notice disclosing it, so the page needs to be live before (or with) the GA tag, not
+  after.
+
+The privacy policy deliberately does **not** cite the DPDP Act as a current duty —
+its substantive provisions commence 13 May 2027. See `docs/content-rules.md` rule 7.
+
 ## Status: pre-launch, blocked on Irshad
 
 The site builds, passes every gate, and is technically ready to deploy. It is held by

@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-
-# The OG card and style guide are not content pages.
-Disallow: /og
-Disallow: /styleguide
-
-Sitemap: https://namastedandeli.com/sitemap-index.xml

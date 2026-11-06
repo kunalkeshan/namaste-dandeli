@@ -1,0 +1,24 @@
+---
+/**
+ * One editor heading level, rendered one level deeper.
+ *
+ * h1 -> h2, h2 -> h3, h3 -> h4. See LegalBody.astro for why.
+ *
+ * `node`, `index` and `isInline` are astro-portabletext's own props
+ * and are stripped before spreading, or they would land on the element
+ * as invalid DOM attributes.
+ */
+interface Props {
+  node: { style?: string };
+  index?: number;
+  isInline?: boolean;
+}
+const { node, index: _index, isInline: _isInline, ...attrs } = Astro.props;
+
+const LEVEL = { h1: 2, h2: 3, h3: 4 } as const;
+const Tag = `h${LEVEL[node.style as keyof typeof LEVEL] ?? 2}` as 'h2' | 'h3' | 'h4';
+---
+
+<Tag {...attrs}>
+  <slot />
+</Tag>

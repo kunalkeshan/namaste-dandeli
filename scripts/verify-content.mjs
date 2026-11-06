@@ -311,6 +311,252 @@ if (jsonLdImage) {
   }
 }
 
+/* 8. Legal pages: the footer link and the built page must agree -----
+   The publish gate for a legal page is its BODY, not a Confirmed<T>:
+   an empty body means the page does not exist, so no page is built and
+   no footer link points at it.
+
+   Two independent readers decide that — getStaticPaths and
+   Footer.astro — and this is the check that they agreed. The failure
+   it prevents is the one this entire site exists to fix: his Google
+   listing's website URL returns 404, and a footer advertising a link
+   to a page that was never built would reproduce that exact defect
+   inside the site meant to replace it.
+
+   Read from the snapshot (what the build FETCHED) and from dist (what
+   it EMITTED), never from a source file. Note the emitted path is
+   legal/<slug>/index.html, a directory — `trailingSlash: 'never'` sets
+   the URL shape, not the file layout. */
+const legal = snapshot?.legalPages ?? [];
+const legalHrefs = [
+  ...new Set([...html.matchAll(/href="\/legal\/([a-z0-9-]+)"/g)].map((m) => m[1])),
+];
+const legalPath = (slug) => join(DIST, 'legal', slug, 'index.html');
+const builtLegal = walk(DIST)
+  .filter((f) => /legal\/[^/]+\/index\.html$/.test(f))
+  .map((f) => f.replace(/.*legal\//, '').replace(/\/index\.html$/, ''));
+
+if (legal.length === 0) {
+  /* Legitimate before the pages are seeded — but the footer must then
+     carry no legal link at all. */
+  if (legalHrefs.length > 0) {
+    fail(
+      'legal pages',
+      `the footer links to /legal/${legalHrefs.join(', /legal/')} but no legal ` +
+        'page is published — that is a link to a 404, the exact defect this ' +
+        'site was built to fix',
+    );
+  } else {
+    note('legal pages', 'none published yet — no footer link, as intended');
+  }
+} else {
+  let bad = 0;
+
+  /* 8a. Every published page was actually BUILT. */
+  for (const p of legal) {
+    if (!builtLegal.includes(p.slug)) {
+      fail(
+        'legal pages',
+        `"${p.title}" is published but dist/legal/${p.slug}/ was not built`,
+      );
+      bad++;
+    }
+  }
+
+  /* 8b. Every built page is LINKED from the footer. An orphan legal
+         page is unreachable, which for a privacy policy is the same as
+         not having one. */
+  for (const slug of builtLegal) {
+    if (!legalHrefs.includes(slug)) {
+      fail(
+        'legal pages',
+        `dist/legal/${slug}/ was built but nothing in the footer links to it`,
+      );
+      bad++;
+    }
+  }
+
+  for (const slug of builtLegal) {
+    const page = readFileSync(legalPath(slug), 'utf8');
+    const main = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
+    const text = main
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    /* 8c. The publish gate itself: a built page must carry real prose.
+           An empty body is filtered at the adapter, so reaching here
+           means that filter was weakened or bypassed. */
+    if (text.length < 400) {
+      fail(
+        'legal pages',
+        `dist/legal/${slug}/ has only ${text.length} characters of text — an ` +
+          'empty or stub legal page must not be built at all',
+      );
+      bad++;
+    }
+
+    /* 8d. Exactly one <h1>. The title is the only h1; every editor
+           heading is shifted one level down. A second h1 means that
+           shift regressed, which flattens the outline for screen
+           readers and for the AI agents now reading this page —
+           silently, because it looks identical. */
+    const h1s = (page.match(/<h1[\s>]/g) ?? []).length;
+    if (h1s !== 1) {
+      fail(
+        'legal pages',
+        `dist/legal/${slug}/ has ${h1s} <h1> element(s), expected exactly 1 — ` +
+          'the editor-heading shift (h1->h2) in LegalBody.astro has regressed',
+      );
+      bad++;
+    }
+
+    /* 8e. No dead link. A legal page whose link mark lost its href
+           renders <a href="#">, which is how this very page shipped
+           once: the renderer read node.href instead of node.markDef
+           .href, and every link silently became a no-op. */
+    if (/<a href="#"/.test(main)) {
+      fail(
+        'legal pages',
+        `dist/legal/${slug}/ contains <a href="#"> — a link annotation lost ` +
+          'its href (read node.markDef.href, not node.href)',
+      );
+      bad++;
+    }
+
+    /* 8f. No partner resort named. Naming one is the single thing that
+           costs Irshad money, and a legal page is where a drafter is
+           most tempted to write a real name into a clause. */
+    if (FORBIDDEN.test(text)) {
+      fail(
+        'legal pages',
+        `dist/legal/${slug}/ names a partner resort — never name one; a named ` +
+          'resort gets booked direct and Irshad loses the introduction he made',
+      );
+      bad++;
+    }
+
+    /* 8g. Contact details are READ from Sanity, never retyped. A terms
+           document with a hardcoded number is the one place on the site
+           that would still claim an old number after he changed it in
+           the Studio. */
+    const known = ['phone', 'phoneDisplay', 'email']
+      .map((f) => String(snapshot?.site?.[f] ?? '').replace(/\s+/g, ''))
+      .filter(Boolean);
+    for (const m of text.matchAll(/\+91[\s\d]{8,}/g)) {
+      const found = m[0].replace(/\s+/g, '');
+      if (!known.some((k) => k === found || k.endsWith(found) || found.endsWith(k))) {
+        fail(
+          'legal pages',
+          `dist/legal/${slug}/ prints ${m[0].trim()}, which is not ` +
+            'siteSettings.phone — read it from the content adapter, never retype it',
+        );
+        bad++;
+      }
+    }
+  }
+
+  if (bad === 0) {
+    ok(
+      'legal pages',
+      `${legal.length} published, built, linked and single-h1: ` +
+        legal.map((p) => p.slug).join(', '),
+    );
+  }
+}
+
+/* 9. The footer carries its own dark band on every page ------------
+   Every colour inside the footer is an opacity of `primary-foreground`
+   — white — because it was written inside Contact's
+   `bg-primary-deep text-primary-foreground` section and silently
+   inherited both. Extracted and rendered bare on a legal page it kept
+   the white text and lost the dark ground: white on warm paper, about
+   1.1:1. The footer was fully present in the DOM, passed every gate
+   including verify:aria, and was invisible on screen.
+
+   No contrast checker catches that, because verify:a11y reads TOKEN
+   PAIRS from global.css and cannot know which ground an element
+   actually lands on. So the invariant is asserted structurally
+   instead: the <footer> must name its own background. */
+for (const f of walk(DIST).filter((f) => f.endsWith('.html'))) {
+  const page = readFileSync(f, 'utf8');
+  const tag = page.match(/<footer[^>]*>/);
+  if (!tag) continue;
+  if (!/bg-primary-deep/.test(tag[0])) {
+    fail(
+      'footer band',
+      `${f} renders a <footer> that does not set its own background — every ` +
+        'colour in it is white, so without bg-primary-deep it is white-on-paper ' +
+        'and invisible. The band belongs to the footer, not to its wrapper.',
+    );
+  }
+}
+if (!failures.some((f) => f.startsWith('footer band'))) {
+  ok('footer band', 'every footer sets its own dark ground');
+}
+
+/* 10. BAND mirrors @theme, and every dark band has a river edge -----
+   src/styles/bands.ts carries the four band colours as hex, because an
+   SVG `fill` cannot read a CSS custom property — so the divider needs
+   a literal. That makes it a SECOND copy of four @theme tokens, and a
+   second copy drifts: change `--color-primary-deep` in global.css and
+   every divider would keep painting the old value against the new
+   band. A seam, with nothing failing.
+
+   So the two are compared here. The hex literals in bands.ts are the
+   point of the file, not a smell — this check is what licenses them. */
+const bandsSrc = readFileSync('src/styles/bands.ts', 'utf8');
+const themeSrc = readFileSync('src/styles/global.css', 'utf8');
+const THEME_OF = {
+  bg: 'background',
+  muted: 'muted',
+  primary: 'primary',
+  deep: 'primary-deep',
+};
+let drift = 0;
+for (const [band, token] of Object.entries(THEME_OF)) {
+  const inBand = bandsSrc.match(new RegExp(`${band}:\\s*'(#[0-9A-Fa-f]{6})'`));
+  const inTheme = themeSrc.match(new RegExp(`--color-${token}:\\s*(#[0-9A-Fa-f]{6})`));
+  if (!inBand || !inTheme) {
+    fail('band tokens', `could not read ${band} / --color-${token}`);
+    drift++;
+  } else if (inBand[1].toLowerCase() !== inTheme[1].toLowerCase()) {
+    fail(
+      'band tokens',
+      `BAND.${band} is ${inBand[1]} but --color-${token} is ${inTheme[1]} — ` +
+        'every divider would paint the old colour against the new band',
+    );
+    drift++;
+  }
+}
+if (drift === 0) ok('band tokens', 'bands.ts matches @theme');
+
+/* Every light<->dark edge is a river bend, never a straight cut. The
+   house style's one hard "no" — see docs/style-guide.md. A page that
+   puts a light section directly against a dark one ships a hard
+   horizontal line, which is how both legal pages first shipped. */
+const DARK = ['#082219', '#0F3D2E'];
+let cuts = 0;
+for (const f of walk(DIST).filter((f) => f.endsWith('.html'))) {
+  if (/\/(og|styleguide)\//.test(f)) continue;
+  const page = readFileSync(f, 'utf8');
+  /* A divider immediately precedes each dark band it introduces, so
+     count both: every dark section start should have one nearby. */
+  const darkStarts = DARK.flatMap((c) => [
+    ...page.matchAll(new RegExp(`background:${c}`, 'gi')),
+  ]).length;
+  const bends = (page.match(/viewBox="0 0 1440 90"/g) ?? []).length;
+  if (darkStarts > 0 && bends === 0) {
+    fail(
+      'river edges',
+      `${f} has a dark band but no <RiverDivider> — a light/dark edge must be ` +
+        'a river bend, never a straight cut',
+    );
+    cuts++;
+  }
+}
+if (cuts === 0) ok('river edges', 'every page with a dark band has a bend');
+
 /* ------------------------------------------------------------------ */
 console.log('\nContent checks\n');
 for (const n of notes) console.log('  ' + n);

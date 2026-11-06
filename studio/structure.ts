@@ -34,6 +34,8 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('review').title('Reviews'),
       S.documentTypeListItem('assurance').title('Solo-travel assurances'),
       S.divider(),
+      S.documentTypeListItem('legalPage').title('Legal pages'),
+      S.divider(),
       // Catch-all for anything added later and not listed above, so a
       // new type is visible immediately instead of silently missing.
       ...S.documentTypeListItems().filter((i) => {
@@ -48,6 +50,7 @@ export const structure: StructureResolver = (S) =>
             'route',
             'review',
             'assurance',
+            'legalPage',
           ].includes(id)
         );
       }),

@@ -2,12 +2,38 @@
 /**
  * Contact + footer. Carries the crawlable NAP (name, address, phone)
  * that local SEO depends on — as real text, not an image.
+ *
+ * Rendered on EVERY page, homepage and legal alike, so there is one
+ * contact block rather than a full one and a reduced copy that drift
+ * apart.
+ *
+ * THE HEADING LEVEL IS A PROP, and `h2` is right on both.
+ *
+ * The homepage runs h1 (hero) -> h2 (each section), so the contact
+ * block is an h2 sibling of the others. A legal page runs h1 (the
+ * document title) -> h2 (each clause, shifted up from the editor's
+ * h1), so the contact block is an h2 sibling of the clauses. Same
+ * level, no skip, on both.
+ *
+ * Demoting it to a <p> on legal pages would BREAK the outline rather
+ * than protect it: the "Where he is based" h3 below is nested under
+ * this heading, and an h3 whose parent is a paragraph is an orphan.
+ * The prop exists for a future page with a different shape, not
+ * because either current page needs anything but the default.
  */
-import Logo from './Logo.astro';
 import ForestTexture from './ForestTexture.astro';
+import Footer from './Footer.astro';
 import { getContent, whatsappLink, telLink } from '../content';
 import { render } from '../content/confirmed';
-const { site, imageCredits, copy } = await getContent();
+
+interface Props {
+  /** Heading level for this section's title. `h2` on every page today. */
+  as?: 'h2' | 'h3';
+}
+const { as: Heading = 'h2' } = Astro.props;
+const Sub = Heading === 'h2' ? 'h3' : 'h4';
+
+const { site, copy } = await getContent();
 ---
 
 <section id="contact" class="relative bg-primary-deep text-primary-foreground">
@@ -18,9 +44,9 @@ const { site, imageCredits, copy } = await getContent();
         <p class="decal text-xs text-primary-foreground/55">
           {copy.sections.contact.eyebrow}
         </p>
-        <h2 class="mt-3 text-2xl">
+        <Heading class="mt-3 text-2xl">
           Tell him the dates and he will tell you what is possible
-        </h2>
+        </Heading>
         <p class="measure mt-4 text-primary-foreground/80">
           Not sure whether the rafting is running, or which resort suits a family with
           small children? That is the conversation — ask before you commit to anything.
@@ -46,7 +72,7 @@ const { site, imageCredits, copy } = await getContent();
 
       <!-- NAP — plain crawlable text, exactly as on Google -->
       <div class="text-sm text-primary-foreground/70">
-        <h3 class="decal text-xs text-primary-foreground/55">Where he is based</h3>
+        <Sub class="decal text-xs text-primary-foreground/55">Where he is based</Sub>
         <address class="mt-3 not-italic leading-relaxed">
           <strong class="block font-semibold text-primary-foreground">
             {site.legalName}
@@ -91,35 +117,5 @@ const { site, imageCredits, copy } = await getContent();
     </div>
   </div>
 
-  <footer class="relative border-t border-primary-foreground/15">
-    <div class="mx-auto max-w-5xl px-5 py-10">
-      <div class="flex flex-wrap items-center justify-between gap-6">
-        <div class="flex items-center gap-4">
-          <Logo class="w-16 text-primary-foreground" />
-          <div>
-            <p class="decal text-xs">Namaste Dandeli</p>
-            <p lang="kn" class="mt-0.5 text-sm text-primary-foreground/55">
-              ನಮಸ್ತೆ ದಾಂಡೇಲಿ
-            </p>
-          </div>
-        </div>
-        <p class="text-xs text-primary-foreground/45">
-          &copy; {new Date().getFullYear()} {site.legalName}
-        </p>
-      </div>
-
-      {imageCredits.length > 0 && (
-        <details class="mt-8 text-xs text-primary-foreground/45">
-          <summary class="cursor-pointer hover:text-primary-foreground/70">
-            Photograph credits
-          </summary>
-          <ul class="mt-3 space-y-1.5">
-            {imageCredits.map((c) => (
-              <li>{c}</li>
-            ))}
-          </ul>
-        </details>
-      )}
-    </div>
-  </footer>
+  <Footer />
 </section>

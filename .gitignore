@@ -45,4 +45,8 @@ assets-staging/
 # Asset ids from the one-off upload; regenerate by re-running the script.
 scripts/asset-ids.json
 scripts/.seed.ndjson
+scripts/.seed-legal.ndjson
 studio/dist/
+
+# Sanity Studio runtime, regenerated on every `sanity dev`.
+studio/.sanity/

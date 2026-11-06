@@ -46,6 +46,12 @@ pnpm studio:deploy    # deploy the Studio to *.sanity.studio
 ## Stack
 
 - **Astro 7**, static output, **zero client JavaScript**
+- `astro-portabletext` renders the legal pages' rich text — Astro-native, no React.
+  It ships UNBUILT source (its export map points at `lib/index.ts`), so it must stay
+  in `vite.ssr.noExternal`; without that the build fails on an unparseable import
+  inside `node_modules`.
+- `@tailwindcss/typography` for legal prose, loaded CSS-first via `@plugin` in
+  `global.css`, with every `--tw-prose-*` variable remapped to a project token
 - **Tailwind 4** via `@tailwindcss/vite` — _not_ `@astrojs/tailwind`, which is the
   Tailwind-3 legacy path
 - **pnpm**, Node ≥22.23.4 (`.nvmrc`)
@@ -66,6 +72,8 @@ src/
   styles/       design tokens (@theme) and base styles
   pages/
     index.astro      the site
+    legal/[slug].astro  privacy policy + terms, from Sanity
+    robots.txt.ts    generated, so the sitemap URL tracks the real host
     og.astro         the 1200×630 social card, rendered by `pnpm og`
 scripts/        the gates: verify-content, verify-a11y, report-blockers, render-og
 docs/           style guide, content rules, domain facts, SEO, launch runbook
@@ -141,6 +149,42 @@ wrong, and two were fabricated by research agents on this very project.
   was announced as nothing to screen readers and AI agents, and Lighthouse's
   "accessibility tree is not well-formed" audit failed. Use real text in a
   `.sr-only` span. `pnpm verify:aria` now fails the build on it.
+- **Every light↔dark edge is a `RiverDivider`, never a straight cut.** It takes
+  semantic band names (`from="bg" to="deep"`), plus `size` and `flip`, so no page
+  repeats a hex. The colours live once in `src/styles/bands.ts`, which mirrors
+  `@theme`; they are hex rather than `var()` because an SVG `fill` cannot read a
+  CSS custom property. `verify:content` fails on BAND/`@theme` drift and on a dark
+  band with no bend. Full pattern in `docs/style-guide.md`.
+- **`Contact.astro` is rendered on every page, not just the homepage.** It carries
+  the crawlable NAP, the CTAs and the footer, so one block serves all pages rather
+  than a full copy and a reduced one that drift apart. Its heading level is a prop
+  (`as`), defaulting to `h2` — which is correct on both page types, because the
+  homepage runs h1(hero)→h2(sections) and a legal page runs h1(title)→h2(clauses).
+  Do not demote it to a `<p>` on legal pages: the "Where he is based" `h3` nests
+  under it, and an `h3` whose parent is a paragraph is an orphan.
+- **The footer sets its own dark band.** Every colour inside it is an opacity of
+  `primary-foreground` (white), inherited from Contact's section when it lived
+  there. Rendered without `bg-primary-deep` it is white-on-paper at ~1.1:1 —
+  present in the DOM, invisible on screen, and passing every gate. `verify-content`
+  now asserts each `<footer>` names its own background.
+- **An editor's Heading 1 renders as `<h2>` on a legal page.** The Sanity `title`
+  field is the page's only `<h1>`; `LegalBody.astro` shifts every body heading one
+  level down (h1→h2, h2→h3, h3→h4). Rendering the editor's h1 literally would ship
+  two h1s and flatten the outline for screen readers and for the AI agents that now
+  read this site — silently, because it looks identical. `verify-content` asserts
+  exactly one `<h1>` per legal page.
+- **A legal page with an empty body does not exist.** This is the one content gate
+  that is NOT `Confirmed<T>` — a privacy policy is not a fact awaiting Irshad's
+  confirmation, it is a document that either exists or does not. So the gate is
+  publish state: `isPublished()` (`src/content/legal.ts`) filters them at the
+  adapter, `getStaticPaths` never builds them, and the footer link is absent.
+  `verify-content` fails if the footer link set and the built page set disagree,
+  because a footer link to an unbuilt page is a link to a 404 — the exact defect
+  this site exists to fix.
+- **A Portable Text link's href lives on `node.markDef`, not `node`.** Reading
+  `node.href` yields `undefined` and every link renders `href="#"` — no error, no
+  warning, just a dead link. This shipped once; `verify-content` now fails on any
+  `<a href="#">` in a legal page.
 - **The OG card regenerates on every build.** `pnpm build` runs `pnpm og`, which
   serves `dist/` on an ephemeral port and screenshots `/og` with a browser it
   launches itself — `@sparticuz/chromium` on Linux, local Chrome on macOS. It

@@ -1,0 +1,44 @@
+---
+/**
+ * A link inside legal prose.
+ *
+ * `href` comes from `node.markDef`, NOT from `node` itself. A Portable
+ * Text annotation is stored in the block's `markDefs` and referenced by
+ * key from the span, so astro-portabletext resolves it and hands it over
+ * as `markDef`. Reading `node.href` directly silently yielded undefined
+ * and every link rendered as `href="#"` — no error, no warning, just a
+ * dead link, which is exactly the failure mode this repo keeps writing
+ * gates against.
+ *
+ * Two project rules meet here and both have to hold:
+ *
+ *  1. `.link-inline` is load-bearing. global.css gives it a 44px
+ *     ::after hit area on coarse pointers AND excludes it from the
+ *     blanket `a:not(.link-inline){min-height:44px}` rule. Without the
+ *     class, every inline link in a paragraph would take a 44px
+ *     min-height and blow the line box apart.
+ *  2. verify-aria rule 4 wants an accessible name on every <a>. The
+ *     <slot /> carries the editor's own link text, so the name is
+ *     always real — there is no icon-only case to label here.
+ *
+ * External links get rel="noopener" but NOT target="_blank": a legal
+ * page is read, not browsed away from, and forcing a new tab on a phone
+ * costs usability with no upside.
+ */
+import type { MarkProps } from 'astro-portabletext/types';
+
+type Props = MarkProps<{ href?: string }>;
+
+const { node } = Astro.props as Props;
+
+const href = node.markDef?.href ?? '#';
+const external = /^https?:\/\//i.test(href);
+---
+
+<a
+  {href}
+  class="link-inline underline underline-offset-2"
+  rel={external ? 'noopener' : undefined}
+>
+  <slot />
+</a>

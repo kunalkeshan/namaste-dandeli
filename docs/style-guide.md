@@ -146,3 +146,100 @@ hairlines disappear when scaled down. They are not interchangeable.
 Rendering goes through headless Chrome, so the SVG is rasterised by the same engine
 that displays it. The script launches its own browser — unlike `pnpm og`, it needs no
 preview server. Output is deterministic: re-running produces byte-identical files.
+
+## Prose (legal pages)
+
+`@tailwindcss/typography` is loaded CSS-first — `@plugin "@tailwindcss/typography";`
+in `global.css`, no `tailwind.config.js` (that is the Tailwind-3 legacy path this
+project deliberately avoids).
+
+Every `--tw-prose-*` variable is remapped to a project token, so the plugin keeps
+owning the hard part — vertical rhythm, list indentation, its specificity-zero
+`:where()` wrapper — and we own only colour and type:
+
+| Prose variable                              | Token                      |
+| ------------------------------------------- | -------------------------- |
+| `--tw-prose-body`, `-bold`, `-headings`     | `--color-foreground`       |
+| `--tw-prose-links`                          | `--color-accent-ink`       |
+| `--tw-prose-lead`, `-captions`, `-counters` | `--color-muted-foreground` |
+| `--tw-prose-bullets`, `-th-borders`         | `--color-border`           |
+| `--tw-prose-hr`, `-quote-borders`           | `--color-rule`             |
+
+Two rules that are easy to get wrong:
+
+- **Links use `--color-accent-ink`, never `--color-accent`.** `accent` is the button
+  fill; as body-size text it misses 4.5:1. `accent-ink` is the text-safe accent at
+  5.46:1.
+- **Bullets use `--color-border`, not `--color-rule`.** A bullet is a graphic you have
+  to see, so the 3:1 non-text floor applies; `--color-rule` is the decorative hairline
+  and is too faint.
+
+`.prose :is(h2, h3, h4, h5, h6)` re-asserts `--font-display`. This file styles only
+`h1`–`h3`, and the legal renderer shifts every editor heading one level down — so an
+editor's third-level heading becomes an `<h4>` and would otherwise inherit nothing: no
+display face, no tightened leading, barely larger than body text. Correct for a screen
+reader, invisible to a reader.
+
+None of this can reach the homepage: the plugin's rules all sit inside
+`:where(.prose …)` (specificity 0) and the variable definitions live on `.prose`
+itself. `verify:a11y` is unaffected, because it matches `--color-*: #hex` pairs and
+these are `--tw-prose-*` with `var()` values.
+
+## Page bands and the river edge
+
+**Every light↔dark edge is a river bend. Never a straight cut.** This is the
+house style's one hard "no", and it applies to every page — the homepage, the
+legal pages, and anything added later.
+
+```astro
+import RiverDivider from '../components/RiverDivider.astro';
+<RiverDivider from="deep" to="bg" /> <!-- dark  -> light -->
+<RiverDivider from="bg" to="deep" /> <!-- light -> dark  -->
+<RiverDivider from="bg" to="primary" size="lg" flip />
+```
+
+### Props
+
+| Prop    | Type                                     | Default | Notes                                            |
+| ------- | ---------------------------------------- | ------- | ------------------------------------------------ |
+| `from`  | `'bg' \| 'muted' \| 'primary' \| 'deep'` | —       | The band **above**. A raw hex also works.        |
+| `to`    | same                                     | —       | The band **below**; the water is filled with it. |
+| `size`  | `'sm' \| 'md' \| 'lg'`                   | `'md'`  | Bend depth. `md` is the homepage value.          |
+| `flip`  | `boolean`                                | `false` | Mirrors the bend vertically.                     |
+| `class` | `string`                                 | `''`    | Passed to the wrapper.                           |
+
+`from`/`to` take a **semantic band name**, not a colour. Naming the band is what
+stops a page hardcoding `#082219` and quietly disagreeing with the token the
+section beside it actually paints.
+
+### The band colours
+
+They live in `src/styles/bands.ts` as `BAND`, mirroring `@theme` in `global.css`:
+
+| Key       | Token                  | Value     |
+| --------- | ---------------------- | --------- |
+| `bg`      | `--color-background`   | `#FCFBF7` |
+| `muted`   | `--color-muted`        | `#EEF2ED` |
+| `primary` | `--color-primary`      | `#0F3D2E` |
+| `deep`    | `--color-primary-deep` | `#082219` |
+
+**Why hex and not `var(--color-…)`:** the divider paints an SVG `fill`, and an
+SVG attribute cannot read a CSS custom property — `fill="var(--color-bg)"`
+renders nothing. The literal has to reach the element, so `BAND` is how it gets
+there from one place instead of four.
+
+That makes `bands.ts` a second copy of four tokens, which is exactly the kind of
+duplicate that drifts. `pnpm verify:content` parses both files and fails if they
+disagree, so the copy cannot silently fall behind the stylesheet. That check is
+what licenses the hex literals.
+
+### Pattern for any new page
+
+1. Dark header band (so the white nav is readable at scroll-0 — it is transparent
+   until `Motion` sets `data-stuck`).
+2. `<RiverDivider from="deep" to="bg" />`
+3. The page's light content.
+4. `<RiverDivider from="bg" to="deep" />`
+5. `<Contact />`, which carries the NAP, the CTAs and the footer.
+
+`verify:content` fails a page that has a dark band and no bend.

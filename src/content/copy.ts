@@ -12,13 +12,24 @@
  */
 
 export const nav = {
+  /**
+   * Root-relative, not bare fragments.
+   *
+   * These were `#solo`, `#cars`, ... which resolve against the CURRENT
+   * document — correct on the homepage and dead on /legal/terms-and-
+   * conditions, where `#solo` means "an element on the terms page".
+   * The leading `/` makes each one a navigation back to the homepage's
+   * section, and it still behaves as a same-document scroll ON the
+   * homepage, because `/` is the homepage's own URL under
+   * trailingSlash: 'never'.
+   */
   links: [
-    { href: '#solo', label: 'Travelling alone' },
-    { href: '#cars', label: 'The cars' },
-    { href: '#dandeli', label: 'Things to do' },
-    { href: '#getting-here', label: 'Routes' },
-    { href: '#stay', label: 'Stays' },
-    { href: '#reviews', label: 'Reviews' },
+    { href: '/#solo', label: 'Travelling alone' },
+    { href: '/#cars', label: 'The cars' },
+    { href: '/#dandeli', label: 'Things to do' },
+    { href: '/#getting-here', label: 'Routes' },
+    { href: '/#stay', label: 'Stays' },
+    { href: '/#reviews', label: 'Reviews' },
   ],
   call: 'Call',
   book: 'Book',

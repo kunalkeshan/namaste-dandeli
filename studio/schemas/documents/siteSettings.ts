@@ -25,6 +25,7 @@ export const siteSettings = defineType({
     { name: 'address', title: 'Address' },
     { name: 'google', title: 'Google listing' },
     { name: 'seo', title: 'SEO & social' },
+    { name: 'legal', title: 'Legal' },
   ],
   fields: [
     defineField({
@@ -127,6 +128,34 @@ export const siteSettings = defineType({
         defineField({ name: 'ogSubtitle', title: 'OG card subtitle', type: 'string' }),
         defineField({ name: 'ogPlace', title: 'OG card place line', type: 'string' }),
       ],
+    }),
+
+    /**
+     * THE FOOTER ORDER IS THIS ARRAY'S ORDER.
+     *
+     * No `order` field, unlike every other list in this schema. Those
+     * are `*[_type == ...]` queries, and GROQ guarantees no order
+     * without an explicit sort. This is a dereference of an ordered
+     * array, which DOES preserve order — so a sort field here would be
+     * a second source of truth that silently disagrees with the
+     * editor's drag-and-drop.
+     *
+     * A reference can only point at a PUBLISHED document. That is why
+     * the legal pages are seeded with `sanity dataset import` and never
+     * through the MCP: an MCP write creates a draft, and a draft cannot
+     * satisfy a reference.
+     */
+    defineField({
+      name: 'legalPages',
+      title: 'Legal pages',
+      type: 'array',
+      group: 'legal',
+      description:
+        'Which legal pages appear in the footer, and in what order — drag to ' +
+        'reorder. Privacy policy first. A page with an empty body is skipped ' +
+        'entirely: no link, and no page is built.',
+      of: [{ type: 'reference', to: [{ type: 'legalPage' }] }],
+      validation: (R) => R.unique(),
     }),
   ],
   preview: { prepare: () => ({ title: 'Site settings' }) },

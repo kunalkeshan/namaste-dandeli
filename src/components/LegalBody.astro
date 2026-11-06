@@ -1,0 +1,41 @@
+---
+/**
+ * The Portable Text renderer for legal pages.
+ *
+ * THE HEADING SHIFT, and why it is not a prop.
+ *
+ * astro-portabletext's default block component hard-codes
+ * `style === "h1" ? <h1>`. There is no level-offset option — the
+ * `components.block` map is `{ [node.style]: Component }`, so owning
+ * the component is the only way to shift. One component reading
+ * node.style is right here; six components mapped to six styles would
+ * be six copies of the same `+1`.
+ *
+ * The shift is load-bearing, not cosmetic. [slug].astro renders the
+ * Sanity `title` field as the page's one and only <h1>. An editor
+ * reaching for "Heading 1" means "the top level INSIDE my document",
+ * and rendering that as a literal <h1> would ship two or more h1s —
+ * a flattened outline for screen readers and for the AI agents now
+ * reading this site, broken silently, because it looks identical.
+ *
+ * The schema caps the editor at h1-h3, so this can only emit h2-h4 and
+ * never reaches h5/h6. `normal`, lists and decorators fall through to
+ * the library's own correct defaults.
+ */
+import { PortableText } from 'astro-portabletext';
+import ShiftedHeading from './ShiftedHeading.astro';
+import LegalLink from './LegalLink.astro';
+import type { LegalBlock } from '../content/legal';
+
+interface Props {
+  body: LegalBlock[];
+}
+const { body } = Astro.props;
+
+const components = {
+  block: { h1: ShiftedHeading, h2: ShiftedHeading, h3: ShiftedHeading },
+  mark: { link: LegalLink },
+};
+---
+
+<PortableText value={body as never} components={components as never} />

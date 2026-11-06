@@ -38,16 +38,14 @@ import RiverDivider from '../components/RiverDivider.astro';
  */
 const { site } = await getContent();
 
-const DEEP = '#082219';
-const BG = '#FCFBF7';
-const MUTED = '#EEF2ED';
-const PRIMARY = '#0F3D2E';
+/* Band colours live in src/styles/bands.ts and the divider resolves
+   them by name, so no page repeats a hex. */
 ---
 
 <Layout title={site.seo.title} description={site.seo.description}>
   <Nav />
   <Hero />
-  <RiverDivider from={DEEP} to={BG} />
+  <RiverDivider from="deep" to="bg" />
   <main id="main">
     <SoloTravel />
     <Vehicles />
@@ -55,10 +53,10 @@ const PRIMARY = '#0F3D2E';
     <Routes />
     <Stays />
     <Pricing />
-    <RiverDivider from={BG} to={PRIMARY} />
+    <RiverDivider from="bg" to="primary" />
     <Reviews />
   </main>
-  <RiverDivider from={PRIMARY} to={DEEP} />
+  <RiverDivider from="primary" to="deep" />
   <Contact />
   <Motion />
 </Layout>

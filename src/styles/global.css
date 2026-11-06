@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 
 /* ---------------------------------------------------------------
    Namaste Dandeli — design tokens
@@ -440,4 +441,71 @@ summary {
   .carousel-count {
     transition: none;
   }
+}
+
+/* --- legal prose -------------------------------------------------
+   @tailwindcss/typography, retokenised.
+
+   The plugin ships a grey scale that has nothing to do with this
+   palette, and every value it sets is a CSS variable precisely so it
+   can be replaced. Overriding the VARIABLES rather than the selectors
+   means the plugin keeps owning the hard part — vertical rhythm, list
+   indentation, the specificity-zero `:where()` wrapper — and we own
+   only the colour and the type.
+
+   Nothing here can reach the homepage. The plugin's own rules all sit
+   inside `:where(.prose ...)`, which has specificity 0, and these
+   variable definitions live on `.prose` itself — an element without
+   that class matches none of it.
+
+   Every colour is a token verify:a11y already checks: foreground on
+   background is 16.27:1, muted-foreground 7.1:1, accent-ink 5.46:1.
+   Reusing them is what keeps this inside the contrast floor without
+   adding a single new colour to audit. Note accent-INK, not accent:
+   accent is the button fill and fails as body-size text.           */
+.prose {
+  --tw-prose-body: var(--color-foreground);
+  --tw-prose-bold: var(--color-foreground);
+  --tw-prose-headings: var(--color-foreground);
+  --tw-prose-links: var(--color-accent-ink);
+
+  --tw-prose-lead: var(--color-muted-foreground);
+  --tw-prose-captions: var(--color-muted-foreground);
+  --tw-prose-counters: var(--color-muted-foreground);
+  --tw-prose-quotes: var(--color-foreground);
+
+  /* A bullet is a GRAPHIC, so the 3:1 non-text floor applies. The
+     decorative hairline token is too faint for a glyph you must see. */
+  --tw-prose-bullets: var(--color-border);
+
+  /* `--color-rule` is the DECORATIVE hairline, and an <hr> in prose is
+     exactly that — never a control edge. */
+  --tw-prose-hr: var(--color-rule);
+  --tw-prose-quote-borders: var(--color-rule);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-rule);
+
+  /* Explicit, because the plugin sets a size and leading but no
+     family: prose would otherwise inherit from <body> — correct today,
+     and silently wrong the day <body> changes. */
+  font-family: var(--font-body);
+}
+
+/* THE HEADING-SHIFT CONSEQUENCE.
+
+   This file styles h1, h2 and h3 only. The legal renderer shifts every
+   editor heading one level down, so an editor's third-level heading
+   becomes an <h4> — which would inherit nothing: no display face, no
+   tightened leading, barely larger than body text. The outline would
+   be right for a screen reader and invisible to a reader.
+
+   So the display face is re-asserted for every level prose can emit.
+   h2 and h3 already match the global rule; h4 is the one this exists
+   for, and h5/h6 are here for the day someone widens the schema. */
+.prose :is(h2, h3, h4, h5, h6) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
 }

@@ -80,7 +80,10 @@ and the exact opposite of Irshad's no-names requirement.
 **The rules.**
 
 - Partner resorts are **never named** — a named resort gets booked direct and he loses
-  the introduction. Stays are grouped by what they are _like_.
+  the introduction. Stays are grouped by what they are _like_. **This holds on the
+  legal pages too**, where a drafter is most tempted to write a real name into a
+  clause: the terms say "the property you are booked into". `pnpm verify:content`
+  scans every built legal page for the known partner name.
 - Photographs showing the region, not a property, say so in body text — not small print.
 - The vehicle cutouts are **model photographs, not his cars**, disclosed under the grid.
 - Every image records its licence in `content/images.ts`; CC BY-SA credits render in the
@@ -106,6 +109,53 @@ HTML** linked to the live listing — allowed, and what actually converts. See `
 
 ---
 
+## 7. A legal page is published or it does not exist
+
+**The shape.** The privacy policy and terms are `legalPage` documents in Sanity,
+ordered by the `siteSettings.legalPages` reference array — the array order _is_ the
+footer order. They are deliberately **not** behind `Confirmed<T>`: that guard exists
+for measured claims about Irshad's business, and its payload is a `blocker`, the
+question to put to him. A privacy policy is not a fact awaiting his confirmation.
+
+**The rule.** A legal page renders only if it **has a body**. An empty body means the
+page does not exist — it is not built, and the footer link is absent. One function,
+`isPublished()` in `src/content/legal.ts`, is the only definition of that, because
+three call sites need the answer (build the page? render the link? did those two
+agree?) and three hand-written `body?.length` checks would be three chances to drift.
+`site.hoursConfirmed` drifted exactly that way.
+
+**Why not a 404 page.** Building an empty page that soft-404s would be strictly worse:
+the footer would advertise a link to nothing. That is the precise defect this entire
+site exists to fix — his Google Business Profile's website URL returns HTTP 404.
+
+**Contact details are read, never retyped.** The phone, WhatsApp and email on the
+legal pages come from the content adapter. A terms document with a hardcoded number is
+the one place on the site that would still claim an old number after he changed it in
+the Studio. `verify-content` fails on any `+91…` in a legal page that does not match
+`siteSettings.phone`.
+
+**Headings shift one level.** The page title is the only `<h1>`; an editor's Heading 1
+renders as `<h2>`. See the guardrail in `CLAUDE.md`.
+
+**The bug this was written after.** The first render read `node.href` for a link
+annotation. Portable Text stores it on `node.markDef`, so every link in the policy
+rendered `href="#"` — no error, no warning, a dead link in a legal document. The
+validator now fails on any `<a href="#">` in a legal page.
+
+### On citing law
+
+The privacy policy does **not** say "under the DPDP Act you have the right to…". The
+Digital Personal Data Protection Act 2023 was enacted on 11 August 2023 and its Rules
+were notified on 13 November 2025, but the substantive obligations — notice, consent
+and data-principal rights — **commence 13 May 2027**. Until then the IT Act 2000 and
+the 2011 Privacy Rules govern.
+
+So the rights are stated as **what Irshad will do if you ask**: true today, and still
+true after May 2027. Citing a duty that does not yet bind is the same class of error as
+publishing an unmeasured number — a claim that sounds authoritative and is wrong.
+
+---
+
 ## Enforcement
 
 | Rule                  | Enforced by                                      |
@@ -117,5 +167,9 @@ HTML** linked to the live listing — allowed, and what actually converts. See `
 | No aggregateRating    | `pnpm verify:content`                            |
 | Contrast incl. hover  | `pnpm verify:a11y`                               |
 | Zero JS               | `pnpm verify:content`                            |
+| Legal publish state   | `isPublished()` + `pnpm verify:content`          |
+| One h1 per legal page | `pnpm verify:content`                            |
+| No dead legal link    | `pnpm verify:content`                            |
+| No resort named       | `pnpm verify:content`                            |
 
 All of it runs on `pre-push`. The fast checks run on `pre-commit`.

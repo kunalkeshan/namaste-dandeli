@@ -12,8 +12,34 @@ import { getContent } from '../content';
 interface Props {
   title: string;
   description: string;
+  /**
+   * Preload the hero image. ON by default, because the homepage is the
+   * page this shell was built for and the hero IS its LCP element.
+   *
+   * Legal pages pass false. A `rel=preload as=image
+   * fetchpriority=high` for an image the page never renders is not
+   * merely wasted bytes — it is a high-priority request competing with
+   * the font stylesheets for the same connection, so it makes the legal
+   * page's real LCP (its <h1>) arrive later. Chrome also logs an
+   * unused-preload warning.
+   */
+  preloadHero?: boolean;
+  /**
+   * Schema.org @type for this page's WebPage node. Legal pages are
+   * `WebPage`; the homepage omits it and keeps the WebSite node alone.
+   */
+  pageType?: 'WebPage';
+  /**
+   * The page's own name for the breadcrumb and the WebPage node.
+   *
+   * Separate from `title`, which carries the " — Namaste Dandeli"
+   * suffix that belongs in a browser tab and reads wrong as the last
+   * crumb of a trail. Defaults to `title` when not given.
+   */
+  pageName?: string;
 }
-const { title, description } = Astro.props;
+const { title, description, preloadHero = true, pageType, pageName } = Astro.props;
+const crumbName = pageName ?? title;
 const { site, images } = await getContent();
 
 /**
@@ -25,7 +51,7 @@ const { site, images } = await getContent();
  * that disagrees with the candidate the browser eventually picks
  * downloads the image twice, which is slower than no preload at all.
  */
-const heroImg = images.rafting;
+const heroImg = preloadHero ? images.rafting : null;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://namastedandeli.com');
 
@@ -77,6 +103,46 @@ const jsonLd = {
       publisher: { '@id': `${canonical.origin}/#business` },
       inLanguage: 'en-IN',
     },
+    /**
+     * A WebPage node for subpages, with a breadcrumb back to the home
+     * page.
+     *
+     * Only emitted when a page asks for it, so the homepage graph is
+     * unchanged: on `/` a WebPage node whose `isPartOf` is the WebSite
+     * and whose breadcrumb is a single "Home" item says nothing a
+     * crawler cannot already infer, and the WebSite node already
+     * carries the homepage's identity.
+     *
+     * Still no `aggregateRating` anywhere — see the note above.
+     */
+    ...(pageType
+      ? [
+          {
+            '@type': pageType,
+            '@id': `${canonical.href}#webpage`,
+            url: canonical.href,
+            name: crumbName,
+            description,
+            isPartOf: { '@id': `${canonical.origin}/#website` },
+            about: { '@id': `${canonical.origin}/#business` },
+            inLanguage: 'en-IN',
+            breadcrumb: { '@id': `${canonical.href}#breadcrumb` },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            '@id': `${canonical.href}#breadcrumb`,
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: canonical.origin,
+              },
+              { '@type': 'ListItem', position: 2, name: crumbName },
+            ],
+          },
+        ]
+      : []),
   ],
 };
 ---
@@ -130,15 +196,19 @@ const jsonLd = {
     <link rel="preconnect" href="https://commons.wikimedia.org" />
     <link rel="preconnect" href="https://thumb.wikimedia.org" crossorigin />
 
-    <!-- Discover the LCP image in the head, not after CSS. -->
-    <link
-      rel="preload"
-      as="image"
-      href={heroImg.src}
-      imagesrcset={heroImg.srcset}
-      imagesizes="100vw"
-      fetchpriority="high"
-    />
+    <!-- Discover the LCP image in the head, not after CSS. Omitted on
+         pages with no hero: an unused high-priority preload competes
+         with the font CSS and delays the real LCP. -->
+    {heroImg && (
+      <link
+        rel="preload"
+        as="image"
+        href={heroImg.src}
+        imagesrcset={heroImg.srcset}
+        imagesizes="100vw"
+        fetchpriority="high"
+      />
+    )}
 
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
