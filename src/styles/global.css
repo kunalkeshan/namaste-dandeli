@@ -331,11 +331,20 @@ summary {
    the outer rail was removed. */
 .carousel {
   position: relative;
+  border-radius: var(--radius-lg, 0.5rem);
+  /* Clips the slide run AND the fade overlay to the card's corners. */
+  overflow: hidden;
+  background: var(--color-background);
 }
 
 .rail-inset {
   display: flex;
-  gap: 0.5rem;
+  /* The gap sits on the SECTION background, so it must be a warm-paper
+     seam, not the grey the browser paints by default. Keeping it tight
+     makes the strip read as one continuous photo run rather than two
+     floating cards. */
+  gap: 2px;
+  background: var(--color-background);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -369,6 +378,13 @@ summary {
   flex: 0 0 88%;
   scroll-snap-align: center;
   margin: 0;
+  /* Corners belong to the carousel, not to each slide. Rounding every
+     slide made the peek look like a separate floating card; the
+     wrapper clips the run instead. */
+  overflow: hidden;
+}
+.rail-slide img {
+  border-radius: 0;
 }
 @media (min-width: 640px) {
   .rail-slide {
