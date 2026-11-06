@@ -22,16 +22,17 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
 <Section
   id="reviews"
   eyebrow={copy.sections.reviews.eyebrow}
-  title={`${site.google.rating} out of 5, from ${site.google.reviewCount} people`}
+  title={`${site.google.rating} out of 5, from ${site.google.reviewCountLabel} people`}
   lede={copy.sections.reviews.lede}
   tone="dark"
 >
   <div class="reveal grid gap-6 sm:grid-cols-2">
     {rest.map((r) => (
       <figure class="reveal-child flex flex-col rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6">
-        <div class="text-accent-bright" aria-label={`${r.rating} out of 5 stars`}>
+        <p class="text-accent-bright">
           <span aria-hidden="true">★★★★★</span>
-        </div>
+          <span class="sr-only">{r.rating} out of 5 stars</span>
+        </p>
         <blockquote class="mt-3 flex-1">
           <p class="text-[0.95rem] leading-relaxed text-primary-foreground/90">
             &ldquo;{r.text}&rdquo;
@@ -50,6 +51,6 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
     rel="noopener"
     class="link-inline btn mt-8 inline-flex items-center gap-2 font-medium underline decoration-accent decoration-2 underline-offset-4 transition-opacity hover:opacity-80 hover:no-underline"
   >
-    Read all {site.google.reviewCount} on Google
+    Read all {site.google.reviewCountLabel} on Google
   </a>
 </Section>

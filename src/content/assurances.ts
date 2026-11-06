@@ -57,7 +57,7 @@ export const soloFallback = {
     {
       title: 'Reviews you can read before you call',
       body:
-        'All 160 are public on his Google listing, including the ones from ' +
+        'All of them are public on his Google listing, including the ones from ' +
         'solo travellers. He has replied to every one.',
     },
   ],

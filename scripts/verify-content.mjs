@@ -32,6 +32,10 @@ function fail(check, detail) {
 function ok(check, detail) {
   notes.push(`✓ ${check}${detail ? ` — ${detail}` : ''}`);
 }
+/** Reported, but not a failure — for a check that could not run. */
+function note(check, detail) {
+  notes.push(`· ${check}${detail ? ` — ${detail}` : ''}`);
+}
 
 if (!existsSync(DIST)) {
   console.error('dist/ not found — run `pnpm build` first.');
@@ -250,6 +254,52 @@ if (!ogMatch) {
     );
   } else {
     ok('og:image', `${path} served from ${origin || 'relative'}`);
+  }
+}
+
+/* 7b. the OG raster must still agree with the content --------------
+   og.astro reads five Sanity-controlled strings, but what ships is a
+   SCREENSHOT of it. Change the review count or the subtitle in the
+   Studio and the JPEG silently disagrees with the site — the card in
+   every WhatsApp share says one thing, the page says another, and
+   nothing reports it.
+
+   render-og.mjs stamps public/og.meta.json with the text it baked
+   in; this compares that against the live values. The whole point of
+   "160+" is that the count can grow without a re-render, so only the
+   rendered STRING is compared, never the underlying number. */
+const OG_META = 'scripts/og.meta.json';
+if (!existsSync(OG_META)) {
+  note(
+    'og freshness',
+    'scripts/og.meta.json missing — run `pnpm og` so staleness can be detected',
+  );
+} else if (!snapshot.site) {
+  note('og freshness', 'no site in the content snapshot — cannot compare');
+} else {
+  /* Compared case-insensitively: the .decal class sets
+     text-transform:uppercase, so innerText reports "NAMASTE DANDELI"
+     for content that reads "Namaste Dandeli". Casing is a styling
+     concern here, not a content difference. */
+  const baked = (JSON.parse(readFileSync(OG_META, 'utf8')).text ?? '').toLowerCase();
+  const s = snapshot.site;
+  const expect = [
+    s.seo?.ogTitle,
+    s.seo?.ogSubtitle?.replace(/\s+/g, ' ').trim(),
+    `${s.google?.rating}`,
+    `${s.google?.reviewCountLabel} Google reviews`,
+    s.seo?.ogPlace,
+  ].filter(Boolean);
+
+  const missing = expect.filter((e) => !baked.includes(e.toLowerCase()));
+  if (missing.length) {
+    fail(
+      'og freshness',
+      `public/og.jpg was rendered from different content — it is missing ` +
+        `${missing.map((m) => `"${m}"`).join(', ')}. Re-run \`pnpm og\`.`,
+    );
+  } else {
+    ok('og freshness', 'the raster matches the live content');
   }
 }
 

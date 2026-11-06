@@ -100,9 +100,68 @@ async function loadContent() {
     );
   }
 
+  /**
+   * The page title, meta description and all three OG card strings
+   * are read straight off this block, so an absent one is a broken
+   * build — not a page that quietly renders `undefined` into a
+   * <title> and the social preview.
+   *
+   * Typed rather than left as the query's `any`: these five strings
+   * have five call sites between index.astro and og.astro, and an
+   * untyped block means a misspelt key fails silently at runtime.
+   */
+  const SEO_FIELDS = [
+    'title',
+    'description',
+    'ogTitle',
+    'ogSubtitle',
+    'ogPlace',
+  ] as const;
+  type Seo = Record<(typeof SEO_FIELDS)[number], string>;
+
+  for (const k of SEO_FIELDS) {
+    if (!raw.settings.seo?.[k]) {
+      throw new Error(
+        `siteSettings.seo.${k} is empty. It is rendered into the page ` +
+          'head or the OG card, so the build cannot proceed without it.',
+      );
+    }
+  }
+  const seo = raw.settings.seo as Seo;
+
   const s = raw.settings;
-  const site = {
+
+  /**
+   * Annotated, not inferred. `raw` is the query's `any`, so spreading
+   * it produces an `any` object — which silently erased the typing on
+   * `seo` below and let `site.seo.ogSubtitel` typecheck. Naming the
+   * fields the page actually reads restores the check on them; the
+   * remaining Sanity fields still pass through untyped.
+   */
+  const site: Record<string, any> & {
+    seo: Seo;
+    phone: string;
+    whatsapp: Confirmed<string>;
+    hours: Confirmed<string>;
+    google: Record<string, any> & {
+      rating: number;
+      reviewCount: number;
+      reviewCountLabel: string;
+    };
+  } = {
     ...s,
+    seo,
+    google: {
+      ...s.google,
+      /**
+       * The review count only ever goes up, and we have no Places API
+       * to read it live — so every render says "160+", not "160". The
+       * stored number stays exact; the "+" is added once, here, and
+       * read by every call site. A count that has grown past the
+       * stored figure then understates rather than overclaims.
+       */
+      reviewCountLabel: `${s.google.reviewCount}+`,
+    },
     whatsapp: narrowConfirmed<string>(s.whatsapp, 'site.whatsapp'),
     hours: narrowConfirmed<string>(s.hours, 'site.hours'),
   };

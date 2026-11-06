@@ -6,6 +6,7 @@
  * so this file is just the running order of the argument.
  */
 import Layout from '../layouts/Layout.astro';
+import { getContent } from '../content';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import SoloTravel from '../components/SoloTravel.astro';
@@ -27,16 +28,23 @@ import RiverDivider from '../components/RiverDivider.astro';
  * hero(deep) │ solo(bg) │ cars(muted) │ activities(bg) │ routes(muted)
  *            │ stays(bg) │ pricing(bg) │ reviews(primary) │ contact(deep)
  */
+/**
+ * Title and description come from Sanity, not from this file.
+ *
+ * They used to be hardcoded here while siteSettings.seo sat in the
+ * Studio reading authoritative and rendering nowhere — the same
+ * drift as the dead `hoursConfirmed` flag. An editor changing the
+ * description in the Studio now changes the page.
+ */
+const { site } = await getContent();
+
 const DEEP = '#082219';
 const BG = '#FCFBF7';
 const MUTED = '#EEF2ED';
 const PRIMARY = '#0F3D2E';
 ---
 
-<Layout
-  title="Namaste Dandeli — taxi, trips and resort bookings in Dandeli"
-  description="Irshad drives tourists around Dandeli — rafting at Ganeshgudi, jungle safari in Kali Tiger Reserve, airport pickups from Hubballi and Goa — and books the resort too. 4.9 stars from 160 Google reviews."
->
+<Layout title={site.seo.title} description={site.seo.description}>
   <Nav />
   <Hero />
   <RiverDivider from={DEEP} to={BG} />

@@ -97,7 +97,14 @@ export const siteSettings = defineType({
         'The rating is rendered as visible HTML, never as aggregateRating — Google ignores self-reported ratings and renders nothing.',
       fields: [
         defineField({ name: 'rating', type: 'number' }),
-        defineField({ name: 'reviewCount', type: 'number' }),
+        defineField({
+          name: 'reviewCount',
+          type: 'number',
+          description:
+            'The exact count. The page renders it as "160+" — the adapter appends ' +
+            'the plus, so enter only the number. The count keeps growing and there ' +
+            'is no Places API reading it live, so a stale figure understates it.',
+        }),
         defineField({ name: 'placeId', type: 'string' }),
         defineField({ name: 'mapsUrl', type: 'url' }),
         defineField({ name: 'reviewsUrl', type: 'url' }),

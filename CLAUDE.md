@@ -30,11 +30,12 @@ pnpm build            # static build -> dist/
 pnpm preview          # serve dist/
 
 pnpm check            # format check + typecheck          (fast, pre-commit)
-pnpm verify           # check + build + content + a11y    (slow, pre-push)
+pnpm verify           # check + build + content + a11y + aria  (slow, pre-push)
 pnpm verify:content   # content truth validators
 pnpm verify:a11y      # contrast + colour-blindness
+pnpm verify:aria      # ARIA & accessibility-tree validity
 pnpm blockers         # every fact still waiting on Irshad
-pnpm og               # regenerate public/og.jpg (needs preview + headless chrome)
+pnpm og               # regenerate og.jpg — self-contained; runs inside `pnpm build`
 pnpm icons            # regenerate every raster icon from public/favicon.svg
 
 pnpm dev:site         # Astro only, without the Studio
@@ -134,6 +135,25 @@ wrong, and two were fabricated by research agents on this very project.
   primary green to 1.25:1 under protanopia; it is safe only because it appears
   exactly twice, both inside the logo SVG.
 - **Never name a partner resort.** It is the one thing that would cost Irshad money.
+- **Never put `aria-label` on a plain `<div>` or `<span>`.** A roleless generic
+  takes no ARIA label — the browser DISCARDS it. A review's star rating shipped
+  this way: the stars were `aria-hidden` and the label was dropped, so the rating
+  was announced as nothing to screen readers and AI agents, and Lighthouse's
+  "accessibility tree is not well-formed" audit failed. Use real text in a
+  `.sr-only` span. `pnpm verify:aria` now fails the build on it.
+- **The OG card regenerates on every build.** `pnpm build` runs `pnpm og`, which
+  serves `dist/` on an ephemeral port and screenshots `/og` with a browser it
+  launches itself — `@sparticuz/chromium` on Linux, local Chrome on macOS. It
+  writes **both** `public/og.jpg` and `dist/og.jpg`: Astro copies `public/` into
+  `dist/` _during_ the build, so a post-build render that wrote only to `public/`
+  would leave the deployed image stale.
+- **A failed render must never fail the deploy.** On Vercel (`VERCEL`/`CI` set)
+  the script logs and exits 0, so the committed `og.jpg` ships unchanged — a
+  stale card beats an outage. Locally it exits 1, because `pnpm og` silently
+  "succeeding" after a failure is a lie.
+- **The raster can still drift, so it is gated.** `pnpm og` stamps
+  `scripts/og.meta.json` with the text it baked in, and `verify-content` fails
+  when that no longer matches the live content.
 - **Keep the page at zero separate `.js` files.** Check with `pnpm verify:content`.
 - Do not reorganise `src/` or rename components unprompted.
 - Do not add dependencies without approval.

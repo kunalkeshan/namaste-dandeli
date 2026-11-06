@@ -5,8 +5,13 @@
  *
  * This is what appears in every WhatsApp, Facebook and X share, so
  * it carries the three things that matter in a preview: who he is,
- * what he does, and the proof. The rating is a static image so it
- * ages — the launch runbook notes regenerating it as the count grows.
+ * what he does, and the proof.
+ *
+ * Every string comes from siteSettings.seo. The three ogTitle/
+ * ogSubtitle/ogPlace fields existed in the Studio but were hardcoded
+ * here, so editing them did nothing. The rating is still baked into
+ * a raster, so `pnpm og` must run whenever the count moves — which
+ * is why the count renders as "160+" rather than an exact figure.
  *
  * Not linked from anywhere; it exists to be screenshotted.
  */
@@ -15,6 +20,9 @@ import { getContent } from '../content';
 import '../styles/global.css';
 
 const { site, images } = await getContent();
+
+/** The subtitle is authored with a newline where the card breaks. */
+const subtitleLines = site.seo.ogSubtitle.split('\n');
 export const prerender = true;
 ---
 
@@ -65,13 +73,16 @@ export const prerender = true;
         <Logo class="w-[108px] text-primary-foreground" />
 
         <p class="decal mt-7 text-[30px] leading-none text-primary-foreground">
-          Namaste Dandeli
+          {site.seo.ogTitle}
         </p>
 
         <p class="mt-6 font-display text-[46px] leading-[1.15] text-primary-foreground">
-          Cabs, trips and stays
-          <br />
-          across Dandeli
+          {subtitleLines.map((line, i) => (
+            <>
+              {i > 0 && <br />}
+              {line}
+            </>
+          ))}
         </p>
 
         <div class="mt-9 flex items-center gap-3 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-7 py-3">
@@ -80,12 +91,12 @@ export const prerender = true;
           </span>
           <span class="text-[21px]">
             <strong class="font-semibold">{site.google.rating}</strong> &middot;{' '}
-            {site.google.reviewCount} Google reviews
+            {site.google.reviewCountLabel} Google reviews
           </span>
         </div>
 
         <p class="decal mt-8 text-[15px] text-primary-foreground/55">
-          Alur &middot; Dandeli &middot; Karnataka
+          {site.seo.ogPlace}
         </p>
       </div>
     </div>

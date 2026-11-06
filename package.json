@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "concurrently --names astro,studio --prefix-colors green,magenta --kill-others-on-fail false \"astro dev\" \"pnpm --dir studio dev\"",
-    "build": "astro build",
+    "build": "astro build && pnpm og",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write .",
@@ -16,7 +16,8 @@
     "check": "pnpm format:check && pnpm typecheck",
     "verify:content": "node scripts/verify-content.mjs",
     "verify:a11y": "node scripts/verify-a11y.mjs",
-    "verify": "pnpm check && pnpm build && pnpm verify:content && pnpm verify:a11y",
+    "verify:aria": "node scripts/verify-aria.mjs",
+    "verify": "pnpm check && pnpm build && pnpm verify:content && pnpm verify:a11y && pnpm verify:aria",
     "blockers": "node scripts/report-blockers.mjs",
     "og": "node scripts/render-og.mjs",
     "prepare": "husky",
@@ -37,12 +38,14 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@sparticuz/chromium": "^153.0.0",
     "concurrently": "^10.0.6",
     "groq": "^6.22.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
+    "puppeteer-core": "^25.16.0",
     "sanity": "^6.22.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.5"
