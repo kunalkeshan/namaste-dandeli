@@ -41,3 +41,6 @@ irshad-images/
 # Downloaded Wikimedia originals, staged for the one-off Sanity upload.
 # Sanity is the asset store; these are transient.
 assets-staging/
+
+# Asset ids from the one-off upload; regenerate by re-running the script.
+scripts/asset-ids.json

@@ -89,227 +89,407 @@
     {
       "n": 1,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.44 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "hero-portrait",
+      "subject": "irshad",
+      "alt": "Irshad standing beside his white Maruti Dzire on a forest track near Dandeli, the Namaste Dandeli sticker across the windscreen"
     },
     {
       "n": 2,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.45 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "portrait",
+      "subject": "irshad",
+      "alt": "Irshad in sunglasses standing beside his white Dzire under forest canopy"
     },
     {
       "n": 3,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "hero-portrait",
+      "subject": "irshad",
+      "alt": "Irshad beside his white Dzire on a forest track, one hand resting on the bonnet"
     },
     {
       "n": 4,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "vehicle",
+      "slot": "fleet",
+      "subject": "vehicle",
+      "alt": "Two of Irshad cars parked together under trees near Dandeli"
     },
     {
       "n": 5,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "portrait",
+      "subject": "irshad",
+      "alt": "Irshad leaning against the bonnet of his white Dzire in the forest"
     },
     {
       "n": 6,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.47 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "portrait",
+      "subject": "irshad",
+      "alt": "Irshad beside a newly delivered white Maruti sedan dressed with a red ribbon"
     },
     {
       "n": 8,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.47 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "vehicle",
+      "slot": "fleet",
+      "subject": "vehicle",
+      "alt": "Irshad two Maruti cars parked side by side on a forest track"
     },
     {
       "n": 9,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.06.15 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "irshad",
+      "slot": "portrait",
+      "subject": "irshad",
+      "alt": "Irshad standing beside a silver Maruti with a roof carrier on an open forest road"
     },
     {
       "n": 10,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A ground-floor room with a small lawn and veranda"
     },
     {
       "n": 11,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A lawn and palm-lined walkway running beside the pool"
     },
     {
       "n": 12,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A shaded timber balcony looking over palms towards the pool"
     },
     {
       "n": 13,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.07 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A resort block lit from within at dusk, palms along the path"
     },
     {
       "n": 14,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.07 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A resort building at sunset under a pink and violet sky"
     },
     {
       "n": 15,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.08 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A long pool with a childrens splash feature beside a paved terrace"
     },
     {
       "n": 16,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.09 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A twin-bed room with a ceiling fan and a window to the garden"
     },
     {
       "n": 18,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.10 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A double room with air conditioning and a garden window"
     },
     {
       "n": 19,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.10 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A timber-floored corridor opening onto the palm garden"
     },
     {
       "n": 20,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.11 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A reception lounge in pale marble and timber"
     },
     {
       "n": 21,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.11 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A twin-bed room with a television and warm lighting"
     },
     {
       "n": 22,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.44 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "Aerial view of tiled cottages set among dense forest beside the river"
     },
     {
       "n": 23,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.45 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A lit swimming pool at night with a water slide"
     },
     {
       "n": 24,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.45 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A tented room with red day beds under a lined canopy"
     },
     {
       "n": 25,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.46 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "Aerial view of a riverside property surrounded by forest and a bend in the water"
     },
     {
       "n": 26,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.46 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A pool with cottages behind it under a clear sky"
     },
     {
       "n": 27,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.47 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A green-painted cottage with a tiled roof set among trees"
     },
     {
       "n": 28,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.47 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "activity",
+      "slot": "forest",
+      "subject": "activity",
+      "alt": "A see-saw in a bamboo grove, part of a resort play area"
     },
     {
       "n": 32,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.44 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A modern room in pale timber with twin beds and a ceiling fan"
     },
     {
       "n": 33,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.44 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A family room with a bunk ladder and three beds in pale timber"
     },
     {
       "n": 36,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.45 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A family room with bunk and twin beds in warm timber panelling"
     },
     {
       "n": 40,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.09.14 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "pool-and-family",
+      "subject": "resort-interior",
+      "alt": "A quiet rectangular pool paved in stone at the edge of the forest"
     },
     {
       "n": 42,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.09.14 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A cottage veranda lit warmly at dusk, palms around it"
     },
     {
       "n": 45,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "activity",
+      "slot": "rafting",
+      "subject": "activity",
+      "alt": "Two people in orange life jackets in the river after a rafting run"
     },
     {
       "n": 46,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "activity",
+      "slot": "river",
+      "subject": "activity",
+      "alt": "A swimmer floating beside a raft in the calm green water of the Kali"
     },
     {
       "n": 47,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "activity",
+      "slot": "rafting",
+      "subject": "activity",
+      "alt": "A group of six in life jackets paddling a blue raft on the Kali river"
     },
     {
       "n": 48,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.12 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "Tropical garden planting under a bright sky at a Dandeli property"
     },
     {
       "n": 49,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "A swimming pool set among areca palms beside the forest"
     },
     {
       "n": 50,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A timber cabin with a shaded deck under banana plants"
     },
     {
       "n": 51,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "A pool and sun deck backed by tall areca palms"
     },
     {
       "n": 52,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.14 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "The A-frame window of a timber cabin looking out into the plantation"
     },
     {
       "n": 53,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.14 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A cabin bedroom in warm timber with doors opening to the trees"
     },
     {
       "n": 54,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM (1).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A path running between plantation trees to a painted cabin"
     },
     {
       "n": 55,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM (2).jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "on-the-river",
+      "subject": "resort-interior",
+      "alt": "A cottage framed by red and green tropical planting"
     },
     {
       "n": 56,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "stay",
+      "slot": "in-the-trees",
+      "subject": "resort-interior",
+      "alt": "A timber deck looking straight out into dense green forest"
     },
     {
       "n": 57,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.12.36 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "vehicle",
+      "slot": "innova",
+      "subject": "vehicle",
+      "alt": "Irshad white Toyota Innova Crysta, rear three-quarter view"
     },
     {
       "n": 58,
       "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.12.37 PM.jpeg",
-      "excluded": null
+      "excluded": null,
+      "group": "vehicle",
+      "slot": "innova",
+      "subject": "vehicle",
+      "alt": "Irshad white Toyota Innova Crysta seen from the front on the highway"
     }
   ],
   "excluded": [
