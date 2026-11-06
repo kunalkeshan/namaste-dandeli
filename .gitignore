@@ -37,3 +37,7 @@ studio/node_modules/
 # vehicle illustrations, of a real, identifiable person. Sanity is the
 # asset store; these are the local originals and must not enter git.
 irshad-images/
+
+# Downloaded Wikimedia originals, staged for the one-off Sanity upload.
+# Sanity is the asset store; these are transient.
+assets-staging/

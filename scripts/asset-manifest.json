@@ -1,0 +1,382 @@
+{
+  "commons": [
+    {
+      "key": "rafting",
+      "file": "assets-staging/commons/rafting.jpg",
+      "alt": "A rafting team paddling through white water on the Kali river at Dandeli, forested banks on both sides",
+      "credit": null,
+      "licence": "cc0",
+      "subject": "region"
+    },
+    {
+      "key": "hornbill",
+      "file": "assets-staging/commons/hornbill.jpg",
+      "alt": "A Malabar pied hornbill perched in a tree at Dandeli, tossing an orange fruit from its beak",
+      "credit": "Malabar Pied Hornbill at Dandeli — Drashokk, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    },
+    {
+      "key": "coracle",
+      "file": "assets-staging/commons/coracle.jpg",
+      "alt": "Banyan roots trailing into the still green water of the Kali river, seen from a coracle",
+      "credit": "Dandeli, River Kali — Vaibhavipakhare, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    },
+    {
+      "key": "riverDawn",
+      "file": "assets-staging/commons/riverDawn.jpg",
+      "alt": "The Kali river at dawn inside Kali Tiger Reserve, mist lying over the water",
+      "credit": "River Kali At Dawn — Vaibhavipakhare, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    },
+    {
+      "key": "syntheri",
+      "file": "assets-staging/commons/syntheri.jpg",
+      "alt": "The tall granite monolith of Syntheri Rocks rising above the Kaneri river",
+      "credit": "Syntheri Rock Dandeli — Narayan21, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    },
+    {
+      "key": "sykesPoint",
+      "file": "assets-staging/commons/sykesPoint.jpg",
+      "alt": "Sunset over forested valleys seen from Sykes Point near Ganeshgudi",
+      "credit": "Sykes point GaneshGudi — Abhinavsharmamr, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    },
+    {
+      "key": "forestRoad",
+      "file": "assets-staging/commons/forestRoad.jpg",
+      "alt": "A road running through dense evergreen forest in Kali Tiger Reserve",
+      "credit": null,
+      "licence": "cc0",
+      "subject": "region"
+    },
+    {
+      "key": "kaliHabitat",
+      "file": "assets-staging/commons/kaliHabitat.jpg",
+      "alt": "Wide view of the Kali river running between forested hills",
+      "credit": "Kali river habitat shot — Drashokk, CC BY-SA 4.0, via Wikimedia Commons",
+      "licence": "cc-by-sa-4.0",
+      "subject": "region"
+    }
+  ],
+  "illustrations": [
+    {
+      "key": "vehicle-sedan",
+      "file": "irshad-images/sedan.png",
+      "licence": "illustration",
+      "subject": "vehicle"
+    },
+    {
+      "key": "vehicle-innova",
+      "file": "irshad-images/innova.png",
+      "licence": "illustration",
+      "subject": "vehicle"
+    },
+    {
+      "key": "vehicle-cruiser",
+      "file": "irshad-images/cruiser.png",
+      "licence": "illustration",
+      "subject": "vehicle"
+    }
+  ],
+  "photos": [
+    {
+      "n": 1,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.44 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 2,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.45 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 3,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 4,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 5,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.46 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 6,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.47 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 8,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.05.47 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 9,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.06.15 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 10,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 11,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 12,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.06 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 13,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.07 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 14,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.07 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 15,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.08 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 16,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.09 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 18,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.10 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 19,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.10 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 20,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.11 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 21,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.11 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 22,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.44 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 23,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.45 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 24,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.45 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 25,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.46 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 26,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.46 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 27,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.47 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 28,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.07.47 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 32,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.44 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 33,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.44 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 36,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.08.45 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 40,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.09.14 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 42,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.09.14 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 45,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 46,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 47,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.11 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 48,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.12 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 49,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 50,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 51,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.13 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 52,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.14 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 53,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.14 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 54,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM (1).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 55,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM (2).jpeg",
+      "excluded": null
+    },
+    {
+      "n": 56,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.10.15 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 57,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.12.36 PM.jpeg",
+      "excluded": null
+    },
+    {
+      "n": 58,
+      "file": "irshad-images/WhatsApp Image 2026-11-04 at 11.12.37 PM.jpeg",
+      "excluded": null
+    }
+  ],
+  "excluded": [
+    {
+      "n": 7,
+      "file": "WhatsApp Image 2026-11-04 at 11.05.47 PM (2).jpeg",
+      "reason": "heavy letterbox bars, unusable crop"
+    },
+    {
+      "n": 17,
+      "file": "WhatsApp Image 2026-11-04 at 11.07.09 PM.jpeg",
+      "reason": "shows a child — consent not established"
+    },
+    {
+      "n": 29,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.42 PM.jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 30,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.43 PM (1).jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 31,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.43 PM.jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 34,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.44 PM.jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 35,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.45 PM (1).jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 37,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.46 PM (1).jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 38,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.46 PM.jpeg",
+      "reason": "screenshot: Jungle Edge Resort watermark"
+    },
+    {
+      "n": 39,
+      "file": "WhatsApp Image 2026-11-04 at 11.08.47 PM.jpeg",
+      "reason": "third-party credit: nallaboina ranjith"
+    },
+    {
+      "n": 41,
+      "file": "WhatsApp Image 2026-11-04 at 11.09.14 PM (2).jpeg",
+      "reason": "stock promo graphic w/ burned-in badge"
+    },
+    {
+      "n": 43,
+      "file": "WhatsApp Image 2026-11-04 at 11.09.15 PM (1).jpeg",
+      "reason": "stock promo graphic w/ burned-in badge"
+    },
+    {
+      "n": 44,
+      "file": "WhatsApp Image 2026-11-04 at 11.09.15 PM.jpeg",
+      "reason": "stock promo graphic w/ burned-in badge"
+    }
+  ]
+}
