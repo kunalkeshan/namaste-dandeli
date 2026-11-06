@@ -104,6 +104,15 @@ instant.
 | `.sticky-col`                                 | `position: sticky` at ≥1024px                                         |
 | `.decal`                                      | the Rajdhani voice                                                    |
 
+**The fleet card's divider.** In `Vehicles.astro` the "who it suits" paragraph carries
+`flex-1` and the note carries a fixed `mt-5` plus `min-h-[4.5rem]`. That looks odd —
+`flex-1` on a paragraph usually is — so: the note used to carry `mt-auto`, which turns
+every card's leftover height into margin _above_ the rule. The card with the longest
+copy had no leftover height and so no gap, and its rule sat flush against the text
+while the others floated. Making the suits paragraph the flexible one moves the slack
+above the divider instead of into it, and the reserved note height keeps all the rules
+at the same Y when one note wraps to an extra line.
+
 **`.reveal` is gated on `[data-reveal-ready]`**, set by the script. Without that gate a
 blocked or slow script left the page blank — content must never depend on JS to become
 visible.
@@ -123,6 +132,59 @@ visible.
 `pnpm verify` checks all of it.
 
 ## Icons
+
+### UI icons — `src/components/icons/`
+
+One `.astro` component per glyph. Two exist: `WhatsApp.astro` and `Phone.astro`.
+
+```astro
+<WhatsAppIcon /> <!-- 20px, the default -->
+<WhatsAppIcon size={15} /> <!-- the nav -->
+<PhoneIcon size={18} /> <!-- beside a 20px WhatsApp glyph -->
+```
+
+The contract, and it is not optional:
+
+- **`aria-hidden="true"`, always.** Every call site keeps its visible text label, so
+  the glyph repeats what the words already say. `pnpm verify:aria` fails any link
+  whose entire content is aria-hidden — that gate is what stops a call site dropping
+  the text and shipping a button that announces nothing.
+- **`fill="currentColor"`.** The glyph inherits the button's text colour, so one
+  component is correct on accent, on primary and on the light band. It also means an
+  icon can never reach for brand red, which `verify-content` counts.
+- **`size` is a number, not a class** — it sets the `width`/`height` attributes, the
+  way the glyphs were originally written inline.
+
+| Context                | Size | Why                                           |
+| ---------------------- | ---- | --------------------------------------------- |
+| Nav Call / Book        | 15   | the tightest row on the site                  |
+| Stays inline text link | 16   | optically matches `text-base` body copy       |
+| `btn-primary` CTAs     | 18   | 20 dominates at `py-3.5`                      |
+| Hero / Contact buttons | 20   | the largest buttons, 4rem of vertical padding |
+
+**Where the art comes from.** `src/components/icons/source/` holds each glyph's
+original file as downloaded, and the component is that path and nothing else.
+WhatsApp's is the official mark from [Simple Icons](https://simpleicons.org), which
+is **CC0** — public domain, no attribution required, commercial use fine. Re-download
+it rather than hand-editing the path.
+
+That rule was written after the opposite happened. The glyph started as a
+hand-simplified path inlined in `Hero.astro`, which drew the handset as its own
+filled shape instead of a cut-out; at 16–20px the detail filled in and the mark read
+as a generic speech bubble. A brand mark nobody recognises is worse than no mark,
+because it costs the same space and says nothing.
+
+**Why components rather than inline SVG.** The glyph lived in `Hero.astro` and
+nowhere else, so five of the six WhatsApp calls-to-action said "WhatsApp" in words
+and drew nothing — the one mark every Indian phone user recognises on sight, missing
+from five of the six places the decision gets made. Copying the path six times would
+have been six chances to drift, which is exactly what happened to the `.ico` and the
+apple-touch icon before `pnpm icons` existed.
+
+They are compile-time only: Astro inlines them into the HTML at build, so they ship
+zero bytes of JavaScript and the zero-JS gate stays green.
+
+### Raster icons
 
 `public/favicon.svg` is the canonical source for every raster icon. Run `pnpm icons`
 to regenerate them; never hand-edit a PNG or the `.ico`.

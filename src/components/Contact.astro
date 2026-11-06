@@ -24,6 +24,8 @@
 import ForestTexture from './ForestTexture.astro';
 import Footer from './Footer.astro';
 import { getContent, whatsappLink, telLink } from '../content';
+import WhatsAppIcon from './icons/WhatsApp.astro';
+import PhoneIcon from './icons/Phone.astro';
 import { render } from '../content/confirmed';
 
 interface Props {
@@ -57,14 +59,16 @@ const { site, copy } = await getContent();
             href={whatsappLink(copy.waMessages.default)}
             target="_blank"
             rel="noopener"
-            class="btn btn-accent inline-flex items-center justify-center rounded-xl bg-accent px-6 py-4 font-semibold text-accent-foreground"
+            class="btn btn-accent inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-4 font-semibold text-accent-foreground"
           >
+            <WhatsAppIcon />
             WhatsApp
           </a>
           <a
             href={telLink()}
-            class="btn btn-ghost inline-flex items-center justify-center rounded-xl border border-primary-foreground/30 px-6 py-4 font-semibold"
+            class="btn btn-ghost inline-flex items-center justify-center gap-2 rounded-xl border border-primary-foreground/30 px-6 py-4 font-semibold"
           >
+            <PhoneIcon size={18} />
             {site.phoneDisplay}
           </a>
         </div>

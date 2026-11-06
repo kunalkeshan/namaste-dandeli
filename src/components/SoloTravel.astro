@@ -15,6 +15,7 @@
  * Confirm them in content/assurances.ts and they appear automatically.
  */
 import { getContent, whatsappLink } from '../content';
+import WhatsAppIcon from './icons/WhatsApp.astro';
 import { isConfirmed } from '../content/confirmed';
 
 const { featuredReview, assurances, soloFallback, copy, irshad, site } =
@@ -69,8 +70,9 @@ const points =
           href={whatsappLink(copy.waMessages.solo)}
           target="_blank"
           rel="noopener"
-          class="btn btn-primary mt-7 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"
+          class="btn btn-primary mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"
         >
+          <WhatsAppIcon size={18} />
           {copy.sections.solo.cta}
         </a>
       </figure>

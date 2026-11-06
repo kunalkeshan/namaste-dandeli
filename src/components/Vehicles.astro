@@ -12,6 +12,27 @@
  *
  * Motion is CSS only, gated behind (hover:hover) by the global
  * .img-zoom rule: no JS, and the zero-.js gate stays green.
+ *
+ * WHY THE SUITS PARAGRAPH GROWS AND THE NOTE RESERVES HEIGHT
+ *
+ * The note used to carry `mt-auto`, which hands every card's leftover
+ * height to the margin ABOVE the rule. The card with the longest copy
+ * has no leftover height, so its rule sat flush against the text while
+ * the others floated — three cards, three different gaps.
+ *
+ * So `flex-1` moves to the suits paragraph: it becomes the one
+ * flexible item, the slack inflates its box instead of the note's
+ * margin, and the gap above every rule is a fixed mt-5 + pt-4 for any
+ * number of vehicles and any length of copy.
+ *
+ * The `min-h` then keeps the rules on one line when one note wraps to
+ * an extra line, by making a short note reserve the tall one's height.
+ * It is `1rem` (the pt-4) plus three line boxes — `lh` is the
+ * element's OWN computed line-height, so it tracks the type scale
+ * rather than hardcoding a pixel. The +1px is real: three rendered
+ * lines measure a fraction over 3lh because each line box rounds up
+ * around its glyphs, and without it the tallest note sits one pixel
+ * above its own floor.
  */
 import Section from './Section.astro';
 import { getContent } from '../content';
@@ -45,8 +66,8 @@ const { vehicles, carImages, carImageNote, copy } = await getContent();
           <div class="flex flex-1 flex-col gap-0 p-6 pt-4">
             <h3 class="text-xl">{v.name}</h3>
             <p class="decal mt-1.5 text-xs text-accent-ink">{v.seats}</p>
-            <p class="mt-3 text-muted-foreground">{v.suits}</p>
-            <p class="mt-auto border-t border-rule pt-4 text-sm text-muted-foreground">
+            <p class="mt-3 flex-1 text-muted-foreground">{v.suits}</p>
+            <p class="mt-5 min-h-[calc(1rem+3lh+1px)] border-t border-rule pt-4 text-sm text-muted-foreground">
               {v.note}
             </p>
           </div>

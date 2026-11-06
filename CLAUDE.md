@@ -68,6 +68,7 @@ src/
     index.ts    the adapter: components import from here and nowhere else
     confirmed.ts  the Confirmed<T> guard (read this first)
   components/   one .astro file per section
+    icons/      one .astro component per UI glyph — aria-hidden, currentColor
   layouts/      page shell: head, fonts, JSON-LD
   styles/       design tokens (@theme) and base styles
   pages/
@@ -213,13 +214,25 @@ wrong, and two were fabricated by research agents on this very project.
 - **The raster can still drift, so it is gated.** `pnpm og` stamps
   `scripts/og.meta.json` with the text it baked in, and `verify-content` fails
   when that no longer matches the live content.
+- **A UI glyph is a component in `src/components/icons/`, never a pasted path.**
+  The original file lives in `icons/source/`; WhatsApp's is the official Simple
+  Icons mark (CC0). A hand-simplified version shipped first and read as a plain
+  speech bubble at button size — re-download, never redraw.
+  Both are `aria-hidden` with `fill="currentColor"`, and every call site keeps its
+  visible text label — `pnpm verify:aria` fails a link whose whole content is
+  hidden. The WhatsApp mark lived inline in `Hero.astro` and nowhere else, so five
+  of six WhatsApp CTAs drew nothing. See `docs/style-guide.md` for the size table.
 - **Keep the page at zero separate `.js` files.** Check with `pnpm verify:content`.
 - Do not reorganise `src/` or rename components unprompted.
 - Do not add dependencies without approval.
 
 ## Images
 
-All images are served from **Sanity's CDN** (`cdn.sanity.io`). The Wikimedia Commons
+All _content_ images are served from **Sanity's CDN** (`cdn.sanity.io`). The one
+exception is the footer's "Built by Kunal" avatar, hotlinked from `github.com` for
+parity with the sibling sites (kumarsrivathsan.com, keepingitsou.com) that carry the
+same credit. It is a deliberate choice, not an oversight — do not "fix" it by
+re-hosting. The Wikimedia Commons
 originals were re-hosted there: same files, same CC BY-SA obligations, which travel
 with the asset as a `credit` field and still render in the footer.
 

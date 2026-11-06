@@ -10,6 +10,7 @@
  * the region, not the properties, and the page says so plainly.
  */
 import Section from './Section.astro';
+import WhatsAppIcon from './icons/WhatsApp.astro';
 import Carousel from './Carousel.astro';
 import { getContent } from '../content';
 const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
@@ -52,6 +53,7 @@ const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
     rel="noopener"
     class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"
   >
+    <WhatsAppIcon size={16} class="shrink-0 [text-decoration:none]" />
     {copy.sections.stays.cta}
   </a>
 </Section>

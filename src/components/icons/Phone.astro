@@ -1,0 +1,36 @@
+---
+/**
+ * The handset glyph.
+ *
+ * EXTRACTED VERBATIM from Nav.astro's call button, so the nav and
+ * Contact's phone CTA draw one shape rather than two that drift. That
+ * drift is not hypothetical here: the .ico and the apple-touch icon
+ * became two different drawings of the same mark before
+ * `pnpm icons` existed to generate both from one source.
+ *
+ * Default 15px because that is what it was drawn at — the nav bar is
+ * the tightest row on the site, and a 20px handset crowds the button
+ * beside it.
+ *
+ * aria-hidden, currentColor, compile-time only — see WhatsApp.astro
+ * for the reasoning on all three.
+ */
+interface Props {
+  /** px, square. 15 in the nav, 18 beside a 20px WhatsApp glyph. */
+  size?: number;
+  class?: string;
+}
+
+const { size = 15, class: className } = Astro.props;
+---
+
+<svg
+  class={className || undefined}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  aria-hidden="true"
+>
+  <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z" />
+</svg>

@@ -63,14 +63,22 @@ const { site, imageCredits, legalPages } = await getContent();
     )}
 
     {/*
-      Legal links, LAST — after the photograph credits, inside the same
-      container.
+      The bottom bar: legal links on the left, the build credit on the
+      right.
 
-      The array is empty until a legal page has a body, and an empty
-      array renders nothing at all. That absence IS the gate: there is
+      THE BAR IS UNCONDITIONAL; THE LINKS INSIDE IT ARE NOT.
+
+      The legal array is empty until a page has a body, and an empty
+      array renders no links at all. That absence IS the gate: there is
       never a link to a page that does not exist, which is the one
       failure this whole site was built to fix. verify-content asserts
       that the link set and the built page set match exactly.
+
+      But the credit is not gated on anything, so it cannot live inside
+      that conditional — unpublishing a policy would silently take it
+      down with the links. Hence the bar renders either way and only
+      the <nav> is conditional. `ml-auto` holds the credit right
+      whether or not the links are beside it.
 
       Array order is the footer order, set by dragging in the Studio —
       see siteSettings.legalPages.
@@ -79,21 +87,59 @@ const { site, imageCredits, legalPages } = await getContent();
       role. The guardrail forbids it on ROLELESS generics (div, span),
       where the browser discards it.
     */}
-    {legalPages.length > 0 && (
-      <nav aria-label="Legal" class="mt-8 border-t border-primary-foreground/10 pt-6">
-        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-primary-foreground/45">
-          {legalPages.map((p) => (
-            <li>
-              <a
-                href={`/legal/${p.slug}`}
-                class="link-inline underline underline-offset-4 hover:text-primary-foreground/70 hover:no-underline"
-              >
-                {p.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    )}
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-primary-foreground/10 pt-6">
+      {legalPages.length > 0 && (
+        <nav aria-label="Legal">
+          <ul class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-primary-foreground/45">
+            {legalPages.map((p) => (
+              <li>
+                <a
+                  href={`/legal/${p.slug}`}
+                  class="link-inline underline underline-offset-4 hover:text-primary-foreground/70 hover:no-underline"
+                >
+                  {p.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {/*
+        The build credit, matching kumarsrivathsan.com and
+        keepingitsou.com — same wording, same placement, same link.
+
+        `alt=""` on the avatar is deliberate: the anchor already says
+        "Kunal" in text and carries an aria-label, so a described
+        avatar would announce the name twice. It is decoration beside a
+        label, which is exactly what empty alt is for.
+
+        The image is hotlinked from GitHub rather than re-hosted, which
+        is the one exception to the Sanity-CDN rule in CLAUDE.md. It is
+        a deliberate choice for parity with the sibling sites — see the
+        note there before "fixing" it.
+      */}
+      <p class="ml-auto inline-flex items-center gap-1 text-xs text-primary-foreground/55">
+        <span>Built by</span>
+        <a
+          href="https://kunalkeshan.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Built by Kunal"
+          class="link-inline inline-flex items-center gap-1 text-primary-foreground/70 underline underline-offset-4 transition-colors hover:text-primary-foreground hover:no-underline"
+        >
+          <img
+            src="https://github.com/kunalkeshan.png"
+            width="16"
+            height="16"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            class="size-4 rounded-full"
+          />
+          Kunal
+        </a>
+      </p>
+    </div>
   </div>
 </footer>
