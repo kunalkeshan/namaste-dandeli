@@ -35,6 +35,10 @@ pnpm verify:content   # content truth validators
 pnpm verify:a11y      # contrast + colour-blindness
 pnpm blockers         # every fact still waiting on Irshad
 pnpm og               # regenerate public/og.jpg (needs preview + headless chrome)
+
+pnpm dev:site         # Astro only, without the Studio
+pnpm dev:studio       # Studio only (localhost:3333)
+pnpm studio:deploy    # deploy the Studio to *.sanity.studio
 ```
 
 ## Stack
@@ -67,9 +71,18 @@ docs/           style guide, content rules, domain facts, SEO, launch runbook
 
 ### The content adapter
 
-Components import from `src/content` and nowhere else. `getContent()` is async even
-though nothing awaits yet — when Sanity lands, that one file becomes GROQ queries
-returning the same shapes and **no component changes**.
+Components import from `src/content` and nowhere else. **Sanity has landed**:
+`getContent()` is now a single GROQ query returning the same shapes, and no component
+changed — which is what the async boundary was for.
+
+`getContent()` memoizes the _promise_, so thirteen call sites cost one round trip.
+`narrowConfirmed` (`src/content/narrow.ts`) rebuilds `Confirmed<T>` from the flat
+object Sanity stores, omitting `value` entirely when unconfirmed. It fails closed —
+which matters because **MCP writes skip Studio validation**, so the adapter, not the
+Studio, is the real gate. See `docs/adr/002-sanity-adapter.md`.
+
+The Studio is standalone in `studio/` with its own dependency tree. `pnpm dev` runs
+both; `pnpm dev:site` runs only Astro.
 
 This holds for copy as well as data: headings, ledes and nav labels live in
 `content/copy.ts`, not in the components. They used to be hardcoded, which made the
@@ -126,13 +139,24 @@ wrong, and two were fabricated by research agents on this very project.
 
 ## Images
 
-Hotlinked from **Wikimedia Commons** — real, licence-cleared Dandeli photography rather
-than generic stock (Unsplash has no verified Dandeli imagery). All URLs live in
-`content/images.ts`; when Irshad sends his own photos, that one file changes. CC BY-SA
-credits render in the footer automatically.
+All images are served from **Sanity's CDN** (`cdn.sanity.io`). The Wikimedia Commons
+originals were re-hosted there: same files, same CC BY-SA obligations, which travel
+with the asset as a `credit` field and still render in the footer.
 
-The three vehicle cutouts in `public/photos/` are **model photographs, not his cars** —
-background-removed with rembg. The page discloses this under the fleet grid.
+**Attribution never goes in alt text.** Alt describes the image to screen-reader users;
+putting a credit there degrades that _and_ fails the licence, since sighted users never
+see it. `imageWithMeta` keeps them separate and the Studio blocks a CC BY-SA image
+saved without a credit.
+
+Why the move: Commons 302s from `commons.` to `thumb.wikimedia.org` and snaps
+thumbnails to its own buckets, always rounding **up** — a request for 1600w returned
+1920px/897KB. Sanity is one host, no redirect, exact widths, WebP via `auto=format`.
+The hero went 897KB → 302KB.
+
+The fleet cards show **commissioned illustrations of Irshad with each vehicle**, not
+photographs, and the page says so. 13 of the 58 photographs Irshad sent are
+deliberately excluded — see `scripts/asset-manifest.json` for each reason, and
+`verify-content` fails if one ever renders.
 
 ## Documentation
 
