@@ -17,7 +17,16 @@
 import { getContent, whatsappLink } from '../content';
 import { isConfirmed } from '../content/confirmed';
 
-const { featuredReview, assurances, soloFallback, copy } = await getContent();
+const { featuredReview, assurances, soloFallback, copy, irshad, site } =
+  await getContent();
+
+/* His face, above the review.
+   The section's whole argument is "a named person, not an app" — and
+   a photograph is what makes that concrete. These are his own cars,
+   with the Namaste Dandeli sticker on the windscreen and the plate
+   visible, which is exactly the kind of detail someone checking up on
+   an operator wants to see. */
+const portrait = irshad[0] ?? null;
 
 /* Unconfirmed assurances are OMITTED, not hedged — a softened safety
    promise is worse than none at all. */
@@ -44,26 +53,63 @@ const points =
         </ul>
       </div>
 
-      <figure class="sticky-col reveal self-start rounded-xl border border-border bg-muted p-7">
-        <div class="text-accent-ink" aria-hidden="true">
-          ★★★★★
-        </div>
-        <blockquote class="mt-3">
-          <p class="font-display text-xl leading-snug">
-            &ldquo;{featuredReview.text}&rdquo;
+      <figure class="sticky-col reveal self-start overflow-hidden rounded-xl border border-border bg-muted">
+        {/* The photo is the card's header, not an object floating over
+            it. Floating it meant a bordered frame on a bordered card —
+            a nested card, and two elevation systems at once. Here one
+            border wraps the whole thing and the image runs to its
+            edges, so the face, the name and the review read as one
+            object.
+
+            Landscape, not portrait: these are phone 3:4 shots where he
+            stands beside the car, so a tall crop wastes most of its
+            height on tree. A 16:9 band keeps him and the car and drops
+            the canopy. */}
+        {portrait && (
+          <img
+            src={portrait.src}
+            srcset={portrait.srcset}
+            sizes="(min-width: 1024px) 26rem, 90vw"
+            width={portrait.width}
+            height={portrait.height}
+            alt={portrait.alt}
+            class="aspect-[16/9] w-full object-cover"
+            style={`object-position: 30% 42%${
+              portrait.lqip
+                ? `; background-image:url(${portrait.lqip}); background-size:cover`
+                : ''
+            }`}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+
+        <div class="p-7">
+          <p class="font-display text-lg">{site.owner}</p>
+          <p class="mt-0.5 text-sm text-muted-foreground">
+            {site.address.locality} &middot; {site.address.region}
           </p>
-        </blockquote>
-        <figcaption class="mt-4 text-sm text-muted-foreground">
-          {featuredReview.author} &middot; {featuredReview.dateLabel} &middot; on Google
-        </figcaption>
-        <a
-          href={whatsappLink(copy.waMessages.solo)}
-          target="_blank"
-          rel="noopener"
-          class="btn btn-primary mt-6 inline-flex w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"
-        >
-          {copy.sections.solo.cta}
-        </a>
+
+          <div class="mt-5 text-accent-ink" aria-hidden="true">
+            ★★★★★
+          </div>
+          <blockquote class="mt-3">
+            <p class="font-display text-xl leading-snug">
+              &ldquo;{featuredReview.text}&rdquo;
+            </p>
+          </blockquote>
+          <figcaption class="mt-4 text-sm text-muted-foreground">
+            {featuredReview.author} &middot; {featuredReview.dateLabel} &middot; on Google
+          </figcaption>
+          <a
+            href={whatsappLink(copy.waMessages.solo)}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary mt-6 inline-flex w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"
+          >
+            {copy.sections.solo.cta}
+          </a>
+        </div>
       </figure>
     </div>
   </div>

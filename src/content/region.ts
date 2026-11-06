@@ -8,6 +8,37 @@ import { client, toImg, IMAGE_FIELDS, type SanityImg } from './sanity';
  * working — and because the alt text and CC BY-SA credits travel with
  * each asset, the footer attribution still renders.
  */
+/**
+ * Photographs of Irshad with his own cars.
+ *
+ * These are the trust asset — the page argues "a named person, not an
+ * app", and a face is what makes that land. `ownPhotos.ready` had been
+ * false since the project started, waiting for exactly these.
+ *
+ * Portrait 3:4 from a phone, so they are cropped to a portrait frame
+ * rather than stretched into the landscape shapes used elsewhere.
+ */
+export async function irshadPhotos() {
+  const rows: AssetRow[] = await client.fetch(
+    `*[_type == "sanity.imageAsset" && originalFilename match "irshad-*"]
+      | order(originalFilename asc){
+      _id, url, originalFilename, description, creditLine, metadata
+    }`,
+  );
+  return rows
+    .map((row) =>
+      toImg(
+        {
+          asset: { _id: row._id, url: row.url, metadata: row.metadata },
+          alt: row.description ?? '',
+          credit: row.creditLine,
+        } as SanityImg,
+        row.description ?? '',
+      ),
+    )
+    .filter((i): i is NonNullable<typeof i> => i !== null);
+}
+
 const SLOTS = [
   'rafting',
   'hornbill',

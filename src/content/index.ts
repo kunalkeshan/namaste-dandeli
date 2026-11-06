@@ -18,7 +18,7 @@
 import { client } from './sanity';
 import { toImg, type Img } from './sanity';
 import { CONTENT_QUERY } from './query';
-import { regionImages } from './region';
+import { regionImages, irshadPhotos } from './region';
 import { narrowConfirmed, narrowDistance } from './narrow';
 import { whatsappLink, telLink, WA_DEFAULT, siteLinks } from './site';
 import { carImageNote } from './images';
@@ -87,7 +87,11 @@ async function snapshot(content: unknown) {
 }
 
 async function loadContent() {
-  const [raw, images] = await Promise.all([client.fetch(CONTENT_QUERY), regionImages()]);
+  const [raw, images, irshad] = await Promise.all([
+    client.fetch(CONTENT_QUERY),
+    regionImages(),
+    irshadPhotos(),
+  ]);
 
   if (!raw?.settings) {
     throw new Error(
@@ -172,6 +176,8 @@ async function loadContent() {
   const content = {
     site,
     images,
+    /** Photographs of Irshad himself. The trust asset. */
+    irshad,
     carImages,
     ...siteLinks(site),
     vehicles,
