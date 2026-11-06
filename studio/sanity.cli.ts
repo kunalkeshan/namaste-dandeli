@@ -16,7 +16,10 @@ export default defineCliConfig({
     dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
   },
   deployment: {
-    appId: process.env.SANITY_STUDIO_APP_ID,
+    // Pinned so redeploys target the same namaste-dandeli.sanity.studio
+    // app rather than prompting for a new one. The env var can still
+    // override it for a separate staging studio.
+    appId: process.env.SANITY_STUDIO_APP_ID ?? 'v02r1srxevpsp0gv6xin6kom',
     autoUpdates: true,
   },
 });
