@@ -77,8 +77,17 @@ const { site, imageCredits, legalPages } = await getContent();
       But the credit is not gated on anything, so it cannot live inside
       that conditional — unpublishing a policy would silently take it
       down with the links. Hence the bar renders either way and only
-      the <nav> is conditional. `ml-auto` holds the credit right
+      the <nav> is conditional. `sm:ml-auto` holds the credit right
       whether or not the links are beside it.
+
+      THE BAR STACKS BELOW sm, AND MUST. Side by side at 320px the two
+      legal links take nearly the whole line and leave the credit a
+      sliver, so "Built by" stayed up on the links' line and the
+      avatar + "Kunal" dropped beneath it — a broken-looking orphan.
+      flex-wrap cannot fix that: the credit is ONE flex item, so
+      wrapping moves all of it or none, and at that width neither the
+      links nor the credit will yield. So the bar is a column on
+      phones and only becomes a row at sm, where both fit.
 
       Array order is the footer order, set by dragging in the Studio —
       see siteSettings.legalPages.
@@ -87,7 +96,7 @@ const { site, imageCredits, legalPages } = await getContent();
       role. The guardrail forbids it on ROLELESS generics (div, span),
       where the browser discards it.
     */}
-    <div class="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-primary-foreground/10 pt-6">
+    <div class="mt-8 flex flex-col items-start gap-y-4 border-t border-primary-foreground/10 pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6 sm:gap-y-3">
       {legalPages.length > 0 && (
         <nav aria-label="Legal">
           <ul class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-primary-foreground/45">
@@ -114,19 +123,24 @@ const { site, imageCredits, legalPages } = await getContent();
         avatar would announce the name twice. It is decoration beside a
         label, which is exactly what empty alt is for.
 
+        `whitespace-nowrap` on both the <p> and the <a> keeps
+        "Built by (avatar) Kunal" on one line, as the sibling sites
+        render it. It is five short words: it either fits on its own
+        line or the bar stacks, but it never breaks mid-phrase.
+
         The image is hotlinked from GitHub rather than re-hosted, which
         is the one exception to the Sanity-CDN rule in CLAUDE.md. It is
         a deliberate choice for parity with the sibling sites — see the
         note there before "fixing" it.
       */}
-      <p class="ml-auto inline-flex items-center gap-1 text-xs text-primary-foreground/55">
+      <p class="inline-flex items-center gap-1 text-xs whitespace-nowrap text-primary-foreground/55 sm:ml-auto">
         <span>Built by</span>
         <a
           href="https://kunalkeshan.dev"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Built by Kunal"
-          class="link-inline inline-flex items-center gap-1 text-primary-foreground/70 underline underline-offset-4 transition-colors hover:text-primary-foreground hover:no-underline"
+          class="link-inline inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-primary-foreground/70 underline underline-offset-4 transition-colors hover:text-primary-foreground hover:no-underline"
         >
           <img
             src="https://github.com/kunalkeshan.png"
@@ -135,7 +149,7 @@ const { site, imageCredits, legalPages } = await getContent();
             alt=""
             loading="lazy"
             decoding="async"
-            class="size-4 rounded-full"
+            class="size-4 shrink-0 rounded-full"
           />
           Kunal
         </a>
