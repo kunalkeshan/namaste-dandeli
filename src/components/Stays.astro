@@ -49,6 +49,8 @@ const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
 
   <a
     href={whatsappLink(copy.waMessages.stay)}
+    data-track="whatsapp"
+    data-placement="stays"
     target="_blank"
     rel="noopener"
     class="link-inline mt-6 inline-flex items-center gap-2 font-medium text-accent-ink underline decoration-accent decoration-2 underline-offset-4 hover:no-underline"

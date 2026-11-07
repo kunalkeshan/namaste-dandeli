@@ -47,6 +47,8 @@ const chips = [...outstation, ...outstation];
         ) : (
           <a
             href={telLink()}
+            data-track="call"
+            data-placement="routes_fare"
             class="link-inline text-sm font-medium text-accent-ink underline decoration-accent underline-offset-4 transition-colors hover:text-foreground hover:no-underline"
           >
             Ask the fare
@@ -96,6 +98,8 @@ const chips = [...outstation, ...outstation];
 
   <a
     href={whatsappLink(copy.waMessages.trip)}
+    data-track="whatsapp"
+    data-placement="routes"
     target="_blank"
     rel="noopener"
     class="btn btn-primary reveal mt-10 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground"

@@ -1,0 +1,132 @@
+---
+/**
+ * Analytics: the Google tag, and ONE tracking function for everything.
+ *
+ * ---------------------------------------------------------------------
+ * THE TRADEOFF, STATED PLAINLY
+ *
+ * This is the only third-party script on the site, and it is not
+ * cheap: gtag.js measured 150KB over the wire (434KB raw) with
+ * 'cache-control: max-age=900', so it is re-fetched every 15 minutes.
+ * The homepage is 30KB gzipped. The tag is roughly five times the
+ * weight of the page it measures, for an audience of tourists on
+ * Indian mobile data.
+ *
+ * That was accepted deliberately, in exchange for full GA4 fidelity
+ * (DebugView, Realtime, every standard report) over a hand-rolled
+ * Measurement Protocol build. It is recorded here rather than left
+ * for the next reader to discover.
+ *
+ * The 'zero JS' gate still passes, and not by accident: is:inline
+ * means Astro emits the script into the HTML instead of bundling a
+ * module, so nothing lands in dist/ as a .js file. The third-party
+ * file is fetched from Google and never written to dist/ either.
+ * verify:content now also audits script tags, so this component
+ * cannot grow a second vendor without the gate noticing.
+ * ---------------------------------------------------------------------
+ *
+ * WHY gtag/js AND WHY config STAYS
+ *
+ * Google's own docs read as contradictory here, and the wrong choice
+ * ships a tag that silently under-reports. The Tag Platform install
+ * page serves a gtm.js snippet and calls gtag('config') deprecated —
+ * but that page describes a Tag Manager CONTAINER (GTM-XXXXXXX). For
+ * a 'G-' measurement ID, which is what this site has, the documented
+ * install is gtag/js?id=G-... WITH gtag('config', 'G-...'). Pairing a
+ * 'G-' ID with /gtm.js is explicitly an unsupported implementation
+ * whose tag behaviour may change.
+ *
+ * No GTM container, no Tag Manager UI dependency: one ID, one file.
+ */
+import { analytics } from '../content/analytics';
+
+/**
+ * Three conditions, all of which must hold.
+ *
+ * No ID means nothing renders, so the base can sit in main until the
+ * domain is attached and today's deploys add literally zero bytes.
+ *
+ * import.meta.env.PROD keeps it out of 'pnpm dev'. VERCEL_ENV keeps
+ * it off preview deploys, so Irshad clicking through a PR preview
+ * never lands in the real property. process.env rather than
+ * import.meta.env because VERCEL_ENV is an unprefixed system
+ * variable — the same mechanism astro.config.mjs already relies on
+ * for VERCEL_PROJECT_PRODUCTION_URL.
+ */
+const enabled =
+  analytics.ga4 !== '' && import.meta.env.PROD && process.env.VERCEL_ENV !== 'preview';
+
+const id = analytics.ga4;
+const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+
+/**
+ * The inline tag, built as a string and injected with set:html.
+ *
+ * A string rather than a literal <script> body on purpose: the code
+ * below contains braces, backticks-free comments and an ID that has
+ * to be interpolated, and the Astro compiler parses a template
+ * literal inside JSX rather than treating it as opaque text. One
+ * string keeps it unambiguous.
+ *
+ * THE VENDOR-AGNOSTIC SEAM is window.track. One function, one
+ * fan-out point: adding Microsoft Clarity later is a branch inside it
+ * and nothing else — no component changes, no second listener, no
+ * touching 16 anchors.
+ *
+ * Its signature is "name + a flat object of string-able scalars", and
+ * that is the lowest common denominator of the vendors on purpose.
+ * GA4 takes a params object directly. Clarity's event API takes the
+ * event NAME ONLY and cannot accept params at all — those go through
+ * a separate clarity('set', key, value) call. So never put a nested
+ * object or an array in params: GA4 would accept it, Clarity could
+ * not express it, and the two destinations would silently disagree.
+ *
+ * Each vendor is an independent if-check, so one being blocked by an
+ * ad blocker or failing to load never throws and never stops the
+ * others from firing.
+ *
+ * ONE DELEGATED LISTENER, not 16 handlers. Every CTA carries
+ * data-track (the method) and data-placement (where it sits), so a
+ * 17th CTA is tracked the moment it gets those two attributes — it
+ * cannot be forgotten the way an inline onclick can, and no
+ * component needs to know analytics exists.
+ *
+ * 'click' rather than 'pointerdown', and nothing is prevented or
+ * delayed: tel: and wa.me navigations must fire immediately. GA4
+ * transports via navigator.sendBeacon, which survives the page
+ * unloading, so there is no need to stall a navigation to get the
+ * event out.
+ */
+const tag = [
+  'window.dataLayer = window.dataLayer || [];',
+  'function gtag(){ dataLayer.push(arguments); }',
+  "gtag('js', new Date());",
+  `gtag('config', '${id}');`,
+  'window.track = function (name, params) {',
+  '  if (window.gtag) window.gtag("event", name, params);',
+  '  /* Clarity goes here. Mirror params as tags, do NOT flatten them',
+  '     into event names (contact_click_hero, ...): Clarity caps a',
+  '     project at 20 custom events and there are 11 placements.',
+  '     "set" tags have no documented limit and feed its own filters.',
+  '     if (window.clarity) {',
+  '       window.clarity("event", name);',
+  '       for (var k in params) window.clarity("set", k, String(params[k]));',
+  '     } */',
+  '};',
+  'document.addEventListener("click", function (e) {',
+  '  var a = e.target.closest("[data-track]");',
+  '  if (!a) return;',
+  '  window.track("contact_click", {',
+  '    method: a.dataset.track,',
+  '    placement: a.dataset.placement,',
+  '  });',
+  '}, { passive: true });',
+].join('\n');
+---
+
+{enabled && (
+  <Fragment>
+    <script is:inline async src={src} />
+    <script is:inline set:html={tag} />
+  </Fragment>
+)}

@@ -8,6 +8,7 @@
  */
 import '../styles/global.css';
 import { getContent } from '../content';
+import Analytics from '../components/Analytics.astro';
 
 interface Props {
   title: string;
@@ -220,6 +221,19 @@ const jsonLd = {
     <link rel="icon" type="image/png" sizes="512x512" href="/icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {/*
+      Analytics lives in the LAYOUT, not the pages, and that is
+      load-bearing. Nav and Contact render on every page, so
+      page-level mounting would mean editing each page and silently
+      missing the next one. Two pages are excluded for free as a
+      result: og.astro does not use this layout (the social card is
+      screenshotted by `pnpm og` and must stay script-free), and
+      styleguide.astro redirects in PROD before it can pollute the
+      property.
+
+      Renders nothing at all until a measurement ID is set.
+    */}
+    <Analytics />
   </head>
 
   <body>

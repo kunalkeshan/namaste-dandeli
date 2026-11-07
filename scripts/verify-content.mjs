@@ -82,6 +82,46 @@ if (jsFiles.length > 0) {
   ok('zero JS', 'no separate .js files');
 }
 
+/* 3b. Every <script> in the page is one we meant to ship -------------
+   "No .js files in dist/" was the whole gate, and it stopped being the
+   whole truth the moment analytics landed: a third-party tag is never
+   written to dist/, so it passes the check above while adding 150KB to
+   the page. The count was honest about what it measured and silent
+   about what it did not.
+
+   So the gate now also audits the script tags themselves. Each one must
+   be ACCOUNTED FOR by name:
+
+     - application/ld+json   the structured data (not executable)
+     - the Motion IIFE       the site's own 2.5KB, recognised by a
+                             distinctive string rather than by position
+     - the Google tag        only when an ID is configured: the
+                             googletagmanager src plus the inline
+                             dataLayer/window.track snippet
+
+   Anything else — a bundled island, a second analytics vendor pasted
+   into a component instead of added to window.track, a stray inline
+   handler — fails here rather than being discovered in the field. */
+const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+const unaccounted = [];
+for (const [, attrs, body] of scripts) {
+  const isJsonLd = /type\s*=\s*["']application\/ld\+json["']/i.test(attrs);
+  const isMotion = body.includes('data-reveal-ready');
+  const isGtagSrc = /googletagmanager\.com\/gtag\/js/i.test(attrs);
+  const isGtagInline = body.includes('window.dataLayer') && body.includes('window.track');
+  if (isJsonLd || isMotion || isGtagSrc || isGtagInline) continue;
+  const where = attrs.trim() || body.trim().slice(0, 60);
+  unaccounted.push(where.replace(/\s+/g, ' ').slice(0, 80));
+}
+if (unaccounted.length > 0) {
+  fail(
+    'script audit',
+    `${unaccounted.length} unaccounted <script>: ${unaccounted.join(' | ')}`,
+  );
+} else {
+  ok('script audit', `${scripts.length} script tag(s), all accounted for`);
+}
+
 /* 4. No unconfirmed claim leaked into the page ---------------------- */
 const MUST_NOT_RENDER = [
   ['24 hours, every day', 'the unconfirmed 24/7 hours claim'],

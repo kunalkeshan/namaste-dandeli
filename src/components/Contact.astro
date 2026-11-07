@@ -54,6 +54,8 @@ const { site, copy } = await getContent();
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <a
             href={whatsappLink(copy.waMessages.default)}
+            data-track="whatsapp"
+            data-placement="contact"
             target="_blank"
             rel="noopener"
             class="btn btn-accent inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-4 font-semibold text-accent-foreground"
@@ -63,6 +65,8 @@ const { site, copy } = await getContent();
           </a>
           <a
             href={telLink()}
+            data-track="call"
+            data-placement="contact"
             class="btn btn-ghost inline-flex items-center justify-center gap-2 rounded-xl border border-primary-foreground/30 px-6 py-4 font-semibold"
           >
             <PhoneIcon size={18} />
@@ -84,6 +88,8 @@ const { site, copy } = await getContent();
           <br />
           <a
             href={telLink()}
+            data-track="call"
+            data-placement="contact_nap"
             class="link-inline underline underline-offset-4 hover:no-underline"
           >
             {site.phoneDisplay}

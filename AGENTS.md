@@ -80,6 +80,13 @@ gate `done` / `N/A` / `deferred — reason`, bundling all **Q**s into a single
       _The performance argument for this audience — tourists on Indian mobile data —
       rests entirely on this._ → `CLAUDE.md`
 
+      **The one sanctioned exception is the analytics tag** in `Analytics.astro`
+      (GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
+      `.js` file count cannot see it — which is why `verify:content` now also
+      audits every `<script>` tag in the built HTML and fails on any that is not
+      accounted for by name. A second analytics vendor is a branch in
+      `window.track`, never a new snippet in a component.
+
 - [ ] **Image provenance (Q)** — added an image → record its licence and whether it
       depicts the real subject or is representative. Ask whether an on-page disclosure
       is needed.
@@ -110,7 +117,10 @@ gate `done` / `N/A` / `deferred — reason`, bundling all **Q**s into a single
 - `src/content/confirmed.ts` — the guard itself. Weakening it silently re-opens every
   bug it was built to prevent.
 - `scripts/verify-*.mjs` — the gates. Loosening a threshold needs an explicit reason.
-- `src/components/Motion.astro` — the only JavaScript on the site.
+- `src/components/Motion.astro` — the site's only JavaScript of its own.
+- `src/components/Analytics.astro` — the only third-party script, and the single
+  `window.track` seam every CTA depends on.
+- `src/content/analytics.ts` — the live GA4 measurement ID.
 
 ### Never without explicit instruction
 

@@ -45,7 +45,8 @@ pnpm studio:deploy    # deploy the Studio to *.sanity.studio
 
 ## Stack
 
-- **Astro 7**, static output, **zero client JavaScript**
+- **Astro 7**, static output, **no client JavaScript of our own** (one
+  third-party analytics tag, see below)
 - `astro-portabletext` renders the legal pages' rich text — Astro-native, no React.
   It ships UNBUILT source (its export map points at `lib/index.ts`), so it must stay
   in `vite.ssr.noExternal`; without that the build fails on an unparseable import
@@ -60,6 +61,14 @@ pnpm studio:deploy    # deploy the Studio to *.sanity.studio
 No React, no UI framework. The 2.5KB of JS in `Motion.astro` is inline and the page
 renders fully without it.
 
+**One third-party script, deliberately.** `Analytics.astro` loads GA4's `gtag.js`
+when a measurement ID is set in `src/content/analytics.ts`. It is the single
+largest thing the site downloads: measured at **150KB over the wire** (434KB raw)
+with `max-age=900`, so it is re-fetched every 15 minutes, against a homepage of
+30KB gzipped. That cost was accepted knowingly in exchange for full GA4 fidelity,
+and it is written down here so nobody has to rediscover it. With no ID configured
+the component renders nothing at all — zero added bytes.
+
 ## Architecture
 
 ```
@@ -67,7 +76,9 @@ src/
   content/      all facts and copy — the ONLY place either lives
     index.ts    the adapter: components import from here and nowhere else
     confirmed.ts  the Confirmed<T> guard (read this first)
+    analytics.ts  the GA4 ID and the event vocabulary (code, not Sanity)
   components/   one .astro file per section
+    Analytics.astro  the Google tag + window.track, the one fan-out point
     icons/      one .astro component per UI glyph — aria-hidden, currentColor
   layouts/      page shell: head, fonts, JSON-LD
   styles/       design tokens (@theme) and base styles
@@ -222,7 +233,23 @@ wrong, and two were fabricated by research agents on this very project.
   visible text label — `pnpm verify:aria` fails a link whose whole content is
   hidden. The WhatsApp mark lived inline in `Hero.astro` and nowhere else, so five
   of six WhatsApp CTAs drew nothing. See `docs/style-guide.md` for the size table.
-- **Keep the page at zero separate `.js` files.** Check with `pnpm verify:content`.
+- **Keep the page at zero separate `.js` files.** Check with `pnpm verify:content`,
+  which now also **audits every `<script>` tag** in the built HTML — the `.js`
+  file count alone could not see a third-party tag, since one is never written to
+  `dist/`. Each script must be accounted for by name: the JSON-LD block, the
+  Motion IIFE, and the Google tag. Anything else fails the build.
+- **Never add a second analytics vendor's snippet to a component.** `window.track`
+  in `Analytics.astro` is the one fan-out point: add a branch there. Its contract
+  is `(name, params)` where `params` is a **flat** object of string-able scalars —
+  that is the lowest common denominator of the vendors, because Clarity's event
+  API takes a name only and passes params through a separate `clarity('set', …)`
+  call. A nested object would be accepted by GA4, be inexpressible in Clarity, and
+  make the two destinations silently disagree.
+- **A new CTA is tracked by adding `data-track` and `data-placement`**, nothing
+  else. One delegated listener reads them, so there is no per-anchor handler to
+  forget. `method` and `placement` must also be registered as event-scoped custom
+  dimensions in the GA4 UI or their values never reach reports — and registration
+  is not retroactive. See `docs/launch-runbook.md`.
 - Do not reorganise `src/` or rename components unprompted.
 - Do not add dependencies without approval.
 

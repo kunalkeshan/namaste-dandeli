@@ -14,7 +14,14 @@ Two things to settle before the domain is attached:
 - **They matter for analytics and ads.** The privacy policy is written on the
   assumption that Google Analytics is installed. Google's own terms require a privacy
   notice disclosing it, so the page needs to be live before (or with) the GA tag, not
-  after.
+  after. **This is already satisfied:** both pages are published and linked, and the
+  policy discloses GA and its cookies by name. The analytics base is built and
+  waiting on the measurement ID — see §5.
+
+  One wording note for whenever the policy is next edited: it says _"The site runs
+  without any JavaScript of its own."_ That stays literally true — the GA tag is
+  third-party, and `Motion.astro` is progressive enhancement — but it reads as a
+  stronger claim than it is now. Worth softening when Irshad reviews the page.
 
 The privacy policy deliberately does **not** cite the DPDP Act as a current duty —
 its substantive provisions commence 13 May 2027. See `docs/content-rules.md` rule 7.
@@ -79,7 +86,63 @@ URL the same way; use those to show Irshad real pages.
 Only set `SITE_URL` to override that, e.g. to pin a specific domain when several are
 attached.
 
-## 4. Immediately after deploy — the highest-value step
+## 4. Turn on analytics
+
+The whole base is in place and renders **nothing** until an ID is set, so this is
+two edits and a UI step. The code side is one line.
+
+1. **Paste the measurement ID** into `src/content/analytics.ts`:
+
+   ```ts
+   ga4: 'G-XXXXXXXXXX',
+   ```
+
+   It is deliberately in code, not an env var and not Sanity — change it, commit,
+   and it is live on the next deploy. The tag renders only on production
+   (`import.meta.env.PROD`) and never on Vercel previews or localhost, so Irshad
+   clicking through a PR preview cannot pollute the property.
+
+2. **Register the two custom dimensions — in the same sitting.** GA4 collects
+   custom event parameters but does **not** show them in any report until they
+   are registered, and registration is **not retroactive**. Skip this and you get
+   correct click totals with no idea which section produced them.
+
+   GA4 → Admin → Custom definitions → Create custom dimension:
+
+   | Dimension name | Scope | Event parameter |
+   | -------------- | ----- | --------------- |
+   | `method`       | Event | `method`        |
+   | `placement`    | Event | `placement`     |
+
+   Reporting begins 24–48 hours later.
+
+3. **Confirm it works.** GA4 → Realtime should show `page_view` from the live
+   domain within a minute. Then use **DebugView** and click one call CTA and one
+   WhatsApp CTA from different sections: each click should produce exactly one
+   `contact_click` carrying the right `method` and `placement`, and the
+   `tel:`/`wa.me` link must still open normally.
+
+4. **Optionally mark `contact_click` as a key event** (Admin → Events). That gives
+   it conversion semantics without inventing a rupee value — which is why
+   `generate_lead` is deliberately not sent.
+
+### What gets tracked
+
+One event, `contact_click`, with `method` (`call` / `whatsapp` / `maps`) and
+`placement` — so every CTA is one row in one report rather than sixteen event
+names. Plus `section_view` per section, for read depth.
+
+`placement` is worth reading closely, because two values answer business
+questions rather than UI ones:
+
+- **`routes_fare`** is the "Ask the fare" link, which renders **only where a route
+  distance is still unconfirmed** (8 of them today, per §1). Clicks here measure
+  what the unmeasured routes are costing in real enquiries — a direct argument for
+  prioritising §2.
+- **`contact_nap`** is the bare phone number in the address block, as opposed to
+  the contact buttons. It shows whether anyone uses it.
+
+## 5. Immediately after deploy — the highest-value step
 
 1. **Replace the 404 URL on his Google Business Profile.** This is the single most
    valuable action in the whole project.
@@ -87,7 +150,7 @@ attached.
 3. Submit the sitemap in Search Console.
 4. Check the OG card renders by pasting the URL into WhatsApp.
 
-## 5. Ongoing
+## 6. Ongoing
 
 | When                            | Do                                                                          |
 | ------------------------------- | --------------------------------------------------------------------------- |

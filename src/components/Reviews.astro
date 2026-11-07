@@ -47,6 +47,8 @@ const rest = reviews.filter((r) => !shownAbove.has(r.role));
 
   <a
     href={site.google.mapsUrl}
+    data-track="maps"
+    data-placement="reviews"
     target="_blank"
     rel="noopener"
     class="link-inline btn mt-8 inline-flex items-center gap-2 font-medium underline decoration-accent decoration-2 underline-offset-4 transition-opacity hover:opacity-80 hover:no-underline"

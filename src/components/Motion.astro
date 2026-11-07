@@ -58,11 +58,37 @@
         const r = t.getBoundingClientRect();
         if (r.top < innerHeight * 0.9) t.classList.add('is-in');
       });
+      /* Section-view analytics rides on this observer rather than a
+         second one: it already fires as a section comes into view and
+         already unobserves after the first hit.
+
+         Two things it must get right. A section has SEVERAL .reveal
+         targets (header, cards, CTA), so the id is resolved from the
+         nearest ancestor <section> and deduped through `seen` —
+         otherwise one section would report four views. And
+         `window.track` is optional: with no measurement ID set there
+         is no analytics script at all, so motion must not depend on
+         it existing.
+
+         Note this lives ONLY in the observer branch. The
+         reduced-motion path below reveals everything at once, and
+         firing from there would report eight instant section views
+         for a visitor who had merely loaded the page. */
+      const seen = new Set();
+      const report = (el) => {
+        if (!window.track) return;
+        const id = el.closest('section[id]')?.id;
+        if (!id || seen.has(id)) return;
+        seen.add(id);
+        window.track('section_view', { placement: id });
+      };
+
       const io = new IntersectionObserver(
         (entries) => {
           for (const e of entries) {
             if (!e.isIntersecting) continue;
             e.target.classList.add('is-in');
+            report(e.target);
             io.unobserve(e.target); // reveal once, never re-animate
           }
         },

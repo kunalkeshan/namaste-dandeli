@@ -54,6 +54,8 @@ const links = copy.nav.links;
     <div class="ml-auto flex items-center gap-2 lg:ml-0">
       <a
         href={telLink()}
+        data-track="call"
+        data-placement="nav"
         class="btn btn-ghost hidden items-center gap-2 rounded-lg border border-primary-foreground/25 px-3.5 py-2 text-sm font-medium text-primary-foreground sm:inline-flex"
       >
         <PhoneIcon />
@@ -61,6 +63,8 @@ const links = copy.nav.links;
       </a>
       <a
         href={whatsappLink(copy.waMessages.default)}
+        data-track="whatsapp"
+        data-placement="nav"
         target="_blank"
         rel="noopener"
         class="btn btn-accent inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
@@ -114,6 +118,8 @@ const links = copy.nav.links;
             <li class="pt-4">
               <a
                 href={telLink()}
+                data-track="call"
+                data-placement="nav_mobile"
                 class="btn btn-ghost flex items-center justify-center rounded-lg border border-primary-foreground/25 py-3 font-medium text-primary-foreground"
               >
                 Call {site.phoneDisplay}
