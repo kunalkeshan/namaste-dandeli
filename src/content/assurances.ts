@@ -44,7 +44,7 @@ export const soloFallback = {
   title: 'Booking a stranger to drive you through a forest is a real decision',
   lede:
     'Especially alone, and especially as a woman. Irshad cannot remove that ' +
-    'calculation, but he can be the kind of operator it is easy to check on — ' +
+    'calculation, but he can be the kind of operator it is easy to check on: ' +
     'a named person, a listed number, and three years of reviews anyone can read.',
   /** Verifiable without asking him anything. */
   evidence: [

@@ -41,10 +41,10 @@ export const hero = {
   place: 'Alur · Dandeli · Karnataka',
   headline: ['One person who knows', 'the whole of Dandeli'],
   lede:
-    'Irshad has been driving this forest for years — to the rafting point at ' +
-    'Ganeshgudi, through the tiger reserve at first light, and to the resort ' +
-    'that actually suits your group. One call arranges the car, the activity ' +
-    'and the stay.',
+    'Irshad has been driving this forest for years. He knows the rafting point ' +
+    'at Ganeshgudi, the tiger reserve at first light, and the resort that ' +
+    'actually suits your group. One call arranges the car, the activity and ' +
+    'the stay.',
   whatsappCta: 'Message Irshad on WhatsApp',
 } as const;
 
@@ -65,11 +65,11 @@ export const sections = {
     title: 'Anywhere you need to be, worked out on the phone',
     lede:
       'These are the arrivals people book most often. But the trip is whatever ' +
-      'you and Irshad plan together — a single airport run, a week of driving, ' +
+      'you and Irshad plan together: a single airport run, a week of driving, ' +
       'or a route nobody has asked for before.',
     outstationTitle: 'Places he has already driven people',
     outstationNote:
-      'Every one of these comes out of his reviews — real trips, not a brochure list.',
+      'Every one of these comes out of his reviews. Real trips, not a brochure list.',
     cta: 'Plan a trip with Irshad',
   },
   stays: {
@@ -78,7 +78,7 @@ export const sections = {
     lede:
       'He works with resorts, jungle camps and homestays across Dandeli. Tell ' +
       'him the dates, the group and the budget, and he will tell you what is ' +
-      'actually free — not what is advertised.',
+      'actually free, not what is advertised.',
     cta: 'Ask what is free on your dates',
   },
   pricing: {
@@ -101,8 +101,8 @@ export const sections = {
     title: 'Tell him the dates and he will tell you what is possible',
     lede:
       'Not sure whether the rafting is running, or which resort suits a family ' +
-      'with small children? That is the conversation — ask before you commit ' +
-      'to anything.',
+      'with small children? That is the conversation to have. Ask before you ' +
+      'commit to anything.',
     addressTitle: 'Where he is based',
     hoursLabel: 'Hours',
     servingLabel: 'Serving',

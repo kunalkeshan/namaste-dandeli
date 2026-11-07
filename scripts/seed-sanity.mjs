@@ -81,9 +81,9 @@ docs.push({
   serviceAreas: [...site.serviceAreas],
   google: { ...site.google },
   seo: {
-    title: 'Namaste Dandeli — taxi, trips and resort bookings in Dandeli',
+    title: 'Dandeli taxi and resort bookings | Namaste Dandeli',
     description:
-      'Irshad drives tourists around Dandeli — rafting at Ganeshgudi, jungle safari in Kali Tiger Reserve, airport pickups from Hubballi and Goa — and books the resort too. 4.9 stars from 160+ Google reviews.',
+      'Irshad drives tourists around Dandeli. Rafting, jungle safari, airport pickups from Hubballi and Goa, and he books the resort too. 4.9 from 160+ Google reviews.',
     ogTitle: 'Namaste Dandeli',
     ogSubtitle: 'Cabs, trips and stays\nacross Dandeli',
     ogPlace: 'Alur · Dandeli · Karnataka',

@@ -63,13 +63,13 @@ export const routes: Route[] = [
     distance: unconfirmed<Distance>(ASK, NEEDS('Belagavi airport → Dandeli')),
   },
   {
-    from: 'Goa — Dabolim (GOI)',
+    from: 'Dabolim Airport, Goa (GOI)',
     to: 'Dandeli',
     distance: unconfirmed<Distance>(ASK, NEEDS('Dabolim → Dandeli')),
     note: 'Closer than Mopa, whatever the booking sites tell you.',
   },
   {
-    from: 'Goa — Mopa (GOX)',
+    from: 'Mopa Airport, Goa (GOX)',
     to: 'Dandeli',
     distance: unconfirmed<Distance>(ASK, NEEDS('Mopa → Dandeli')),
   },

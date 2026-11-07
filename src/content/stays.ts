@@ -45,6 +45,6 @@ export const stays: Stay[] = [
  */
 export const staysDisclosure =
   'These are real photographs of places Irshad books people into. They are ' +
-  'not named here on purpose — a named resort gets booked direct and he ' +
+  'not named here on purpose. A named resort gets booked direct and he ' +
   'loses the introduction he made. Tell him your dates, your group and your ' +
   'budget, and he will tell you what is actually free.';

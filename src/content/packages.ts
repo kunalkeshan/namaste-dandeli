@@ -28,6 +28,6 @@ export const extras = {
 
 export const pricingNote =
   'A local day is priced as a slab: eight hours and eighty kilometres. ' +
-  'Go past either and the extra is charged at the rate above — no ' +
+  'Go past either and the extra is charged at the rate above, with no ' +
   'renegotiating halfway through the trip. Airport runs, outstation and ' +
   'multi-day trips are quoted on the route, so call and ask.';

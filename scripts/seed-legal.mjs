@@ -162,7 +162,7 @@ const docs = [
       h('Your rights'),
       p(
         'You can ask what he holds about you, ask him to correct it, or ask him ' +
-          'to delete it. Phone or email him and he will do it — he answers his ' +
+          'to delete it. Phone or email him and he will do it. He answers his ' +
           'own phone.',
       ),
       linked(
@@ -233,7 +233,7 @@ const docs = [
         'Rafting on the Kali depends on water released from Supa Dam. It does ' +
           'not depend on the calendar and it does not depend on rainfall. The ' +
           'season usually runs from October to June, but no date can be ' +
-          'promised — not by us and not by anyone. If the release stops, the ' +
+          'promised, not by us and not by anyone. If the release stops, the ' +
           'rafting stops.',
       ),
 
@@ -257,7 +257,7 @@ const docs = [
         'The text on this site, the Namaste Dandeli monogram and the ' +
           'commissioned illustrations of Irshad with each vehicle are his. The ' +
           'illustrations are illustrations, and the site says so where they ' +
-          'appear — they are not photographs of a specific journey.',
+          'appear. They are not photographs of a specific journey.',
       ),
       p(
         'Several photographs are licensed from Wikimedia Commons under CC BY-SA ' +

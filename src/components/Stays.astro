@@ -20,7 +20,7 @@ const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
   id="stay"
   eyebrow={copy.sections.stays.eyebrow}
   title={copy.sections.stays.title}
-  lede="He works with resorts, jungle camps and homestays across Dandeli. Tell him the dates, the group and the budget, and he will tell you what is actually free — not what is advertised."
+  lede={copy.sections.stays.lede}
 >
   <!-- A grid of cards, each with its OWN carousel of that kind of
        property. Previously a single outer rail indexed a shared image

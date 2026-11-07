@@ -62,7 +62,7 @@ export const site = {
    * behind a `hoursConfirmed: false` flag that no component read.
    */
   hours: unconfirmed<string>(
-    'Call to check availability — he answers early and late',
+    'Call to check availability. He answers early and late',
     'Are you genuinely available 24/7, or are there hours you do not drive?',
   ) as Confirmed<string>,
 
