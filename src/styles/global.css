@@ -163,9 +163,25 @@ p {
     min-height: 44px;
   }
 
+  /*
+   * `display` here is ONLY to give the ::after a positioned,
+   * sized box — an inline <a> cannot be padded out to 44px.
+   *
+   * SO IT MUST NOT CLOBBER A LINK THAT IS ALREADY A FLEX ROW.
+   * The footer's "Built by (avatar) Kunal" credit is an
+   * inline-flex anchor; forcing inline-block on it dropped the
+   * flex context and stacked the avatar ABOVE the name, turning
+   * one 17px line into a 33px two-line block.
+   *
+   * It only ever reproduced on a COARSE POINTER — real phones and
+   * Chrome's device toolbar — so it was invisible both on desktop
+   * and to any headless check that did not emulate touch.
+   */
+  .link-inline:not(.inline-flex):not(.flex) {
+    display: inline-block;
+  }
   .link-inline {
     position: relative;
-    display: inline-block;
   }
   .link-inline::after {
     content: '';
