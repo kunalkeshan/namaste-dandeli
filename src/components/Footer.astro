@@ -123,18 +123,27 @@ const { site, imageCredits, legalPages } = await getContent();
         avatar would announce the name twice. It is decoration beside a
         label, which is exactly what empty alt is for.
 
-        `whitespace-nowrap` on both the <p> and the <a> keeps
-        "Built by (avatar) Kunal" on one line, as the sibling sites
-        render it. It is five short words: it either fits on its own
-        line or the bar stacks, but it never breaks mid-phrase.
+        IT IS A flex-nowrap ROW, NOT AN INLINE PHRASE, so that
+        "Built by (avatar) Kunal" holds one line as the sibling sites
+        render it.
+
+        `whitespace-nowrap` ALONE DOES NOT WORK HERE and looks like it
+        should. global.css sets `p { text-wrap: pretty }`, and
+        text-wrap writes the same longhand group as white-space, so on
+        a <p> it resets text-wrap-mode and the nowrap is silently
+        dropped — the class is right there in the markup while the
+        computed style reads `normal`. Hence `[text-wrap:nowrap]`,
+        which wins on specificity, AND the flex row, which keeps the
+        label and link as unbreakable siblings even if that rule ever
+        changes. `shrink-0` on both stops the avatar being squeezed.
 
         The image is hotlinked from GitHub rather than re-hosted, which
         is the one exception to the Sanity-CDN rule in CLAUDE.md. It is
         a deliberate choice for parity with the sibling sites — see the
         note there before "fixing" it.
       */}
-      <p class="inline-flex items-center gap-1 text-xs whitespace-nowrap text-primary-foreground/55 sm:ml-auto">
-        <span>Built by</span>
+      <p class="flex flex-nowrap items-center gap-1 text-xs [text-wrap:nowrap] text-primary-foreground/55 sm:ml-auto">
+        <span class="shrink-0">Built by</span>
         <a
           href="https://kunalkeshan.dev"
           target="_blank"
