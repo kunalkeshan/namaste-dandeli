@@ -106,6 +106,29 @@ p {
   text-wrap: pretty;
 }
 
+/*
+ * An unbreakable inline phrase — currently the footer's "Built by
+ * (avatar) Kunal" credit.
+ *
+ * IT LIVES HERE, BESIDE THE RULE THAT BREAKS IT. `text-wrap` writes
+ * the same longhand group as `white-space`, so the `p` rule above
+ * resets text-wrap-mode and silently defeats a `whitespace-nowrap`
+ * utility on any <p> — the class sits in the markup while the
+ * computed style reads `normal`.
+ *
+ * A real class, not an arbitrary variant: `[text-wrap:nowrap]` only
+ * works if Tailwind's scanner has seen that exact string, and a dev
+ * server with a stale scan serves CSS without it while the
+ * production build has it. That split shipped a footer that was
+ * correct in `dist/` and broken in `pnpm dev`, which is the worst
+ * kind of wrong — it looks fixed wherever you happen not to be
+ * looking.
+ */
+.nowrap-phrase {
+  text-wrap: nowrap;
+  white-space: nowrap;
+}
+
 /* Body copy stays under ~70 characters */
 .measure {
   max-width: 64ch;
