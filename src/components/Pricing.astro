@@ -11,6 +11,12 @@ import Section from './Section.astro';
 import { getContent, telLink } from '../content';
 const { pricing, site, copy } = await getContent();
 const { slabs, extras, note } = pricing;
+const t = copy.sections.pricing;
+
+/** Rounded up, so the per-person figure never understates the real cost. */
+const perPersonLine = (s: (typeof slabs)[number]) =>
+  `${t.seatsLabel} ${s.seats} \u00b7 ${t.perPersonAbout} ₹` +
+  `${Math.ceil(s.price / s.seats).toLocaleString('en-IN')} ${t.perPersonSuffix}`;
 ---
 
 <Section
@@ -28,6 +34,7 @@ const { slabs, extras, note } = pricing;
         <p class="mt-1 text-sm text-muted-foreground">
           {s.hours} hours &middot; {s.km} km
         </p>
+        <p class="mt-1 text-sm tabular-nums text-muted-foreground">{perPersonLine(s)}</p>
       </div>
     ))}
   </div>
