@@ -19,7 +19,7 @@ import { client } from './sanity';
 import { toImg, type Img } from './sanity';
 import { CONTENT_QUERY } from './query';
 import { regionImages, irshadPhotos } from './region';
-import { narrowConfirmed, narrowDistance } from './narrow';
+import { narrowConfirmed, narrowDistance, narrowAssurance } from './narrow';
 import { isPublished, type LegalPage, type LegalBlock } from './legal';
 import { whatsappLink, telLink, WA_DEFAULT, siteLinks } from './site';
 import { carImageNote } from './images';
@@ -208,8 +208,13 @@ async function loadContent() {
   const featuredReview = reviews.find((r) => r.featured) ?? reviews[0];
 
   const assurances: Confirmed<Assurance>[] = (raw.assurances ?? []).map(
-    (a: { fact: unknown }, i: number) =>
-      narrowConfirmed<Assurance>(a.fact as never, `assurances[${i}]`),
+    (row: never, i: number) => {
+      const a = row as { title?: string; body?: string; fact: unknown };
+      return narrowAssurance(
+        { title: a.title, body: a.body, fact: a.fact as never },
+        `assurances[${i}]`,
+      );
+    },
   );
 
   /**

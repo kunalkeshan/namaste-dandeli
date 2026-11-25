@@ -43,7 +43,8 @@ const OUT = 'scripts/.seed-legal.ndjson';
 /* The date these documents take effect. Not "today" at render time —
    a legal page's effective date is a fact about the document, so it is
    written once, here, and only changes when the MEANING changes. */
-const EFFECTIVE = '2026-11-06';
+const EFFECTIVE_PRIVACY = '2026-11-26';
+const EFFECTIVE_TERMS = '2026-11-06';
 
 const server = await createServer({
   server: { middlewareMode: true },
@@ -111,7 +112,7 @@ const docs = [
     description:
       'What this website collects, what Irshad holds when you call or message ' +
       'him about a trip, and how to ask him to delete it.',
-    effectiveDate: EFFECTIVE,
+    effectiveDate: EFFECTIVE_PRIVACY,
     body: [
       p(
         'This site is a brochure. You cannot book on it, and it asks you for ' +
@@ -122,7 +123,7 @@ const docs = [
       h('What this website collects'),
       p(
         'Nothing you type, because there is no form, no account and no payment ' +
-          'page. The site runs without any JavaScript of its own.',
+          'page.',
       ),
       p(
         'Google Analytics is used to count visits and see which pages people ' +
@@ -197,7 +198,7 @@ const docs = [
     description:
       'What this website is and is not: no booking happens here, and nothing ' +
       'on it is a promise about a date or a sighting.',
-    effectiveDate: EFFECTIVE,
+    effectiveDate: EFFECTIVE_TERMS,
     body: [
       p(
         'Short version: this website tells you what is possible in Dandeli. ' +

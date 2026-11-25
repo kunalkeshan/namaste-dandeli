@@ -1,7 +1,7 @@
 /**
  * The fleet. Models are named in real reviews; seat counts are the
  * manufacturer's standard.
- * TODO: confirm exact models and whether the Innova is still running.
+ * Sedan, Ertiga and Cruiser (the "toofan") — names on the page, not model numbers.
  */
 export interface Vehicle {
   name: string;

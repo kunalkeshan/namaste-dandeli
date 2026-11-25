@@ -11,9 +11,8 @@
  * So this is also NOT `Confirmed<T>`. There is no question to put to
  * Irshad here and nothing for `pnpm blockers` to report.
  *
- * To go live: paste the Tag Manager container ID below and deploy. With the
- * string empty, `Analytics.astro` renders nothing at all — zero added
- * bytes — so this can sit in main until the domain is attached.
+ * With the string empty, `Analytics.astro` renders nothing at all — zero added
+ * bytes. On production builds a container ID loads GTM (`import.meta.env.PROD`).
  *
  * TWO MORE STEPS, and the data is useless without them. Inside the GTM
  * container, a GA4 Event tag must fire on a Custom Event trigger for

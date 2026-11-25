@@ -23,7 +23,7 @@ pnpm blockers     # every fact still waiting on Irshad
 | [docs/dandeli-facts.md](docs/dandeli-facts.md)   | Verified facts **and the do-not-publish list**               |
 | [docs/style-guide.md](docs/style-guide.md)       | Tokens, type, motion — live version at `/styleguide`         |
 | [docs/seo.md](docs/seo.md)                       | Schema decisions, incl. why there is no `aggregateRating`    |
-| [docs/launch-runbook.md](docs/launch-runbook.md) | What remains before go-live                                  |
+| [docs/launch-runbook.md](docs/launch-runbook.md) | Live status, off-site checklist, ongoing ops                 |
 
 ## How it is put together
 
@@ -62,12 +62,10 @@ a slow pre-commit hook gets bypassed, and a bypassed gate is no gate.
 
 The eight self-firing gates for AI agents and contributors are in [AGENTS.md](AGENTS.md).
 
-## Before launch
+## Live site
 
-Run `pnpm blockers` — the list is generated from the code, so it cannot go stale.
-Currently 14 facts await Irshad's confirmation. See
-[docs/launch-runbook.md](docs/launch-runbook.md).
+**https://namastedandeli.com** — Vercel production, Sanity content, GTM on prod builds.
 
-**The highest-value action is not in this repo:** the website link on his Google
-Business Profile returns 404, and he has only one Google category. Both are free fixes
-worth more than anything here.
+Run `pnpm blockers` after a build for any facts still unconfirmed in the content
+snapshot. See [docs/launch-runbook.md](docs/launch-runbook.md) for off-site steps
+(GBP website URL, secondary categories, Search Console).

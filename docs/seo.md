@@ -1,10 +1,10 @@
 # SEO
 
-## The highest-value action is not on this site
+## The highest-value off-site action
 
-The website link on Irshad's Google Business Profile returns **HTTP 404**. He has
-4.9★ from 160 reviews driving traffic into a broken link. Replacing that URL is free
-and worth more than anything in this repo.
+The site is live at **https://namastedandeli.com**. The Google Business Profile website
+field still needs to be set to that URL (it previously 404'd). That change is free and
+worth more than anything in this repo.
 
 Second: he has **one** Google category ("Taxi service"). BrightLocal's 2026 ranking
 study puts primary category first and additional categories eighth among local-pack

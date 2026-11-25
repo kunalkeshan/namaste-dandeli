@@ -8,9 +8,10 @@
  * Plain values are verified from his Google Business Profile
  * (2026-11-04) and safe to render directly.
  */
-// `confirmed()` is imported by the modules that have confirmed facts;
-// everything here is still waiting on Irshad.
-import { unconfirmed, type Confirmed } from './confirmed';
+import { confirmed, type Confirmed } from './confirmed';
+
+const CONFIRMED_ON = '2026-11-26';
+const IRSHAD = 'Irshad Khan';
 export const site = {
   name: 'Namaste Dandeli',
   legalName: 'Namaste Dandeli Hotel Bookings and Taxi Services',
@@ -24,15 +25,7 @@ export const site = {
   phoneDisplay: '+91 94490 06326',
   email: 'humsafartaxi@gmail.com',
 
-  /**
-   * The WhatsApp number may differ from the listed phone — many
-   * operators keep a separate business line. Until he confirms,
-   * WhatsApp CTAs fall back to the verified phone number.
-   */
-  whatsapp: unconfirmed<string>(
-    '919449006326',
-    'Is WhatsApp on +91 94490 06326, or a different number?',
-  ) as Confirmed<string>,
+  whatsapp: confirmed('919449006326', CONFIRMED_ON, IRSHAD),
 
   address: {
     street: 'Haliyal - Dandeli Rd, 3No Gate',
@@ -53,18 +46,12 @@ export const site = {
       'https://search.google.com/local/reviews?placeid=ChIJS9xlA1YhvzsRhn3XMMMsNnY',
   },
 
-  /**
-   * Reviews repeatedly say he is "available anytime on the phone",
-   * which suggests 24/7 — a strong claim, and exactly why it must
-   * not be published on a guess.
-   *
-   * This previously rendered "24 hours, every day" on the live page
-   * behind a `hoursConfirmed: false` flag that no component read.
-   */
-  hours: unconfirmed<string>(
+  /** Not 24/7 — confirmed wording for the contact block. */
+  hours: confirmed(
     'Call to check availability. He answers early and late',
-    'Are you genuinely available 24/7, or are there hours you do not drive?',
-  ) as Confirmed<string>,
+    CONFIRMED_ON,
+    IRSHAD,
+  ),
 
   serviceAreas: [
     'Dandeli',

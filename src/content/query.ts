@@ -63,7 +63,7 @@ export const CONTENT_QUERY = defineQuery(`{
     author, rating, date, dateLabel, text, role, pull, featured
   },
   "assurances": *[_type == "assurance"] | order(order asc){
-    fact ${FACT}
+    title, body, fact ${FACT}
   },
   // ORDER COMES FROM THE ARRAY, not from a sort. Note the absence of
   // "| order(...)" -- the one place in this file where leaving it off is

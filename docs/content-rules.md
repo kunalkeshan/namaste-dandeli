@@ -148,12 +148,17 @@ validator now fails on any `<a href="#">` in a legal page.
 The privacy policy does **not** say "under the DPDP Act you have the right to…". The
 Digital Personal Data Protection Act 2023 was enacted on 11 August 2023 and its Rules
 were notified on 13 November 2025, but the substantive obligations — notice, consent
-and data-principal rights — **commence 13 May 2027**. Until then the IT Act 2000 and
+and data-principal rights — **commence in May 2027**. Until then the IT Act 2000 and
 the 2011 Privacy Rules govern.
 
-So the rights are stated as **what Irshad will do if you ask**: true today, and still
-true after May 2027. Citing a duty that does not yet bind is the same class of error as
-publishing an unmeasured number — a claim that sounds authoritative and is wrong.
+The live policy **does** name the Act prospectively: it says those provisions will
+require this of every business once they commence in May 2027, and that the policy is
+written to meet them early. That is not the same as claiming a current statutory right.
+
+The rights section is stated as **what Irshad will do if you ask**: true today, and still
+true after May 2027. Inventing "under the DPDP Act you have the right to…" today is the
+same class of error as publishing an unmeasured number — a claim that sounds authoritative
+and is wrong.
 
 ---
 
