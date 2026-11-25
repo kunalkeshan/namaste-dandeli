@@ -16,7 +16,7 @@ Two things to settle before the domain is attached:
   notice disclosing it, so the page needs to be live before (or with) the GA tag, not
   after. **This is already satisfied:** both pages are published and linked, and the
   policy discloses GA and its cookies by name. The analytics base is built and
-  waiting on the measurement ID — see §5.
+  waiting on the container ID — see §5.
 
   One wording note for whenever the policy is next edited: it says _"The site runs
   without any JavaScript of its own."_ That stays literally true — the GA tag is
@@ -91,10 +91,10 @@ attached.
 The whole base is in place and renders **nothing** until an ID is set, so this is
 two edits and a UI step. The code side is one line.
 
-1. **Paste the measurement ID** into `src/content/analytics.ts`:
+1. **The container ID** is set in `src/content/analytics.ts`:
 
    ```ts
-   ga4: 'G-XXXXXXXXXX',
+   gtm: 'GTM-5Q5VJ89S',
    ```
 
    It is deliberately in code, not an env var and not Sanity — change it, commit,
@@ -102,7 +102,13 @@ two edits and a UI step. The code side is one line.
    (`import.meta.env.PROD`) and never on Vercel previews or localhost, so Irshad
    clicking through a PR preview cannot pollute the property.
 
-2. **Register the two custom dimensions — in the same sitting.** GA4 collects
+2. **Wire the events inside the container.** In Tag Manager, add a GA4 Event tag
+   (event name `{{Event}}`) firing on a Custom Event trigger matching
+   `contact_click|section_view`, with Data Layer Variables `method` and `placement`
+   passed as event parameters. The site only pushes to `dataLayer`; it does not
+   send GA4 events itself.
+
+3. **Register the two custom dimensions — in the same sitting.** GA4 collects
    custom event parameters but does **not** show them in any report until they
    are registered, and registration is **not retroactive**. Skip this and you get
    correct click totals with no idea which section produced them.
@@ -116,13 +122,13 @@ two edits and a UI step. The code side is one line.
 
    Reporting begins 24–48 hours later.
 
-3. **Confirm it works.** GA4 → Realtime should show `page_view` from the live
+4. **Confirm it works.** GA4 → Realtime should show `page_view` from the live
    domain within a minute. Then use **DebugView** and click one call CTA and one
    WhatsApp CTA from different sections: each click should produce exactly one
    `contact_click` carrying the right `method` and `placement`, and the
    `tel:`/`wa.me` link must still open normally.
 
-4. **Optionally mark `contact_click` as a key event** (Admin → Events). That gives
+5. **Optionally mark `contact_click` as a key event** (Admin → Events). That gives
    it conversion semantics without inventing a rupee value — which is why
    `generate_lead` is deliberately not sent.
 

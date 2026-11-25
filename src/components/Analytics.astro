@@ -6,7 +6,7 @@
  * THE TRADEOFF, STATED PLAINLY
  *
  * This is the only third-party script on the site, and it is not
- * cheap: gtag.js measured 150KB over the wire (434KB raw) with
+ * cheap: gtag.js (loaded by the container's GA4 tag) measured 150KB over the wire (434KB raw) with
  * 'cache-control: max-age=900', so it is re-fetched every 15 minutes.
  * The homepage is 30KB gzipped. The tag is roughly five times the
  * weight of the page it measures, for an audience of tourists on
@@ -25,18 +25,17 @@
  * cannot grow a second vendor without the gate noticing.
  * ---------------------------------------------------------------------
  *
- * WHY gtag/js AND WHY config STAYS
+ * WHY A GTM CONTAINER
  *
- * Google's own docs read as contradictory here, and the wrong choice
- * ships a tag that silently under-reports. The Tag Platform install
- * page serves a gtm.js snippet and calls gtag('config') deprecated —
- * but that page describes a Tag Manager CONTAINER (GTM-XXXXXXX). For
- * a 'G-' measurement ID, which is what this site has, the documented
- * install is gtag/js?id=G-... WITH gtag('config', 'G-...'). Pairing a
- * 'G-' ID with /gtm.js is explicitly an unsupported implementation
- * whose tag behaviour may change.
+ * The ID is a Tag Manager container (GTM-...), so the install is the
+ * documented gtm.js bootstrap: push 'gtm.start', then load gtm.js. The
+ * GA4 tag itself lives INSIDE the container, not here. This component
+ * only loads the container and feeds it events through dataLayer.
  *
- * No GTM container, no Tag Manager UI dependency: one ID, one file.
+ * Do not reintroduce gtag('config', ...) or a gtag/js loader alongside
+ * it: the container's GA4 tag would then double-count every pageview.
+ * And do not pair a 'G-' ID with gtm.js — that is unsupported.
+ * ---------------------------------------------------------------------
  */
 import { analytics } from '../content/analytics';
 
@@ -53,11 +52,11 @@ import { analytics } from '../content/analytics';
  * variable — the same mechanism astro.config.mjs already relies on
  * for VERCEL_PROJECT_PRODUCTION_URL.
  */
-const enabled =
-  analytics.ga4 !== '' && import.meta.env.PROD && process.env.VERCEL_ENV !== 'preview';
+const id: string = analytics.gtm;
 
-const id = analytics.ga4;
-const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+const enabled = id !== '' && import.meta.env.PROD && process.env.VERCEL_ENV !== 'preview';
+
+const src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
 
 /**
  * The inline tag, built as a string and injected with set:html.
@@ -75,7 +74,7 @@ const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
  *
  * Its signature is "name + a flat object of string-able scalars", and
  * that is the lowest common denominator of the vendors on purpose.
- * GA4 takes a params object directly. Clarity's event API takes the
+ * GTM reads the dataLayer push as {event: name, ...params}. Clarity's event API takes the
  * event NAME ONLY and cannot accept params at all — those go through
  * a separate clarity('set', key, value) call. So never put a nested
  * object or an array in params: GA4 would accept it, Clarity could
@@ -99,11 +98,11 @@ const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
  */
 const tag = [
   'window.dataLayer = window.dataLayer || [];',
-  'function gtag(){ dataLayer.push(arguments); }',
-  "gtag('js', new Date());",
-  `gtag('config', '${id}');`,
+  'window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });',
   'window.track = function (name, params) {',
-  '  if (window.gtag) window.gtag("event", name, params);',
+  '  var e = { event: name };',
+  '  for (var k in params) e[k] = params[k];',
+  '  window.dataLayer.push(e);',
   '  /* Clarity goes here. Mirror params as tags, do NOT flatten them',
   '     into event names (contact_click_hero, ...): Clarity caps a',
   '     project at 20 custom events and there are 11 placements.',

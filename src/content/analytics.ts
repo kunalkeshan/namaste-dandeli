@@ -11,20 +11,23 @@
  * So this is also NOT `Confirmed<T>`. There is no question to put to
  * Irshad here and nothing for `pnpm blockers` to report.
  *
- * To go live: paste the GA4 measurement ID below and deploy. With the
+ * To go live: paste the Tag Manager container ID below and deploy. With the
  * string empty, `Analytics.astro` renders nothing at all — zero added
  * bytes — so this can sit in main until the domain is attached.
  *
- * ONE MORE STEP, and the data is useless without it: `method` and
- * `placement` must be registered as event-scoped custom dimensions in
- * the GA4 UI (Admin -> Custom definitions). GA4 collects unregistered
- * params but never shows them in reports, and registration is NOT
- * retroactive. See docs/launch-runbook.md.
+ * TWO MORE STEPS, and the data is useless without them. Inside the GTM
+ * container, a GA4 Event tag must fire on a Custom Event trigger for
+ * `contact_click` (and `section_view`), passing `method` and `placement`
+ * from Data Layer Variables. Then `method` and `placement` must be
+ * registered as event-scoped custom dimensions in the GA4 UI (Admin ->
+ * Custom definitions): GA4 collects unregistered params but never shows
+ * them in reports, and registration is NOT retroactive. See
+ * docs/launch-runbook.md.
  */
 
 export const analytics = {
-  /** GA4 measurement ID, e.g. 'G-XXXXXXXXXX'. Empty = tag disabled. */
-  ga4: '',
+  /** Google Tag Manager container ID, e.g. 'GTM-XXXXXXX'. Empty = tag disabled. */
+  gtm: 'GTM-5Q5VJ89S',
 
   /**
    * Microsoft Clarity project ID. Reserved, not yet wired.

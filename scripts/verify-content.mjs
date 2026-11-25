@@ -107,7 +107,7 @@ const unaccounted = [];
 for (const [, attrs, body] of scripts) {
   const isJsonLd = /type\s*=\s*["']application\/ld\+json["']/i.test(attrs);
   const isMotion = body.includes('data-reveal-ready');
-  const isGtagSrc = /googletagmanager\.com\/gtag\/js/i.test(attrs);
+  const isGtagSrc = /googletagmanager\.com\/gtm\.js/i.test(attrs);
   const isGtagInline = body.includes('window.dataLayer') && body.includes('window.track');
   if (isJsonLd || isMotion || isGtagSrc || isGtagInline) continue;
   const where = attrs.trim() || body.trim().slice(0, 60);

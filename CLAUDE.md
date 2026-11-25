@@ -61,8 +61,8 @@ pnpm studio:deploy    # deploy the Studio to *.sanity.studio
 No React, no UI framework. The 2.5KB of JS in `Motion.astro` is inline and the page
 renders fully without it.
 
-**One third-party script, deliberately.** `Analytics.astro` loads GA4's `gtag.js`
-when a measurement ID is set in `src/content/analytics.ts`. It is the single
+**One third-party script, deliberately.** `Analytics.astro` loads the Google Tag Manager container (`gtm.js`), which in turn loads GA4's `gtag.js`
+when a container ID is set in `src/content/analytics.ts`. It is the single
 largest thing the site downloads: measured at **150KB over the wire** (434KB raw)
 with `max-age=900`, so it is re-fetched every 15 minutes, against a homepage of
 30KB gzipped. That cost was accepted knowingly in exchange for full GA4 fidelity,
@@ -76,7 +76,7 @@ src/
   content/      all facts and copy — the ONLY place either lives
     index.ts    the adapter: components import from here and nowhere else
     confirmed.ts  the Confirmed<T> guard (read this first)
-    analytics.ts  the GA4 ID and the event vocabulary (code, not Sanity)
+    analytics.ts  the GTM container ID and the event vocabulary (code, not Sanity)
   components/   one .astro file per section
     Analytics.astro  the Google tag + window.track, the one fan-out point
     icons/      one .astro component per UI glyph — aria-hidden, currentColor
