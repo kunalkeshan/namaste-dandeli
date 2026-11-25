@@ -14,11 +14,13 @@ export interface Slab {
   hours: number;
   km: number;
   price: number;
+  /** Passenger seats, mirroring vehicles.ts (which stores a display string). */
+  seats: number;
 }
 
 export const slabs: Slab[] = [
-  { vehicle: 'Sedan', hours: 8, km: 80, price: 2500 },
-  { vehicle: 'Ertiga', hours: 8, km: 80, price: 3200 },
+  { vehicle: 'Sedan', hours: 8, km: 80, price: 2500, seats: 4 },
+  { vehicle: 'Ertiga', hours: 8, km: 80, price: 3200, seats: 6 },
 ];
 
 export const extras = {

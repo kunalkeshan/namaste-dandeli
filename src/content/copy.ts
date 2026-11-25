@@ -85,6 +85,9 @@ export const sections = {
     eyebrow: 'What it costs',
     title: 'A local day, priced the way he actually quotes it',
     cta: 'Call for a quote on your route',
+    seatsLabel: 'Seats',
+    perPersonAbout: 'about',
+    perPersonSuffix: 'each',
   },
   reviews: {
     eyebrow: 'What people say',
