@@ -1,4 +1,5 @@
 import type { Confirmed } from './confirmed';
+import type { Assurance } from './assurances';
 
 /** What Sanity actually stores: one flat object, every key optional. */
 export interface FlatConfirmed<T> {
@@ -65,6 +66,35 @@ export function narrowConfirmed<T>(
     );
   }
   return { confirmed: false, fallback: raw.fallback ?? '', blocker: raw.blocker };
+}
+
+/**
+ * Solo-travel assurances store title/body on the document; `fact` is
+ * only the confirmation gate.
+ */
+export function narrowAssurance(
+  raw: {
+    title?: string | null;
+    body?: string | null;
+    fact?: FlatConfirmed<string> | null;
+  },
+  field: string,
+): Confirmed<Assurance> {
+  const fact = narrowConfirmed<string>(raw.fact, field);
+  if (!fact.confirmed) return fact as Confirmed<Assurance>;
+  const title = raw.title?.trim();
+  const body = raw.body?.trim();
+  if (!title || !body) {
+    throw new Error(
+      `${field}: confirmed assurance needs title and body on the document, not only the fact.`,
+    );
+  }
+  return {
+    confirmed: true,
+    value: { title, body },
+    confirmedOn: fact.confirmedOn,
+    ...(fact.source ? { source: fact.source } : {}),
+  };
 }
 
 /** Route distances carry {km, drive} rather than a single scalar. */

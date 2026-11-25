@@ -7,7 +7,7 @@
  * sends everything else to a phone call. That is also how he actually
  * quotes.
  *
- * TODO: get his real rates for the common routes.
+ * Airport, outstation and multi-day trips stay call-for-a-quote.
  */
 export interface Slab {
   vehicle: string;

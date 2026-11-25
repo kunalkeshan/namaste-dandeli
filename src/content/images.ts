@@ -155,8 +155,7 @@ export const carImageNote =
 
 /**
  * Irshad's own photographs.
- * TODO: these are the most valuable images on the page — his face is
- * the trust asset. Drop the files into /public/photos/ and set `ready`.
+ * Optional own photographs — fleet cards use commissioned illustrations instead.
  */
 export const ownPhotos = {
   ready: false,

@@ -32,8 +32,8 @@ const portrait = irshad[0] ?? null;
 /* Unconfirmed assurances are OMITTED, not hedged — a softened safety
    promise is worse than none at all. */
 const confirmedAssurances = assurances.filter(isConfirmed).map((a) => a.value);
-const points =
-  confirmedAssurances.length > 0 ? confirmedAssurances : soloFallback.evidence;
+/* Confirmed promises add to the evidence — they do not replace it. */
+const points = [...soloFallback.evidence, ...confirmedAssurances];
 ---
 
 <section id="solo" class="bg-background">

@@ -192,7 +192,17 @@ assurances.forEach((a, i) => {
   docs.push({
     _id: `assurance-${i}`,
     _type: 'assurance',
-    fact: flat(a),
+    ...(a.confirmed
+      ? { title: a.value.title, body: a.value.body }
+      : { title: '', body: '' }),
+    fact: a.confirmed
+      ? {
+          confirmed: true,
+          value: 'yes',
+          confirmedOn: a.confirmedOn,
+          ...(a.source ? { source: a.source } : {}),
+        }
+      : flat(a),
     order: i,
   });
 });

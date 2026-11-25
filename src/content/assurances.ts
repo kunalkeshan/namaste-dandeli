@@ -13,7 +13,7 @@
  *
  * Anything here that stays unconfirmed is a launch blocker.
  */
-import { unconfirmed, type Confirmed } from './confirmed';
+import { confirmed, unconfirmed, type Confirmed } from './confirmed';
 
 export interface Assurance {
   title: string;
@@ -23,15 +23,19 @@ export interface Assurance {
 export const assurances: Confirmed<Assurance>[] = [
   unconfirmed<Assurance>(
     '',
-    'Do YOU always drive, or do other drivers take some trips? Reviews name Vinayak, Manoj, Mahantesh, Waseem and Anna as well as you.',
+    'DECIDED: do not publish — other trusted drivers take some trips; the page must not say Irshad always drives.',
+  ),
+  confirmed(
+    {
+      title: 'The vehicle number, before pickup',
+      body: 'He sends the vehicle number and his number before pickup, so a passenger can forward them to family.',
+    },
+    '2026-11-26',
+    'Irshad Khan',
   ),
   unconfirmed<Assurance>(
     '',
-    'Do you send the vehicle number and your number before pickup, so a passenger can forward them to family?',
-  ),
-  unconfirmed<Assurance>(
-    '',
-    'Is one number answered at all hours, or should the page say something softer about reachability?',
+    'DECIDED: do not publish — no promise that one number is answered at all hours; the hours line is the softer fallback.',
   ),
 ];
 

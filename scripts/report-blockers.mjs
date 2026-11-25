@@ -19,7 +19,8 @@ try {
 
 const out = [];
 const add = (field, f) => {
-  if (f && f.confirmed === false) out.push({ field, blocker: f.blocker });
+  if (f && f.confirmed === false && !f.blocker?.startsWith('DECIDED:'))
+    out.push({ field, blocker: f.blocker });
 };
 
 add('site.hours', c.site?.hours);

@@ -286,11 +286,11 @@ deliberately excluded — see `scripts/asset-manifest.json` for each reason, and
 | `docs/dandeli-facts.md`  | Verified facts **and the do-not-publish list**                |
 | `docs/style-guide.md`    | Tokens, type scale, motion curves, component rules            |
 | `docs/seo.md`            | Schema decisions, including why there is no `aggregateRating` |
-| `docs/launch-runbook.md` | What remains before go-live, and the off-site actions         |
+| `docs/launch-runbook.md` | Live status, off-site checklist, ongoing ops                  |
 
 ## Reference
 
 - [AGENTS.md](AGENTS.md) — the gates, Definition of Done, operational scope
-- Highest-value action is **off-site**: replace the 404 website URL on his Google
-  Business Profile, and add secondary categories. Both free, both worth more than
-  anything in this repo.
+- Highest-value **off-site** actions (see `docs/launch-runbook.md`): point his Google
+  Business Profile website at the live URL, add secondary categories, submit the sitemap
+  in Search Console.
