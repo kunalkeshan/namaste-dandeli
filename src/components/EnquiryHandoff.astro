@@ -14,7 +14,8 @@ const baseWa = whatsappLink(message);
 const lede = enquiryLede(section, topic);
 
 const fieldClass =
-  'mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5 text-foreground shadow-none';
+  'mt-1 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground shadow-none placeholder:text-muted-foreground';
+const altInputClass = `${fieldClass} cursor-pointer`;
 ---
 
 <link
@@ -24,28 +25,26 @@ const fieldClass =
 />
 
 <section
-  class="reveal rounded-2xl border border-foreground/10 bg-muted/30 p-6 sm:p-8"
+  class="enquiry-handoff reveal rounded-2xl border border-foreground/10 bg-muted/30 p-6 sm:p-8"
   data-enquiry-form
   data-wa-base={baseWa}
   data-topic={topic}
+  data-alt-input-class={altInputClass}
 >
   <h2 class="text-lg font-semibold">Send Irshad your dates</h2>
   <p class="measure mt-2 text-sm text-muted-foreground">{lede}</p>
   <form class="mt-6 grid gap-4 sm:grid-cols-2" onsubmit="return false">
-    <label class="block text-sm sm:col-span-2">
+    <label class="block text-sm">
       <span class="font-medium">Travel dates</span>
       <input
         name="dates"
         type="text"
         data-enquiry-dates
-        placeholder="Select check-in and check-out"
+        class="sr-only"
+        tabindex="-1"
         autocomplete="off"
-        class={fieldClass}
-        aria-describedby="enquiry-dates-hint"
+        aria-hidden="true"
       />
-      <span id="enquiry-dates-hint" class="mt-1 block text-xs text-muted-foreground">
-        Tap to pick a start and end date.
-      </span>
     </label>
     <label class="block text-sm">
       <span class="font-medium">Group size</span>
@@ -60,6 +59,12 @@ const fieldClass =
         class={fieldClass}
       />
     </label>
+    <div class="enquiry-calendar sm:col-span-2" data-enquiry-calendar>
+      <p class="text-xs text-muted-foreground">
+        Tap the first night, then the last. Two months show when your trip crosses a month
+        boundary.
+      </p>
+    </div>
     <div class="sm:col-span-2">
       <a
         href={baseWa}
@@ -86,49 +91,118 @@ const fieldClass =
 </section>
 
 <style>
-  [data-enquiry-form] :global(.flatpickr-calendar) {
-    font-family: inherit;
+  .enquiry-calendar {
+    margin-top: -0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .enquiry-handoff :global(.flatpickr-calendar) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 40rem;
+    margin: 0.75rem auto 0;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
-    box-shadow: 0 12px 40px rgb(18 32 25 / 0.12);
+    box-shadow: none;
     background: var(--color-background);
   }
 
-  [data-enquiry-form] :global(.flatpickr-months),
-  [data-enquiry-form] :global(.flatpickr-weekdays) {
+  .enquiry-handoff :global(.flatpickr-months) {
+    background: var(--color-muted);
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 0.35rem 0;
+  }
+
+  .enquiry-handoff :global(.flatpickr-months .flatpickr-month) {
+    color: var(--color-foreground);
+    fill: var(--color-foreground);
+    height: 2.25rem;
+  }
+
+  .enquiry-handoff :global(.flatpickr-current-month) {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    padding-top: 0.35rem;
+  }
+
+  .enquiry-handoff :global(.flatpickr-weekdays) {
     background: var(--color-muted);
   }
 
-  [data-enquiry-form] :global(.flatpickr-day) {
+  .enquiry-handoff :global(span.flatpickr-weekday) {
+    color: var(--color-muted-foreground);
+    font-weight: 600;
+    font-size: 0.7rem;
+  }
+
+  .enquiry-handoff :global(.flatpickr-days) {
+    padding: 0.35rem 0.5rem 0.65rem;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .enquiry-handoff :global(.flatpickr-day) {
     color: var(--color-foreground);
     border-radius: 0.375rem;
+    line-height: 2.125rem;
+    max-width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid transparent;
   }
 
-  [data-enquiry-form] :global(.flatpickr-day:hover) {
+  .enquiry-handoff :global(.flatpickr-day.flatpickr-disabled),
+  .enquiry-handoff :global(.flatpickr-day.prevMonthDay),
+  .enquiry-handoff :global(.flatpickr-day.nextMonthDay) {
+    color: var(--color-muted-foreground);
+    opacity: 0.55;
+  }
+
+  .enquiry-handoff :global(.flatpickr-day:hover:not(.flatpickr-disabled)) {
     background: color-mix(in srgb, var(--color-primary) 12%, var(--color-background));
-  }
-
-  [data-enquiry-form] :global(.flatpickr-day.selected),
-  [data-enquiry-form] :global(.flatpickr-day.startRange),
-  [data-enquiry-form] :global(.flatpickr-day.endRange) {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-primary-foreground);
-  }
-
-  [data-enquiry-form] :global(.flatpickr-day.inRange) {
-    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-background));
     border-color: transparent;
-    box-shadow: none;
   }
 
-  [data-enquiry-form] :global(.flatpickr-day.today) {
-    border-color: var(--color-accent);
+  .enquiry-handoff :global(.flatpickr-day.selected),
+  .enquiry-handoff :global(.flatpickr-day.startRange),
+  .enquiry-handoff :global(.flatpickr-day.endRange) {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary-foreground) !important;
   }
 
-  [data-enquiry-form] :global(.flatpickr-current-month),
-  [data-enquiry-form] :global(.flatpickr-weekday) {
-    color: var(--color-foreground);
+  .enquiry-handoff :global(.flatpickr-day.inRange) {
+    background: color-mix(
+      in srgb,
+      var(--color-primary) 16%,
+      var(--color-background)
+    ) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    color: var(--color-foreground) !important;
+  }
+
+  .enquiry-handoff :global(.flatpickr-day.today) {
+    border-color: var(--color-accent-ink);
+  }
+
+  .enquiry-handoff :global(.flatpickr-day.today:hover) {
+    border-color: var(--color-accent-ink);
+  }
+
+  .enquiry-handoff :global(.numInputWrapper span) {
+    border-color: var(--color-border);
+  }
+
+  /* Visible range summary sits in the dates column (flatpickr alt input). */
+  .enquiry-handoff :global(input.flatpickr-input.form-control.input),
+  .enquiry-handoff :global(input.flatpickr-input) {
+    display: block;
+    width: 100%;
   }
 </style>
 
@@ -149,52 +223,82 @@ const fieldClass =
         document.head.appendChild(s);
       });
 
-    const formatRange = (selected) => {
-      if (!selected || !selected.length) return '';
-      const fmt = (d) =>
+    const formatRangeHuman = (start, end) => {
+      if (!start) return '';
+      const monthLong = (d) =>
+        d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+      const short = (d) =>
         d.toLocaleDateString('en-IN', {
           day: 'numeric',
           month: 'short',
           year: 'numeric',
         });
-      const start = selected[0];
-      const end = selected[1];
-      if (!end) return fmt(start);
-      return `${fmt(start)} – ${fmt(end)}`;
+      if (!end) return short(start);
+      const sameMonth =
+        start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+      if (sameMonth) {
+        return `${start.getDate()} – ${end.getDate()} ${monthLong(start)}`;
+      }
+      return `${short(start)} – ${short(end)}`;
     };
 
     document.querySelectorAll('[data-enquiry-form]').forEach((root) => {
       const base = root.getAttribute('data-wa-base');
       const topic = root.getAttribute('data-topic');
+      const altClass = root.getAttribute('data-alt-input-class') || '';
       const link = root.querySelector('[data-enquiry-submit]');
       const dates = root.querySelector('[data-enquiry-dates]');
       const size = root.querySelector('input[name="size"]');
-      if (!base || !link || !dates || !size) return;
+      const mount = root.querySelector('[data-enquiry-calendar]');
+      const dateLabel = dates?.closest('label');
+      if (!base || !link || !dates || !size || !mount || !dateLabel) return;
 
       let rangeText = '';
 
       loadFlatpickr()
         .then((flatpickr) => {
-          flatpickr(dates, {
+          const fp = flatpickr(dates, {
             mode: 'range',
             minDate: 'today',
-            dateFormat: 'Y-m-d',
+            inline: true,
+            showMonths: 2,
+            appendTo: mount,
             altInput: true,
-            altFormat: 'j M Y',
-            disableMobile: false,
+            altInputClass: altClass,
+            clickOpens: false,
+            dateFormat: 'Y-m-d',
             locale: { rangeSeparator: ' – ' },
             onChange(selected) {
-              rangeText = formatRange(selected);
+              if (selected.length === 2) {
+                rangeText = formatRangeHuman(selected[0], selected[1]);
+                if (fp.altInput) fp.altInput.value = rangeText;
+              } else if (selected.length === 1) {
+                rangeText = formatRangeHuman(selected[0], null);
+                if (fp.altInput) fp.altInput.value = rangeText;
+              } else {
+                rangeText = '';
+              }
             },
           });
+          if (fp.altInput) {
+            fp.altInput.placeholder = 'e.g. 12 – 15 March 2026';
+            fp.altInput.setAttribute('aria-label', 'Selected travel dates');
+            dateLabel.appendChild(fp.altInput);
+          }
         })
         .catch(() => {
-          dates.setAttribute('type', 'text');
-          dates.setAttribute('placeholder', 'e.g. 12–15 March');
+          dates.classList.remove('sr-only');
+          dates.removeAttribute('aria-hidden');
+          dates.setAttribute('tabindex', '0');
+          dates.className = altClass;
+          dates.placeholder = 'e.g. 12–15 March';
         });
 
       const build = () => {
-        const d = rangeText || dates.value.trim();
+        const d =
+          rangeText ||
+          (dates.nextElementSibling && dates.nextElementSibling.value) ||
+          dates.value.trim();
         const s = size.value.trim();
         let extra = '';
         if (d) extra += `\nDates: ${d}`;
