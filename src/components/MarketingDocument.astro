@@ -134,7 +134,11 @@ const distanceLine =
         />
         <div class="space-y-6">
           <InlineCta message={page.whatsappMessage} />
-          <EnquiryHandoff topic={page.enquiryTopic} message={page.whatsappMessage} />
+          <EnquiryHandoff
+            section={page.section}
+            topic={page.enquiryTopic}
+            message={page.whatsappMessage}
+          />
         </div>
       </div>
     </div>

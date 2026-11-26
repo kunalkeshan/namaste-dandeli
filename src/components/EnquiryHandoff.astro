@@ -1,14 +1,27 @@
 ---
 import { getContent, whatsappLink } from '../content';
+import type { MarketingPage } from '../content/marketing';
+import { enquiryLede } from '../lib/enquiry-lede';
 
 interface Props {
   topic: string;
   message: string;
+  section: MarketingPage['section'];
 }
-const { topic, message } = Astro.props;
+const { topic, message, section } = Astro.props;
 const { site } = await getContent();
 const baseWa = whatsappLink(message);
+const lede = enquiryLede(section, topic);
+
+const fieldClass =
+  'mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5 text-foreground shadow-none';
 ---
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
+  crossorigin="anonymous"
+/>
 
 <section
   class="reveal rounded-2xl border border-foreground/10 bg-muted/30 p-6 sm:p-8"
@@ -17,28 +30,34 @@ const baseWa = whatsappLink(message);
   data-topic={topic}
 >
   <h2 class="text-lg font-semibold">Send Irshad your dates</h2>
-  <p class="measure mt-2 text-sm text-muted-foreground">
-    Without JavaScript this opens WhatsApp with the message above. With JavaScript you can
-    add dates and group size first.
-  </p>
+  <p class="measure mt-2 text-sm text-muted-foreground">{lede}</p>
   <form class="mt-6 grid gap-4 sm:grid-cols-2" onsubmit="return false">
-    <label class="block text-sm">
-      <span class="font-medium">Dates</span>
+    <label class="block text-sm sm:col-span-2">
+      <span class="font-medium">Travel dates</span>
       <input
         name="dates"
         type="text"
-        placeholder="e.g. 12–15 March"
-        class="mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5"
+        data-enquiry-dates
+        placeholder="Select check-in and check-out"
+        autocomplete="off"
+        class={fieldClass}
+        aria-describedby="enquiry-dates-hint"
       />
+      <span id="enquiry-dates-hint" class="mt-1 block text-xs text-muted-foreground">
+        Tap to pick a start and end date.
+      </span>
     </label>
     <label class="block text-sm">
       <span class="font-medium">Group size</span>
       <input
         name="size"
-        type="text"
+        type="number"
+        min="1"
+        max="60"
+        step="1"
         inputmode="numeric"
-        placeholder="e.g. 4 adults"
-        class="mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5"
+        placeholder="e.g. 4"
+        class={fieldClass}
       />
     </label>
     <div class="sm:col-span-2">
@@ -66,18 +85,116 @@ const baseWa = whatsappLink(message);
   </p>
 </section>
 
+<style>
+  [data-enquiry-form] :global(.flatpickr-calendar) {
+    font-family: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 40px rgb(18 32 25 / 0.12);
+    background: var(--color-background);
+  }
+
+  [data-enquiry-form] :global(.flatpickr-months),
+  [data-enquiry-form] :global(.flatpickr-weekdays) {
+    background: var(--color-muted);
+  }
+
+  [data-enquiry-form] :global(.flatpickr-day) {
+    color: var(--color-foreground);
+    border-radius: 0.375rem;
+  }
+
+  [data-enquiry-form] :global(.flatpickr-day:hover) {
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-background));
+  }
+
+  [data-enquiry-form] :global(.flatpickr-day.selected),
+  [data-enquiry-form] :global(.flatpickr-day.startRange),
+  [data-enquiry-form] :global(.flatpickr-day.endRange) {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  [data-enquiry-form] :global(.flatpickr-day.inRange) {
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-background));
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  [data-enquiry-form] :global(.flatpickr-day.today) {
+    border-color: var(--color-accent);
+  }
+
+  [data-enquiry-form] :global(.flatpickr-current-month),
+  [data-enquiry-form] :global(.flatpickr-weekday) {
+    color: var(--color-foreground);
+  }
+</style>
+
 <script is:inline>
   (() => {
     /* data-enquiry-ready */
+    const FLATPICKR =
+      'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js';
+
+    const loadFlatpickr = () =>
+      new Promise((resolve, reject) => {
+        if (window.flatpickr) return resolve(window.flatpickr);
+        const s = document.createElement('script');
+        s.src = FLATPICKR;
+        s.crossOrigin = 'anonymous';
+        s.onload = () => (window.flatpickr ? resolve(window.flatpickr) : reject());
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+
+    const formatRange = (selected) => {
+      if (!selected || !selected.length) return '';
+      const fmt = (d) =>
+        d.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+      const start = selected[0];
+      const end = selected[1];
+      if (!end) return fmt(start);
+      return `${fmt(start)} – ${fmt(end)}`;
+    };
+
     document.querySelectorAll('[data-enquiry-form]').forEach((root) => {
       const base = root.getAttribute('data-wa-base');
       const topic = root.getAttribute('data-topic');
       const link = root.querySelector('[data-enquiry-submit]');
-      const dates = root.querySelector('input[name="dates"]');
+      const dates = root.querySelector('[data-enquiry-dates]');
       const size = root.querySelector('input[name="size"]');
       if (!base || !link || !dates || !size) return;
+
+      let rangeText = '';
+
+      loadFlatpickr()
+        .then((flatpickr) => {
+          flatpickr(dates, {
+            mode: 'range',
+            minDate: 'today',
+            dateFormat: 'Y-m-d',
+            altInput: true,
+            altFormat: 'j M Y',
+            disableMobile: false,
+            locale: { rangeSeparator: ' – ' },
+            onChange(selected) {
+              rangeText = formatRange(selected);
+            },
+          });
+        })
+        .catch(() => {
+          dates.setAttribute('type', 'text');
+          dates.setAttribute('placeholder', 'e.g. 12–15 March');
+        });
+
       const build = () => {
-        const d = dates.value.trim();
+        const d = rangeText || dates.value.trim();
         const s = size.value.trim();
         let extra = '';
         if (d) extra += `\nDates: ${d}`;
@@ -92,6 +209,7 @@ const baseWa = whatsappLink(message);
           return base;
         }
       };
+
       link.addEventListener('click', () => {
         link.setAttribute('href', build());
       });

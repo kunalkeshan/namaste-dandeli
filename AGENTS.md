@@ -89,6 +89,10 @@ gate `done` / `N/A` / `deferred — reason`, bundling all **Q**s into a single
 
 `RoutesMapScript.astro` (user-approved). Audit allow-list: `data-route-map-ready`.
 
+**Enquiry hand-off:** marketing pages load Flatpickr from jsDelivr inside
+`EnquiryHandoff.astro` for a range calendar (user-approved). Audit allow-list:
+`data-enquiry-ready`.
+
 **The one sanctioned exception is the analytics tag** in `Analytics.astro`
 (GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
 `.js` file count cannot see it — which is why `verify:content` now also

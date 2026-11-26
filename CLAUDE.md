@@ -236,10 +236,11 @@ wrong, and two were fabricated by research agents on this very project.
   visible text label — `pnpm verify:aria` fails a link whose whole content is
   hidden. The WhatsApp mark lived inline in `Hero.astro` and nowhere else, so five
   of six WhatsApp CTAs drew nothing. See `docs/style-guide.md` for the size table.
-- **`/routes` and `/routes/*` may load Leaflet (OpenStreetMap) for driving routes —
-  the only sanctioned page-level JS besides Motion and analytics. See
-  `RoutesMapScript.astro` and `docs/deploy-on-publish.md`. Every other route
-  stays zero separate `.js` files. Check with `pnpm verify:content`,
+- **`/routes` and `/routes/*` may load Leaflet (OpenStreetMap) for driving routes;
+  marketing hub/detail pages may load Flatpickr** in `EnquiryHandoff.astro` for the
+  date-range hand-off — the sanctioned page-level JS besides Motion and analytics.
+  See `RoutesMapScript.astro`, `EnquiryHandoff.astro`, and `docs/deploy-on-publish.md`.
+  Every other route stays zero separate `.js` files. Check with `pnpm verify:content`,
   which now also **audits every `<script>` tag** in the built HTML — the `.js`
   file count alone could not see a third-party tag, since one is never written to
   `dist/`. Each script must be accounted for by name: the JSON-LD block, the
