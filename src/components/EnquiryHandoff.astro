@@ -34,7 +34,7 @@ const altInputClass = `${fieldClass} cursor-pointer`;
   <h2 class="text-lg font-semibold">Send Irshad your dates</h2>
   <p class="measure mt-2 text-sm text-muted-foreground">{lede}</p>
   <form class="mt-6 grid gap-4 sm:grid-cols-2" onsubmit="return false">
-    <label class="block text-sm">
+    <label class="block text-sm" data-enquiry-dates-wrap>
       <span class="font-medium">Travel dates</span>
       <input
         name="dates"
@@ -45,6 +45,9 @@ const altInputClass = `${fieldClass} cursor-pointer`;
         autocomplete="off"
         aria-hidden="true"
       />
+      <span class="mt-1 block text-xs text-muted-foreground">
+        Tap the field, then pick check-in and check-out.
+      </span>
     </label>
     <label class="block text-sm">
       <span class="font-medium">Group size</span>
@@ -59,12 +62,6 @@ const altInputClass = `${fieldClass} cursor-pointer`;
         class={fieldClass}
       />
     </label>
-    <div class="enquiry-calendar sm:col-span-2" data-enquiry-calendar>
-      <p class="text-xs text-muted-foreground">
-        Tap the first night, then the last. Two months show when your trip crosses a month
-        boundary.
-      </p>
-    </div>
     <div class="sm:col-span-2">
       <a
         href={baseWa}
@@ -91,25 +88,31 @@ const altInputClass = `${fieldClass} cursor-pointer`;
 </section>
 
 <style>
-  .enquiry-calendar {
-    margin-top: -0.5rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .enquiry-handoff {
+    position: relative;
+    z-index: 0;
   }
 
   .enquiry-handoff :global(.flatpickr-calendar) {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    width: 100% !important;
-    max-width: 40rem;
-    margin: 0.75rem auto 0;
     font-family: var(--font-body);
     font-size: 0.875rem;
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;
-    box-shadow: none;
+    box-shadow: 0 12px 40px rgb(18 32 25 / 0.14);
     background: var(--color-background);
+    z-index: 35;
+  }
+
+  @media (max-width: 639px) {
+    .enquiry-handoff :global(.flatpickr-calendar) {
+      max-width: min(20.5rem, calc(100vw - 2.5rem));
+    }
+  }
+
+  @media (min-width: 640px) {
+    .enquiry-handoff :global(.flatpickr-calendar) {
+      max-width: 40rem;
+    }
   }
 
   .enquiry-handoff :global(.flatpickr-months) {
@@ -223,6 +226,8 @@ const altInputClass = `${fieldClass} cursor-pointer`;
         document.head.appendChild(s);
       });
 
+    const monthPanels = () => (matchMedia('(min-width: 640px)').matches ? 2 : 1);
+
     const formatRangeHuman = (start, end) => {
       if (!start) return '';
       const monthLong = (d) =>
@@ -249,9 +254,8 @@ const altInputClass = `${fieldClass} cursor-pointer`;
       const link = root.querySelector('[data-enquiry-submit]');
       const dates = root.querySelector('[data-enquiry-dates]');
       const size = root.querySelector('input[name="size"]');
-      const mount = root.querySelector('[data-enquiry-calendar]');
-      const dateLabel = dates?.closest('label');
-      if (!base || !link || !dates || !size || !mount || !dateLabel) return;
+      const dateLabel = root.querySelector('[data-enquiry-dates-wrap]');
+      if (!base || !link || !dates || !size || !dateLabel) return;
 
       let rangeText = '';
 
@@ -260,18 +264,20 @@ const altInputClass = `${fieldClass} cursor-pointer`;
           const fp = flatpickr(dates, {
             mode: 'range',
             minDate: 'today',
-            inline: true,
-            showMonths: 2,
-            appendTo: mount,
+            showMonths: monthPanels(),
             altInput: true,
             altInputClass: altClass,
-            clickOpens: false,
+            clickOpens: true,
+            disableMobile: true,
+            appendTo: root,
+            position: 'below left',
             dateFormat: 'Y-m-d',
             locale: { rangeSeparator: ' – ' },
             onChange(selected) {
               if (selected.length === 2) {
                 rangeText = formatRangeHuman(selected[0], selected[1]);
                 if (fp.altInput) fp.altInput.value = rangeText;
+                fp.close();
               } else if (selected.length === 1) {
                 rangeText = formatRangeHuman(selected[0], null);
                 if (fp.altInput) fp.altInput.value = rangeText;
@@ -283,8 +289,19 @@ const altInputClass = `${fieldClass} cursor-pointer`;
           if (fp.altInput) {
             fp.altInput.placeholder = 'e.g. 12 – 15 March 2026';
             fp.altInput.setAttribute('aria-label', 'Selected travel dates');
-            dateLabel.appendChild(fp.altInput);
+            dateLabel.insertBefore(fp.altInput, dateLabel.querySelector('.text-xs'));
           }
+
+          const mq = matchMedia('(min-width: 640px)');
+          const onMq = () => {
+            const n = monthPanels();
+            if (fp.config.showMonths !== n) {
+              fp.set('showMonths', n);
+              fp.redraw();
+            }
+          };
+          if (mq.addEventListener) mq.addEventListener('change', onMq);
+          else mq.addListener(onMq);
         })
         .catch(() => {
           dates.classList.remove('sr-only');

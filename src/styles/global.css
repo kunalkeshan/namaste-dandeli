@@ -137,6 +137,14 @@ p {
   max-width: 46ch;
 }
 
+/* --- sticky mobile Call / WhatsApp bar ---------------------------
+   Extra scrollable space so footer links are not covered. */
+@media (max-width: 767px) {
+  body.has-mobile-sticky-cta {
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 /* --- focus: visible on every control, never removed ------------- */
 :where(a, button, summary, [tabindex], input, textarea):focus-visible {
   outline: 3px solid var(--color-accent-ink);
