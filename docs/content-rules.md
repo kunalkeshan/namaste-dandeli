@@ -91,7 +91,9 @@ and the exact opposite of Irshad's no-names requirement.
 - Photographs showing the region, not a property, say so in body text — not small print.
 - The vehicle cutouts are **model photographs, not his cars**, disclosed under the grid.
 - Every image records its licence in `content/images.ts`; CC BY-SA credits render in the
-  footer automatically.
+  footer automatically. Marketing hub and detail pages also list **only the photographs
+  on that page** in a `<details>` block (same pattern as the footer), and route pages
+  add OpenStreetMap / OSRM / Leaflet credits whenever a map is shown.
 
 ---
 

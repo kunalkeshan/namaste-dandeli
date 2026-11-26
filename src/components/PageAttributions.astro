@@ -1,0 +1,65 @@
+---
+/**
+ * Per-page photograph and map credits — same <details> pattern as the footer.
+ * Only lists sources that actually appear on this page.
+ */
+import { getContent } from '../content';
+interface Props {
+  photographCredits: string[];
+  showRouteMaps?: boolean;
+}
+const { photographCredits: photos, showRouteMaps = false } = Astro.props;
+const { copy } = await getContent();
+
+const hasPhotos = photos.length > 0;
+const hasMaps = showRouteMaps;
+if (!hasPhotos && !hasMaps) return;
+
+const summary =
+  hasPhotos && hasMaps
+    ? 'Credits & sources'
+    : hasMaps
+      ? 'Map data credits'
+      : copy.sections.contact.creditsLabel;
+---
+
+<details class="reveal border-t border-border pt-8 text-xs text-muted-foreground">
+  <summary class="cursor-pointer font-medium text-foreground/80 hover:text-foreground">
+    {summary}
+  </summary>
+  {hasPhotos && (
+    <ul class="mt-3 space-y-1.5">
+      {photos.map((c) => (
+        <li>{c}</li>
+      ))}
+    </ul>
+  )}
+  {hasMaps && (
+    <div class:list={[hasPhotos && 'mt-5 border-t border-border pt-4']}>
+      {hasPhotos && <p class="mb-2 font-medium text-foreground/80">Maps & routing</p>}
+      <ul class="space-y-1.5">
+        <li>
+          Map tiles ©{' '}
+          <a class="link-inline" href="https://www.openstreetmap.org/copyright">
+            OpenStreetMap
+          </a>{' '}
+          contributors (ODbL).
+        </li>
+        <li>
+          Driving route geometry from OpenStreetMap data via{' '}
+          <a class="link-inline" href="https://project-osrm.org/">
+            OSRM
+          </a>
+          .
+        </li>
+        <li>
+          Map display:{' '}
+          <a class="link-inline" href="https://leafletjs.com/">
+            Leaflet
+          </a>{' '}
+          (BSD-2-Clause), loaded from unpkg.com on route pages only.
+        </li>
+      </ul>
+    </div>
+  )}
+</details>

@@ -13,8 +13,14 @@ import RoutesMapScript from './RoutesMapScript.astro';
 import MarketingHubCards from './MarketingHubCards.astro';
 import MarketingActivityBody from './MarketingActivityBody.astro';
 import MarketingStayBody from './MarketingStayBody.astro';
+import PageAttributions from './PageAttributions.astro';
 import Layout from '../layouts/Layout.astro';
-import type { MarketingPage, Img } from '../content';
+import { getContent, type MarketingPage, type Img } from '../content';
+import {
+  imgsOnMarketingPage,
+  pageShowsRouteMaps,
+  photographCredits,
+} from '../lib/page-credits';
 import type { Route } from '../content/routes';
 import type { Activity } from '../content/activities';
 import type { Stay } from '../content/stays';
@@ -30,6 +36,28 @@ interface Props {
 }
 const { page, breadcrumbs, children, route, activity, stay, activityFallbackImage } =
   Astro.props;
+
+const { stays } = await getContent();
+
+const pageImages: (Img | null | undefined)[] = [
+  ...imgsOnMarketingPage(page),
+  ...(activity?.photos ?? []),
+  activityFallbackImage,
+  ...(stay?.photos ?? []),
+];
+
+if (children?.length) {
+  for (const child of children) {
+    pageImages.push(...imgsOnMarketingPage(child));
+    if (page.section === 'stays' && child.stayKind) {
+      const kind = stays.find((s) => s.kind === child.stayKind);
+      if (kind) pageImages.push(...kind.photos);
+    }
+  }
+}
+
+const photoCredits = photographCredits(pageImages);
+const showRouteMaps = pageShowsRouteMaps(page, children);
 const distanceLine =
   route?.distance.confirmed === true
     ? `${route.distance.value.km} km, about ${route.distance.value.drive}`
@@ -101,6 +129,10 @@ const distanceLine =
         <InlineCta message={page.whatsappMessage} />
         <PageQuotes quotes={page.quotes} />
         <FaqSection faqs={page.faqs} />
+        <PageAttributions
+          photographCredits={photoCredits}
+          showRouteMaps={showRouteMaps}
+        />
         <EnquiryHandoff topic={page.enquiryTopic} message={page.whatsappMessage} />
       </div>
     </div>

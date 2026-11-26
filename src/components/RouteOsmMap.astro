@@ -50,12 +50,17 @@ const payload = plotted.map((s) => ({
       <RouteMap stops={stops} variant={variant} schematic={false} />
     </div>
   </div>
-  {variant === 'detail' && (
-    <figcaption class="measure mt-3 text-sm text-muted-foreground">
-      Driving route on OpenStreetMap — orientation only, not turn-by-turn navigation.
-      Distances and times on this page are measured on the road to Dandeli bus stand.
-    </figcaption>
-  )}
+  <figcaption class="measure mt-3 text-sm text-muted-foreground">
+    {variant === 'detail' ? (
+      <>
+        Driving route on OpenStreetMap — orientation only, not turn-by-turn navigation.
+        Distances and times on this page are measured on the road to Dandeli bus stand.
+        Map, routing, and photograph credits are listed below.
+      </>
+    ) : (
+      <>© OpenStreetMap contributors — full map credits below this section.</>
+    )}
+  </figcaption>
 </figure>
 
 <style>
