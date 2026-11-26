@@ -1,0 +1,23 @@
+---
+import { getContent } from '../../content';
+import MarketingDocument from '../../components/MarketingDocument.astro';
+
+export async function getStaticPaths() {
+  const { marketingChildren, routes } = await getContent();
+  return marketingChildren('routes').map((page) => ({
+    params: { slug: page.slug },
+    props: {
+      page,
+      route: page.routeRefFrom ? routes.find((r) => r.from === page.routeRefFrom) : null,
+    },
+  }));
+}
+
+const { page, route } = Astro.props;
+---
+
+<MarketingDocument
+  page={page}
+  route={route ?? null}
+  breadcrumbs={[{ name: 'Routes', href: '/routes' }, { name: page.pageTitle }]}
+/>

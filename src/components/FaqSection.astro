@@ -1,0 +1,26 @@
+---
+import type { FaqItem } from '../content';
+
+interface Props {
+  faqs: FaqItem[];
+}
+const { faqs } = Astro.props;
+if (!faqs.length) return null;
+---
+
+<section
+  class="reveal mt-14 border-t border-foreground/10 pt-10"
+  aria-labelledby="faq-heading"
+>
+  <h2 id="faq-heading" class="text-xl">
+    Questions from travellers
+  </h2>
+  <dl class="measure mt-6 space-y-8">
+    {faqs.map((f) => (
+      <div class="reveal-child">
+        <dt class="font-semibold text-foreground">{f.question}</dt>
+        <dd class="mt-2 text-muted-foreground">{f.answer}</dd>
+      </div>
+    ))}
+  </dl>
+</section>

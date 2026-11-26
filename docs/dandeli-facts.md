@@ -52,7 +52,8 @@ sources with instructions to default to REFUTED when unconfirmed.
   site says Kulgi, ₹600. Both gates exist. The 6–8 AM / 4–6 PM slots are well sourced.
 - **The Alnavar–Dandeli DEMU train** — one source reports a relaunch in Feb 2026 to
   Ambewadi station. Unverified, and it would change his pickup business. Omit entirely.
-- **All eight route distances** — none measured. They render as "Ask the fare".
+- **Further outstation fares** (Goa week, Gokarna, Mysore–Ooty) — not on the page as
+  fixed numbers; plan together on the phone.
 
 ---
 

@@ -27,6 +27,10 @@ add('site.hours', c.site?.hours);
 add('site.whatsapp', c.site?.whatsapp);
 (c.routes ?? []).forEach((r, i) => add(`routes[${i}] ${r.from}`, r.distance));
 (c.assurances ?? []).forEach((a, i) => add(`assurances[${i}]`, a));
+(c.marketingSeeds ?? []).forEach((s) => {
+  if (s.blocker && !s.blocker.startsWith('DECIDED:'))
+    out.push({ field: `marketing ${s.section}/${s.slug}`, blocker: s.blocker });
+});
 
 if (out.length === 0) {
   console.log('\nNo outstanding blockers — every fact is confirmed.\n');

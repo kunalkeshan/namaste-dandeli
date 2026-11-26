@@ -1,0 +1,111 @@
+---
+import type { RouteStop } from '../content';
+
+interface Props {
+  stops: RouteStop[];
+  schematic?: boolean;
+}
+const { stops, schematic = true } = Astro.props;
+
+const plotted = stops.filter((s) => s.lat != null && s.lng != null);
+if (plotted.length < 2) return null;
+
+const lats = plotted.map((s) => s.lat!);
+const lngs = plotted.map((s) => s.lng!);
+const minLat = Math.min(...lats);
+const maxLat = Math.max(...lats);
+const minLng = Math.min(...lngs);
+const maxLng = Math.max(...lngs);
+const w = 360;
+const h = 120;
+const project = (lat: number, lng: number) => {
+  const x = ((lng - minLng) / (maxLng - minLng || 1)) * (w - 40) + 20;
+  const y = h - ((lat - minLat) / (maxLat - minLat || 1)) * (h - 40) - 20;
+  return { x, y };
+};
+const pts = plotted.map((s) => project(s.lat!, s.lng!));
+const d = pts
+  .map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+  .join(' ');
+---
+
+<figure class="reveal mt-10">
+  <svg
+    viewBox={`0 0 ${w} ${h}`}
+    role="img"
+    aria-labelledby="route-diagram-title"
+    class="w-full max-w-xl text-primary"
+  >
+    <title id="route-diagram-title">
+      Schematic route with {plotted.length} stops
+    </title>
+    <path
+      d={d}
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      class="route-draw"
+      pathLength="1"
+      stroke-dasharray="1"
+      stroke-dashoffset="1"
+    />
+    {plotted.map((s, i) => {
+      const { x, y } = pts[i];
+      return (
+        <g>
+          <circle
+            cx={x}
+            cy={y}
+            r="5"
+            fill="currentColor"
+            class="route-stop"
+            style={`--i:${i}`}
+          />
+          <text x={x + 8} y={y + 4} class="fill-foreground text-[10px] font-medium">
+            {s.name}
+          </text>
+        </g>
+      );
+    })}
+  </svg>
+  {schematic && (
+    <figcaption class="mt-2 text-sm text-muted-foreground">
+      Schematic sketch — not a to-scale map. Distances on this page are measured on the
+      road.
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .route-draw {
+      animation: draw-route 0.9s var(--ease-out-strong, cubic-bezier(0.16, 1, 0.3, 1))
+        forwards;
+    }
+    .route-stop {
+      opacity: 0;
+      animation: fade-stop 0.4s var(--ease-out-strong, cubic-bezier(0.16, 1, 0.3, 1))
+        forwards;
+      animation-delay: calc(0.45s + var(--i, 0) * 60ms);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .route-draw {
+      stroke-dashoffset: 0;
+    }
+    .route-stop {
+      opacity: 1;
+    }
+  }
+  @keyframes draw-route {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes fade-stop {
+    to {
+      opacity: 1;
+    }
+  }
+</style>

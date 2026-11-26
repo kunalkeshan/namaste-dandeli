@@ -1,0 +1,90 @@
+---
+import Nav from './Nav.astro';
+import Contact from './Contact.astro';
+import Motion from './Motion.astro';
+import RiverDivider from './RiverDivider.astro';
+import MarketingHero from './MarketingHero.astro';
+import FaqSection from './FaqSection.astro';
+import PageQuotes from './PageQuotes.astro';
+import InlineCta from './InlineCta.astro';
+import EnquiryHandoff from './EnquiryHandoff.astro';
+import RouteDiagram from './RouteDiagram.astro';
+import Layout from '../layouts/Layout.astro';
+import type { MarketingPage } from '../content';
+import { marketingPath } from '../content';
+import type { Route } from '../content/routes';
+
+interface Props {
+  page: MarketingPage;
+  breadcrumbs: { name: string; href?: string }[];
+  children?: MarketingPage[];
+  route?: Route | null;
+}
+const { page, breadcrumbs, children, route } = Astro.props;
+const distanceLine =
+  route?.distance.confirmed === true
+    ? `${route.distance.value.km} km, about ${route.distance.value.drive}`
+    : route
+      ? 'Ask the fare on the phone'
+      : null;
+---
+
+<Layout
+  title={page.title}
+  description={page.description}
+  preloadHero={Boolean(page.heroImage)}
+  heroPreload={page.heroImage}
+  pageType="WebPage"
+  pageName={page.pageTitle}
+  breadcrumbs={breadcrumbs}
+  faqs={page.faqs}
+  stickyCta
+>
+  <Nav />
+  <main id="main">
+    <MarketingHero
+      eyebrow={page.eyebrow}
+      title={page.pageTitle}
+      lede={page.lede}
+      image={page.heroImage}
+    />
+    <RiverDivider from="deep" to="bg" />
+    <div class="bg-background pb-24 md:pb-16">
+      <div class="mx-auto max-w-5xl px-5 py-12 sm:py-16">
+        {distanceLine && (
+          <p class="reveal measure text-lg font-medium text-foreground">{distanceLine}</p>
+        )}
+        <RouteDiagram stops={page.routeStops} />
+        {page.sections.map((sec) => (
+          <div class="reveal mt-10">
+            {sec.heading && <h2 class="text-xl">{sec.heading}</h2>}
+            <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
+              {sec.body}
+            </p>
+          </div>
+        ))}
+        <InlineCta message={page.whatsappMessage} />
+        <PageQuotes quotes={page.quotes} />
+        {children && children.length > 0 && (
+          <nav class="reveal mt-12" aria-label="Pages in this section">
+            <h2 class="text-xl">In this section</h2>
+            <ul class="mt-4 space-y-2">
+              {children.map((c) => (
+                <li>
+                  <a href={marketingPath(c)} class="link-inline text-lg">
+                    {c.pageTitle}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <FaqSection faqs={page.faqs} />
+        <EnquiryHandoff topic={page.enquiryTopic} message={page.whatsappMessage} />
+      </div>
+    </div>
+  </main>
+  <RiverDivider from="bg" to="deep" />
+  <Contact />
+  <Motion />
+</Layout>

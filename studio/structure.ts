@@ -34,6 +34,8 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('review').title('Reviews'),
       S.documentTypeListItem('assurance').title('Solo-travel assurances'),
       S.divider(),
+      S.documentTypeListItem('marketingPage').title('SEO pages'),
+      S.divider(),
       S.documentTypeListItem('legalPage').title('Legal pages'),
       S.divider(),
       // Catch-all for anything added later and not listed above, so a
@@ -51,6 +53,7 @@ export const structure: StructureResolver = (S) =>
             'review',
             'assurance',
             'legalPage',
+            'marketingPage',
           ].includes(id)
         );
       }),

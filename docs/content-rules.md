@@ -48,9 +48,13 @@ a contiguous verbatim span of `text`. Reword one and the build fails.
 wrote. Correcting them is embellishment, and an embellished testimonial is a fabricated
 one about a real named person.
 
-**One customer, one appearance.** Seven reviews are stored; each appears exactly once —
-hero, solo section, routes proof, and four in the grid. `Reviews.astro` filters by
-`role` to enforce it.
+**One customer, one appearance on the homepage.** Seven reviews are stored; each appears
+exactly once on `/` — hero, solo section, routes proof, and four in the grid.
+`Reviews.astro` filters by `role` to enforce it.
+
+**Marketing pages may reuse a review once.** The same customer may also appear on one
+child SEO page (`/things-to-do/…`, `/routes/…`, `/stays/…`) if the quote is a verbatim
+span of their Google text. Never a second child page. Never edit the words.
 
 **Re-pull before each refresh.** Authors can edit or delete their reviews.
 

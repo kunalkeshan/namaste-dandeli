@@ -50,3 +50,7 @@ studio/dist/
 
 # Sanity Studio runtime, regenerated on every `sanity dev`.
 studio/.sanity/
+
+# Saved Google listing HTML from the browser — local research only.
+Dandeli taxi service*
+scripts/.seed-marketing.ndjson

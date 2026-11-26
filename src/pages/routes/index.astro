@@ -1,0 +1,11 @@
+---
+import { getContent } from '../../content';
+import MarketingDocument from '../../components/MarketingDocument.astro';
+
+const { marketingHub, marketingChildren } = await getContent();
+const page = marketingHub('routes');
+if (!page) throw new Error('routes hub is missing or unpublished');
+const children = marketingChildren('routes');
+---
+
+<MarketingDocument page={page} breadcrumbs={[{ name: 'Routes' }]} children={children} />

@@ -1,0 +1,24 @@
+---
+import { getContent } from '../../content';
+import MarketingDocument from '../../components/MarketingDocument.astro';
+
+export async function getStaticPaths() {
+  const { marketingChildren } = await getContent();
+  return marketingChildren('stays').map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { staysDisclosure } = await getContent();
+const withDisclosure = {
+  ...page,
+  sections: [...page.sections, { heading: 'Before you book', body: staysDisclosure }],
+};
+---
+
+<MarketingDocument
+  page={withDisclosure}
+  breadcrumbs={[{ name: 'Stays', href: '/stays' }, { name: page.pageTitle }]}
+/>

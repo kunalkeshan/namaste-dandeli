@@ -1,0 +1,100 @@
+---
+import { getContent, whatsappLink } from '../content';
+
+interface Props {
+  topic: string;
+  message: string;
+}
+const { topic, message } = Astro.props;
+const { site } = await getContent();
+const baseWa = whatsappLink(message);
+---
+
+<section
+  class="reveal mt-12 rounded-2xl border border-foreground/10 bg-muted/30 p-6 sm:p-8"
+  data-enquiry-form
+  data-wa-base={baseWa}
+  data-topic={topic}
+>
+  <h2 class="text-lg font-semibold">Send Irshad your dates</h2>
+  <p class="measure mt-2 text-sm text-muted-foreground">
+    Without JavaScript this opens WhatsApp with the message above. With JavaScript you can
+    add dates and group size first.
+  </p>
+  <form class="mt-6 grid gap-4 sm:grid-cols-2" onsubmit="return false">
+    <label class="block text-sm">
+      <span class="font-medium">Dates</span>
+      <input
+        name="dates"
+        type="text"
+        placeholder="e.g. 12–15 March"
+        class="mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="font-medium">Group size</span>
+      <input
+        name="size"
+        type="text"
+        inputmode="numeric"
+        placeholder="e.g. 4 adults"
+        class="mt-1 w-full rounded-lg border border-foreground/15 bg-background px-3 py-2.5"
+      />
+    </label>
+    <div class="sm:col-span-2">
+      <a
+        href={baseWa}
+        data-track="whatsapp"
+        data-placement="enquiry"
+        data-enquiry-submit
+        class="btn btn-accent inline-flex w-full items-center justify-center rounded-xl bg-accent px-6 py-3.5 font-semibold text-accent-foreground sm:w-auto"
+      >
+        Continue on WhatsApp
+      </a>
+    </div>
+  </form>
+  <p class="mt-4 text-xs text-muted-foreground">
+    Or call{' '}
+    <a
+      href={`tel:${site.phone}`}
+      class="link-inline"
+      data-track="call"
+      data-placement="enquiry"
+    >
+      {site.phoneDisplay}
+    </a>
+  </p>
+</section>
+
+<script is:inline>
+  (() => {
+    /* data-enquiry-ready */
+    document.querySelectorAll('[data-enquiry-form]').forEach((root) => {
+      const base = root.getAttribute('data-wa-base');
+      const topic = root.getAttribute('data-topic');
+      const link = root.querySelector('[data-enquiry-submit]');
+      const dates = root.querySelector('input[name="dates"]');
+      const size = root.querySelector('input[name="size"]');
+      if (!base || !link || !dates || !size) return;
+      const build = () => {
+        const d = dates.value.trim();
+        const s = size.value.trim();
+        let extra = '';
+        if (d) extra += `\nDates: ${d}`;
+        if (s) extra += `\nGroup size: ${s}`;
+        if (topic) extra += `\nTopic: ${topic}`;
+        try {
+          const u = new URL(base);
+          const t = decodeURIComponent(u.searchParams.get('text') || '') + extra;
+          u.searchParams.set('text', t);
+          return u.toString();
+        } catch {
+          return base;
+        }
+      };
+      link.addEventListener('click', () => {
+        link.setAttribute('href', build());
+      });
+    });
+  })();
+</script>

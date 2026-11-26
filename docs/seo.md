@@ -38,8 +38,13 @@ already appear where taxi searchers see them — the local pack, which Google co
 - `WebSite`
 
 Deliberately absent: `aggregateRating` (above), `openingHoursSpecification` (hours are
-unconfirmed — see `docs/content-rules.md`), `FAQPage` (rich results now restricted to
-gov/health sites; the visible copy earns the traffic).
+unconfirmed — see `docs/content-rules.md`).
+
+`FAQPage` appears on marketing pages **only when** real FAQs are published there, and
+only when visible question and answer text match the JSON-LD byte-for-byte. Google
+restricts FAQ rich results to government and health sites, so **expect no star FAQ
+block in search** — the markup is for machine readability (including AI assistants), not
+for a rich result.
 
 ## Technical
 
