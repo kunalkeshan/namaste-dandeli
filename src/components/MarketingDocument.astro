@@ -87,7 +87,7 @@ const distanceLine =
     />
     <RiverDivider from="deep" to="bg" />
     <div class="bg-background pb-12 md:pb-10">
-      <div class="mx-auto max-w-5xl space-y-10 px-5 py-12 sm:py-14">
+      <div class="mx-auto max-w-5xl space-y-8 px-5 py-10 sm:py-12">
         {distanceLine && (
           <p class="reveal measure text-lg font-medium text-foreground">{distanceLine}</p>
         )}
@@ -126,19 +126,21 @@ const distanceLine =
             </p>
           </div>
         ))}
-        <PageQuotes quotes={page.quotes} />
-        <FaqSection faqs={page.faqs} />
-        <PageAttributions
-          photographCredits={photoCredits}
-          showRouteMaps={showRouteMaps}
-        />
-        <div class="space-y-6">
-          <InlineCta message={page.whatsappMessage} />
-          <EnquiryHandoff
-            section={page.section}
-            topic={page.enquiryTopic}
-            message={page.whatsappMessage}
+        <div class="space-y-6 border-t border-border pt-6">
+          <PageQuotes quotes={page.quotes} />
+          <FaqSection faqs={page.faqs} />
+          <PageAttributions
+            photographCredits={photoCredits}
+            showRouteMaps={showRouteMaps}
           />
+          <div class="space-y-6">
+            <InlineCta message={page.whatsappMessage} />
+            <EnquiryHandoff
+              section={page.section}
+              topic={page.enquiryTopic}
+              message={page.whatsappMessage}
+            />
+          </div>
         </div>
       </div>
     </div>

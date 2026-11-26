@@ -458,10 +458,6 @@ for (const r of routePages) {
           'Pickup and drop',
           `Irshad quotes the fare for ${r.from} to Dandeli after he knows your date, time and group size. Pickup is at the airport, station or hotel you name; drop is usually Dandeli bus stand unless you are heading straight to a resort he books for you.`,
         ),
-        section(
-          'On the map',
-          'The map on this page traces the driving route from OpenStreetMap. It is for orientation — the km and drive time above are what he quotes on the phone.',
-        ),
       ],
       faqs: [],
       quotes: (r.quotes ?? []).filter(Boolean),

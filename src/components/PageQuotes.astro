@@ -9,7 +9,7 @@ const { site } = await getContent();
 ---
 
 {quotes.length > 0 && (
-  <div class="mt-10 space-y-6">
+  <div class="reveal space-y-6">
     {quotes.map((q) => {
       const shown = q.pull && q.text.includes(q.pull) ? q.pull : q.text;
       return (
