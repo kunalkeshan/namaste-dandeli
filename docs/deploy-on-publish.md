@@ -79,9 +79,16 @@ an unrelated document does not burn a build:
 ```groq
 _type in [
   "siteSettings", "vehicle", "activity",
-  "stay", "route", "review", "assurance"
+  "stay", "route", "review", "assurance",
+  "marketingPage", "legalPage"
 ]
 ```
+
+> **Document webhooks fire once per document.** A `sanity dataset import`
+> that touches 27 `marketingPage` docs queues **27 production builds** on
+> Vercel (same `main` commit, different deployment rows). That looks like a
+> loop; it is a backlog. Prefer a **transaction** webhook (one rebuild per
+> committed transaction) or pause the hook during bulk seeds — see below.
 
 ### 3. Why drafts must be OFF
 
@@ -94,6 +101,37 @@ With drafts off it fires only on **Publish**, which is the intent.
 
 The site reads with `perspective: 'published'`, so unpublished drafts could
 not reach the live page even if a build did run.
+
+---
+
+### 4. Bulk imports and deployment storms
+
+Scripts such as `seed-marketing-pages.mjs` use `sanity dataset import
+--replace` and update many documents at once. With a **document** webhook,
+each updated doc calls the Vercel Deploy Hook → dozens of production
+deploys of the same Git commit.
+
+Before a bulk seed:
+
+```bash
+node scripts/rebuild-webhook.mjs pause
+node scripts/seed-marketing-pages.mjs
+node scripts/rebuild-webhook.mjs trigger   # one production rebuild
+node scripts/rebuild-webhook.mjs resume
+```
+
+`seed-marketing-pages.mjs` runs **pause → import → trigger → resume**
+automatically unless you pass `--no-rebuild-pause`.
+
+To convert the webhook to **transaction** type (one hook call per Sanity
+transaction, not per document):
+
+```bash
+node scripts/rebuild-webhook.mjs migrate-transaction
+```
+
+Imports may still use multiple transactions; pausing remains the safe path
+for large `--replace` runs.
 
 ---
 

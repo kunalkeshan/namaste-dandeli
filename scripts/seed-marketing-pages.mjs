@@ -9,6 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { createServer } from 'vite';
 
 const DRY = process.argv.includes('--dry-run');
+const NO_REBUILD_PAUSE = process.argv.includes('--no-rebuild-pause');
 const PROJECT = process.env.SANITY_PROJECT_ID ?? 'krbamcti';
 const DATASET = process.env.SANITY_DATASET ?? 'production';
 const OUT = 'scripts/.seed-marketing.ndjson';
@@ -544,20 +545,36 @@ console.log(`Wrote ${docs.length} marketing documents to ${OUT}`);
 
 if (DRY) process.exit(0);
 
-execFileSync(
-  'pnpm',
-  [
-    'exec',
-    'sanity',
-    'dataset',
-    'import',
-    OUT,
-    DATASET,
-    '--replace',
-    `--project=${PROJECT}`,
-  ],
-  {
-    stdio: 'inherit',
-    env: { ...process.env, SANITY_PROJECT_ID: PROJECT, SANITY_DATASET: DATASET },
-  },
-);
+const runImport = () =>
+  execFileSync(
+    'pnpm',
+    [
+      'exec',
+      'sanity',
+      'dataset',
+      'import',
+      OUT,
+      DATASET,
+      '--replace',
+      `--project=${PROJECT}`,
+    ],
+    {
+      stdio: 'inherit',
+      env: { ...process.env, SANITY_PROJECT_ID: PROJECT, SANITY_DATASET: DATASET },
+    },
+  );
+
+const rebuildWebhook = (subcmd) =>
+  execFileSync('node', ['scripts/rebuild-webhook.mjs', subcmd], { stdio: 'inherit' });
+
+if (NO_REBUILD_PAUSE) {
+  runImport();
+} else {
+  try {
+    rebuildWebhook('pause');
+    runImport();
+    rebuildWebhook('trigger');
+  } finally {
+    rebuildWebhook('resume');
+  }
+}
