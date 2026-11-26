@@ -21,9 +21,17 @@ import { CONTENT_QUERY } from './query';
 import { regionImages, irshadPhotos } from './region';
 import { narrowConfirmed, narrowDistance, narrowAssurance } from './narrow';
 import { isPublished, type LegalPage, type LegalBlock } from './legal';
+import {
+  isMarketingPublished,
+  marketingActivityUrl,
+  marketingRouteUrl,
+  marketingStayUrl,
+  type MarketingPage,
+  type MarketingSection,
+} from './marketing';
 import { whatsappLink, telLink, WA_DEFAULT, siteLinks } from './site';
 import { carImageNote } from './images';
-import { staysDisclosure } from './stays';
+import { staysBeforeYouBook, staysDisclosure } from './stays';
 import { soloFallback } from './assurances';
 import { outstation } from './routes';
 import { slabs, extras, pricingNote } from './packages';
@@ -67,6 +75,16 @@ function firstImg(photos: unknown[] | null | undefined, alt = ''): Img | null {
 
 function allImgs(photos: unknown[] | null | undefined): Img[] {
   return (photos ?? []).map((p) => toImg(p as never)).filter((i): i is Img => i !== null);
+}
+
+function dedupePageQuotes(quotes: MarketingPage['quotes']) {
+  const seen = new Set<string>();
+  return quotes.filter((q) => {
+    const key = q.text.trim();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /**
@@ -241,6 +259,75 @@ async function loadContent() {
       body: p.body as LegalBlock[],
     }));
 
+  const marketingRows = (raw.marketingPages ?? []) as unknown[];
+
+  const marketingPublished: MarketingPage[] = marketingRows
+    .filter(
+      (row): row is Record<string, unknown> =>
+        row != null && isMarketingPublished(row as never),
+    )
+    .map((row) => ({
+      section: row.section as MarketingSection,
+      slug: String(row.slug),
+      title: String(row.title),
+      description: String(row.description),
+      pageTitle: String(row.pageTitle),
+      eyebrow: row.eyebrow ? String(row.eyebrow) : undefined,
+      lede: String(row.lede),
+      sections: ((row.sections ?? []) as { heading?: string; body: string }[]).map(
+        (s) => ({
+          heading: s.heading,
+          body: s.body,
+        }),
+      ),
+      faqs: ((row.faqs ?? []) as { question: string; answer: string }[]).filter(
+        (f) => f.question?.trim() && f.answer?.trim(),
+      ),
+      quotes: dedupePageQuotes(
+        ((row.quotes ?? []) as MarketingPage['quotes']).filter(
+          (q) => q.author?.trim() && q.text?.trim(),
+        ),
+      ),
+      whatsappMessage: String(row.whatsappMessage ?? waMessages.default),
+      enquiryTopic: String(row.enquiryTopic ?? 'Dandeli trip'),
+      heroImage: toImg(row.heroImage as never),
+      cardImage: toImg(row.cardImage as never) ?? toImg(row.heroImage as never),
+      routeStops: (row.routeStops ?? []) as MarketingPage['routeStops'],
+      routeRefFrom: row.routeRefFrom ? String(row.routeRefFrom) : undefined,
+      activityName: row.activityName ? String(row.activityName) : undefined,
+      stayKind: row.stayKind ? String(row.stayKind) : undefined,
+      alongTheWay: row.alongTheWay ? String(row.alongTheWay) : undefined,
+    }));
+
+  const marketingSeeds: { section: string; slug: string; blocker: string }[] =
+    marketingRows
+      .filter((row): row is Record<string, unknown> => row != null)
+      .filter(
+        (row) =>
+          row.published !== true &&
+          typeof row.blocker === 'string' &&
+          String(row.blocker).trim().length > 0,
+      )
+      .map((row) => ({
+        section: String(row.section),
+        slug: String(row.slug),
+        blocker: String(row.blocker),
+      }));
+
+  function marketingHub(section: MarketingSection) {
+    return marketingPublished.find((p) => p.section === section && p.slug === 'hub');
+  }
+
+  function marketingChildren(section: MarketingSection) {
+    return marketingPublished.filter((p) => p.section === section && p.slug !== 'hub');
+  }
+
+  const marketingLinks = {
+    activity: (name: string) => marketingActivityUrl(marketingPublished, name),
+    route: (from: string) => marketingRouteUrl(marketingPublished, from),
+    stay: (kind: string) => marketingStayUrl(marketingPublished, kind),
+  };
+
   /** Credits for every rendered image. CC BY-SA requires attribution. */
   const imageCredits = [
     ...new Set(
@@ -278,8 +365,14 @@ async function loadContent() {
     assurances,
     imageCredits,
     legalPages,
+    marketingPublished,
+    marketingSeeds,
+    marketingHub,
+    marketingChildren,
+    marketingLinks,
     carImageNote,
     staysDisclosure,
+    staysBeforeYouBook,
     soloFallback,
     outstation,
     pricing: { slabs, extras, note: pricingNote },
@@ -294,6 +387,14 @@ export type Content = ContentShape;
 export { whatsappLink, telLink, WA_DEFAULT };
 export type { Img };
 export type { LegalPage, LegalBlock };
+export type {
+  MarketingPage,
+  MarketingSection,
+  FaqItem,
+  PageQuote,
+  RouteStop,
+} from './marketing';
+export { marketingPath, isMarketingPublished } from './marketing';
 
 /**
  * Every fact still waiting on Irshad. Generated from the content, so

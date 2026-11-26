@@ -50,19 +50,21 @@ or update `scripts/.route-measurements.json` and `node scripts/patch-post-launch
 ```bash
 pnpm verify
 # Vercel production deploys from main; Sanity webhook may trigger rebuild — see docs/deploy-on-publish.md
+# Bulk seeds/migrations: withSingleProductionRebuild in scripts/sanity-bulk-write.mjs (one build, not N)
 ```
 
 ## Analytics
 
 Container **`GTM-5Q5VJ89S`** loads on production.
 
-| Step                                                   | Status    |
-| ------------------------------------------------------ | --------- |
-| Container ID in `src/content/analytics.ts`             | Done      |
-| GTM GA4 event tag for `contact_click` / `section_view` | Done      |
-| GA4 custom dimensions `method`, `placement`            | **To do** |
-| DebugView check (one call + one WhatsApp CTA)          | **To do** |
-| `contact_click` as key event                           | **To do** |
+| Step                                                           | Status    |
+| -------------------------------------------------------------- | --------- |
+| Container ID in `src/content/analytics.ts`                     | Done      |
+| GTM GA4 event tag for `contact_click` / `section_view`         | Done      |
+| GA4 custom dimensions `method`, `placement`                    | **To do** |
+| Register new `placement` values: `sticky`, `inline`, `enquiry` | **To do** |
+| DebugView check (one call + one WhatsApp CTA)                  | **To do** |
+| `contact_click` as key event                                   | **To do** |
 
 See §4 steps in the historical notes below for GTM/GA4 UI wiring.
 

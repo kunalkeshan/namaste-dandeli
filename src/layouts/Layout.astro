@@ -7,8 +7,9 @@
  * content. `<slot />` is where the page's own markup lands.
  */
 import '../styles/global.css';
-import { getContent } from '../content';
+import { getContent, type FaqItem, type Img } from '../content';
 import Analytics from '../components/Analytics.astro';
+import StickyCta from '../components/StickyCta.astro';
 
 interface Props {
   title: string;
@@ -38,8 +39,22 @@ interface Props {
    * crumb of a trail. Defaults to `title` when not given.
    */
   pageName?: string;
+  heroPreload?: Img | null;
+  breadcrumbs?: { name: string; href?: string }[];
+  faqs?: FaqItem[];
+  stickyCta?: boolean;
 }
-const { title, description, preloadHero = true, pageType, pageName } = Astro.props;
+const {
+  title,
+  description,
+  preloadHero = true,
+  pageType,
+  pageName,
+  heroPreload = null,
+  breadcrumbs,
+  faqs = [],
+  stickyCta = false,
+} = Astro.props;
 const crumbName = pageName ?? title;
 const { site, images } = await getContent();
 
@@ -52,9 +67,38 @@ const { site, images } = await getContent();
  * that disagrees with the candidate the browser eventually picks
  * downloads the image twice, which is slower than no preload at all.
  */
-const heroImg = preloadHero ? images.rafting : null;
-
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://namastedandeli.com');
+
+const heroImg = preloadHero ? (heroPreload ?? images.rafting) : null;
+
+const faqLd =
+  faqs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
+      }
+    : null;
+
+const breadcrumbItems =
+  breadcrumbs && breadcrumbs.length > 0
+    ? [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: canonical.origin },
+        ...breadcrumbs.map((b, i) => ({
+          '@type': 'ListItem',
+          position: i + 2,
+          name: b.name,
+          ...(b.href ? { item: new URL(b.href, canonical.origin).href } : {}),
+        })),
+      ]
+    : [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: canonical.origin },
+        { '@type': 'ListItem', position: 2, name: crumbName },
+      ];
 
 /**
  * Structured data.
@@ -135,15 +179,7 @@ const jsonLd = {
           {
             '@type': 'BreadcrumbList',
             '@id': `${canonical.href}#breadcrumb`,
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: canonical.origin,
-              },
-              { '@type': 'ListItem', position: 2, name: crumbName },
-            ],
+            itemListElement: breadcrumbItems,
           },
         ]
       : []),
@@ -221,6 +257,7 @@ const jsonLd = {
     <link rel="icon" type="image/png" sizes="512x512" href="/icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />}
     {/*
       Analytics lives in the LAYOUT, not the pages, and that is
       load-bearing. Nav and Contact render on every page, so
@@ -236,7 +273,7 @@ const jsonLd = {
     <Analytics />
   </head>
 
-  <body>
+  <body class:list={[stickyCta && 'has-mobile-sticky-cta']}>
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded"
@@ -244,5 +281,6 @@ const jsonLd = {
       Skip to content
     </a>
     <slot />
+    {stickyCta && <StickyCta />}
   </body>
 </html>

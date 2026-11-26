@@ -1,0 +1,40 @@
+---
+import { getContent } from '../../content';
+import MarketingDocument from '../../components/MarketingDocument.astro';
+
+export async function getStaticPaths() {
+  const { marketingChildren, activities, images } = await getContent();
+  const regionArt: Record<string, (typeof images)[keyof typeof images] | undefined> = {
+    'White water rafting': images.kaliHabitat,
+    'Coracle ride': images.coracle,
+    Birdwatching: images.hornbill,
+    'Syntheri Rocks': images.syntheri,
+    'Supa Dam & Sykes Point': images.sykesPoint,
+    'Jungle safari': images.forestRoad,
+  };
+  return marketingChildren('things-to-do').map((page) => ({
+    params: { slug: page.slug },
+    props: {
+      page,
+      activity: page.activityName
+        ? (activities.find((a) => a.name === page.activityName) ?? null)
+        : null,
+      activityFallbackImage: page.activityName
+        ? (regionArt[page.activityName] ?? null)
+        : null,
+    },
+  }));
+}
+
+const { page, activity, activityFallbackImage } = Astro.props;
+---
+
+<MarketingDocument
+  page={page}
+  activity={activity}
+  activityFallbackImage={activityFallbackImage}
+  breadcrumbs={[
+    { name: 'Things to do', href: '/things-to-do' },
+    { name: page.pageTitle },
+  ]}
+/>

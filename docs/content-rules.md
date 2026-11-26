@@ -48,9 +48,13 @@ a contiguous verbatim span of `text`. Reword one and the build fails.
 wrote. Correcting them is embellishment, and an embellished testimonial is a fabricated
 one about a real named person.
 
-**One customer, one appearance.** Seven reviews are stored; each appears exactly once —
-hero, solo section, routes proof, and four in the grid. `Reviews.astro` filters by
-`role` to enforce it.
+**One customer, one appearance on the homepage.** Seven reviews are stored; each appears
+exactly once on `/` — hero, solo section, routes proof, and four in the grid.
+`Reviews.astro` filters by `role` to enforce it.
+
+**Marketing pages may reuse a review once.** The same customer may also appear on one
+child SEO page (`/things-to-do/…`, `/routes/…`, `/stays/…`) if the quote is a verbatim
+span of their Google text. Never a second child page. Never edit the words.
 
 **Re-pull before each refresh.** Authors can edit or delete their reviews.
 
@@ -87,7 +91,9 @@ and the exact opposite of Irshad's no-names requirement.
 - Photographs showing the region, not a property, say so in body text — not small print.
 - The vehicle cutouts are **model photographs, not his cars**, disclosed under the grid.
 - Every image records its licence in `content/images.ts`; CC BY-SA credits render in the
-  footer automatically.
+  footer automatically. Marketing hub and detail pages also list **only the photographs
+  on that page** in a `<details>` block (same pattern as the footer), and route pages
+  add OpenStreetMap / OSRM / Leaflet credits whenever a map is shown.
 
 ---
 

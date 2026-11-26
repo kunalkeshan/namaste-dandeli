@@ -48,3 +48,10 @@ export const staysDisclosure =
   'not named here on purpose. A named resort gets booked direct and he ' +
   'loses the introduction he made. Tell him your dates, your group and your ' +
   'budget, and he will tell you what is actually free.';
+
+/** Booking logistics — distinct from the photograph / naming disclosure above. */
+export const staysBeforeYouBook =
+  'Message him with check-in and check-out, how many adults and children, and ' +
+  'whether you need pickup from the airport or station. He confirms what is free, ' +
+  'quotes on WhatsApp or call, and usually takes a small advance to hold the room ' +
+  'through his contact — not a brochure rate from a booking site.';

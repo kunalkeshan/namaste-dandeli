@@ -38,8 +38,17 @@ already appear where taxi searchers see them — the local pack, which Google co
 - `WebSite`
 
 Deliberately absent: `aggregateRating` (above), `openingHoursSpecification` (hours are
-unconfirmed — see `docs/content-rules.md`), `FAQPage` (rich results now restricted to
-gov/health sites; the visible copy earns the traffic).
+unconfirmed — see `docs/content-rules.md`).
+
+`FAQPage` appears on marketing hubs and detail pages under `/things-to-do/`, `/routes/`,
+and `/stays/` when Sanity publishes FAQs there — not on the homepage. Visible question and
+answer text must match the JSON-LD (`pnpm verify:content` enforces parity). Google restricts
+FAQ rich results to government and health sites, so **expect no star FAQ block in search**
+— the markup is for machine readability (including AI assistants), not for a rich result.
+
+Questions are phrased the way travellers ask on calls and in reviews; Google reviews rarely
+contain literal `?` sentences, so the seed list in `scripts/marketing-faqs.mjs` is edited
+when new review themes appear.
 
 ## Technical
 

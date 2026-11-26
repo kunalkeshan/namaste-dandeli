@@ -1,0 +1,406 @@
+---
+import { getContent, whatsappLink } from '../content';
+import type { MarketingPage } from '../content/marketing';
+import { enquiryLede } from '../lib/enquiry-lede';
+
+interface Props {
+  topic: string;
+  message: string;
+  section: MarketingPage['section'];
+}
+const { topic, message, section } = Astro.props;
+const { site } = await getContent();
+const baseWa = whatsappLink(message);
+const lede = enquiryLede(section, topic);
+
+const fieldClass =
+  'mt-1 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground shadow-none placeholder:text-muted-foreground';
+const altInputClass = `${fieldClass} cursor-pointer`;
+---
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
+  crossorigin="anonymous"
+/>
+
+<section
+  class="enquiry-handoff reveal rounded-2xl border border-foreground/10 bg-muted/30 p-6 sm:p-8"
+  data-enquiry-form
+  data-wa-base={baseWa}
+  data-topic={topic}
+  data-alt-input-class={altInputClass}
+>
+  <h2 class="text-lg font-semibold">Send Irshad your dates</h2>
+  <p class="measure mt-2 text-sm text-muted-foreground">{lede}</p>
+  <form class="mt-6 grid gap-4 sm:grid-cols-2" onsubmit="return false">
+    <div class="block text-sm" data-enquiry-dates-wrap>
+      <span
+        id={`enquiry-dates-label-${topic.replace(/\W+/g, '-').toLowerCase()}`}
+        class="font-medium"
+      >
+        Travel dates
+      </span>
+      <div class="mt-1" data-enquiry-dates-slot />
+      <span class="mt-1 block text-xs text-muted-foreground">
+        Tap the field, then pick check-in and check-out.
+      </span>
+      <input
+        name="dates"
+        type="text"
+        data-enquiry-dates
+        class="sr-only"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+      />
+    </div>
+    <label class="block text-sm">
+      <span class="font-medium">Group size</span>
+      <input
+        name="size"
+        type="number"
+        min="1"
+        max="60"
+        step="1"
+        inputmode="numeric"
+        placeholder="e.g. 4"
+        class={fieldClass}
+      />
+    </label>
+    <div class="sm:col-span-2">
+      <a
+        href={baseWa}
+        data-track="whatsapp"
+        data-placement="enquiry"
+        data-enquiry-submit
+        class="btn btn-accent inline-flex w-full items-center justify-center rounded-xl bg-accent px-6 py-3.5 font-semibold text-accent-foreground sm:w-auto"
+      >
+        Continue on WhatsApp
+      </a>
+    </div>
+  </form>
+  <p class="mt-4 text-xs text-muted-foreground">
+    Or call{' '}
+    <a
+      href={`tel:${site.phone}`}
+      class="link-inline"
+      data-track="call"
+      data-placement="enquiry"
+    >
+      {site.phoneDisplay}
+    </a>
+  </p>
+</section>
+
+<style>
+  .enquiry-handoff {
+    position: relative;
+    z-index: 0;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry) {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 40px rgb(18 32 25 / 0.14);
+    background: var(--color-background);
+    z-index: 45;
+    width: 19.25rem;
+    padding: 0 0.25rem 0.35rem;
+    box-sizing: border-box;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry.open) {
+    display: block;
+  }
+
+  @media (max-width: 639px) {
+    :global(.flatpickr-calendar.flatpickr-calendar--enquiry) {
+      width: min(19.25rem, calc(100vw - 2.5rem));
+    }
+  }
+
+  @media (min-width: 640px) {
+    :global(.flatpickr-calendar.flatpickr-calendar--enquiry.multiMonth) {
+      width: min(39.5rem, calc(100vw - 2.5rem));
+    }
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-innerContainer) {
+    width: 100%;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-rContainer) {
+    width: 100%;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-days) {
+    width: 100%;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .dayContainer) {
+    width: 18.75rem;
+    min-width: 18.75rem;
+    max-width: 18.75rem;
+  }
+
+  @media (max-width: 639px) {
+    :global(.flatpickr-calendar.flatpickr-calendar--enquiry .dayContainer) {
+      width: calc(100% - 0.5rem);
+      min-width: 0;
+      max-width: none;
+      margin: 0 auto;
+    }
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-months) {
+    background: var(--color-muted);
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 0.35rem 0;
+  }
+
+  :global(
+    .flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-months .flatpickr-month
+  ) {
+    color: var(--color-foreground);
+    fill: var(--color-foreground);
+    height: 2.25rem;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-current-month) {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    padding-top: 0.35rem;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-weekdays) {
+    background: var(--color-muted);
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry span.flatpickr-weekday) {
+    color: var(--color-muted-foreground);
+    font-weight: 600;
+    font-size: 0.7rem;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-days) {
+    padding: 0.35rem 0.25rem 0.65rem;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day) {
+    color: var(--color-foreground);
+    border-radius: 0.375rem;
+    line-height: 2.125rem;
+    flex: 1 0 14.2857143%;
+    max-width: none;
+    height: 2.25rem;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+  }
+
+  :global(
+    .flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.flatpickr-disabled
+  ),
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.prevMonthDay),
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.nextMonthDay) {
+    color: var(--color-muted-foreground);
+    opacity: 0.55;
+  }
+
+  :global(
+    .flatpickr-calendar.flatpickr-calendar--enquiry
+      .flatpickr-day:hover:not(.flatpickr-disabled)
+  ) {
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-background));
+    border-color: transparent;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.selected),
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.startRange),
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.endRange) {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary-foreground) !important;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.inRange) {
+    background: color-mix(
+      in srgb,
+      var(--color-primary) 16%,
+      var(--color-background)
+    ) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    color: var(--color-foreground) !important;
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.today) {
+    border-color: var(--color-accent-ink);
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .flatpickr-day.today:hover) {
+    border-color: var(--color-accent-ink);
+  }
+
+  :global(.flatpickr-calendar.flatpickr-calendar--enquiry .numInputWrapper span) {
+    border-color: var(--color-border);
+  }
+
+  /* Visible range summary (flatpickr alt input in the form column). */
+  .enquiry-handoff :global(input.flatpickr-input) {
+    display: block;
+    width: 100%;
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    /* data-enquiry-ready */
+    const FLATPICKR =
+      'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js';
+
+    const loadFlatpickr = () =>
+      new Promise((resolve, reject) => {
+        if (window.flatpickr) return resolve(window.flatpickr);
+        const s = document.createElement('script');
+        s.src = FLATPICKR;
+        s.crossOrigin = 'anonymous';
+        s.onload = () => (window.flatpickr ? resolve(window.flatpickr) : reject());
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+
+    const monthPanels = () => (matchMedia('(min-width: 640px)').matches ? 2 : 1);
+
+    const formatRangeHuman = (start, end) => {
+      if (!start) return '';
+      const monthLong = (d) =>
+        d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+      const short = (d) =>
+        d.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+      if (!end) return short(start);
+      const sameMonth =
+        start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+      if (sameMonth) {
+        return `${start.getDate()} – ${end.getDate()} ${monthLong(start)}`;
+      }
+      return `${short(start)} – ${short(end)}`;
+    };
+
+    const init = () => {
+      document.querySelectorAll('[data-enquiry-form]').forEach((root) => {
+        const base = root.getAttribute('data-wa-base');
+        const topic = root.getAttribute('data-topic');
+        const altClass = root.getAttribute('data-alt-input-class') || '';
+        const link = root.querySelector('[data-enquiry-submit]');
+        const dates = root.querySelector('[data-enquiry-dates]');
+        const size = root.querySelector('input[name="size"]');
+        const dateWrap = root.querySelector('[data-enquiry-dates-wrap]');
+        const dateSlot = root.querySelector('[data-enquiry-dates-slot]');
+        const dateLabelId = dateWrap?.querySelector('[id^="enquiry-dates-label"]')?.id;
+        if (!base || !link || !dates || !size || !dateWrap || !dateSlot) return;
+
+        let rangeText = '';
+
+        loadFlatpickr()
+          .then((flatpickr) => {
+            const fp = flatpickr(dates, {
+              mode: 'range',
+              minDate: 'today',
+              showMonths: monthPanels(),
+              altInput: true,
+              altInputClass: altClass,
+              clickOpens: true,
+              disableMobile: true,
+              appendTo: document.body,
+              position: 'auto',
+              dateFormat: 'Y-m-d',
+              locale: { rangeSeparator: ' – ' },
+              onReady(_selected, _str, instance) {
+                instance.calendarContainer.classList.add('flatpickr-calendar--enquiry');
+              },
+              onChange(selected) {
+                if (selected.length === 2) {
+                  rangeText = formatRangeHuman(selected[0], selected[1]);
+                  if (fp.altInput) fp.altInput.value = rangeText;
+                  fp.close();
+                } else if (selected.length === 1) {
+                  rangeText = formatRangeHuman(selected[0], null);
+                  if (fp.altInput) fp.altInput.value = rangeText;
+                } else {
+                  rangeText = '';
+                }
+              },
+            });
+            if (fp.altInput) {
+              fp.altInput.placeholder = 'e.g. 12 – 15 March 2026';
+              if (dateLabelId) fp.altInput.setAttribute('aria-labelledby', dateLabelId);
+              else fp.altInput.setAttribute('aria-label', 'Selected travel dates');
+              dateSlot.appendChild(fp.altInput);
+              fp.altInput.setAttribute('inputmode', 'none');
+              const openIfClosed = () => {
+                if (!fp.isOpen) fp.open();
+              };
+              fp.altInput.addEventListener('click', openIfClosed);
+              fp.altInput.addEventListener('focus', openIfClosed);
+            }
+
+            const mq = matchMedia('(min-width: 640px)');
+            const onMq = () => {
+              const n = monthPanels();
+              if (fp.config.showMonths !== n) {
+                fp.set('showMonths', n);
+                fp.redraw();
+              }
+            };
+            if (mq.addEventListener) mq.addEventListener('change', onMq);
+            else mq.addListener(onMq);
+          })
+          .catch(() => {
+            dates.classList.remove('sr-only');
+            dates.removeAttribute('aria-hidden');
+            dates.setAttribute('tabindex', '0');
+            dates.className = altClass;
+            dates.placeholder = 'e.g. 12–15 March';
+            dateSlot.appendChild(dates);
+          });
+
+        const build = () => {
+          const visible = root.querySelector('input.flatpickr-input');
+          const d = rangeText || (visible && visible.value.trim()) || dates.value.trim();
+          const s = size.value.trim();
+          let extra = '';
+          if (d) extra += `\nDates: ${d}`;
+          if (s) extra += `\nGroup size: ${s}`;
+          if (topic) extra += `\nTopic: ${topic}`;
+          try {
+            const u = new URL(base);
+            const t = decodeURIComponent(u.searchParams.get('text') || '') + extra;
+            u.searchParams.set('text', t);
+            return u.toString();
+          } catch {
+            return base;
+          }
+        };
+
+        link.addEventListener('click', () => {
+          link.setAttribute('href', build());
+        });
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

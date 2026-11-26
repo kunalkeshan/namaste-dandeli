@@ -26,9 +26,9 @@ export const nav = {
   links: [
     { href: '/#solo', label: 'Travelling alone' },
     { href: '/#cars', label: 'The cars' },
-    { href: '/#dandeli', label: 'Things to do' },
-    { href: '/#getting-here', label: 'Routes' },
-    { href: '/#stay', label: 'Stays' },
+    { href: '/things-to-do', label: 'Things to do' },
+    { href: '/routes', label: 'Routes' },
+    { href: '/stays', label: 'Stays' },
     { href: '/#reviews', label: 'Reviews' },
   ],
   call: 'Call',

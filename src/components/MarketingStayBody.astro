@@ -1,0 +1,25 @@
+---
+import Carousel from './Carousel.astro';
+import type { Stay } from '../content/stays';
+import type { Img } from '../content';
+
+interface Props {
+  stay: Stay & { photos: Img[] };
+}
+const { stay } = Astro.props;
+---
+
+{stay.photos.length > 0 && (
+  <article class="reveal">
+    <div class="img-frame max-w-3xl rounded-lg">
+      <Carousel
+        photos={stay.photos}
+        label={stay.kind}
+        sizes="(min-width: 640px) 44vw, 90vw"
+        aspect="aspect-[4/3]"
+      />
+    </div>
+    <h3 class="mt-4 text-lg font-display">{stay.kind}</h3>
+    <p class="mt-1.5 measure text-sm text-muted-foreground">{stay.blurb}</p>
+  </article>
+)}

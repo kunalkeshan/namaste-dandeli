@@ -1,0 +1,1532 @@
+{
+  "hubballi-airport": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Hubballi airport (HBX)",
+      "lat": 15.363331,
+      "lng": 75.083714
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.373045,
+      "lng": 75.076302
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.381151,
+      "lng": 75.078025
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.391632,
+      "lng": 75.080666
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.400202,
+      "lng": 75.077689
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.405751,
+      "lng": 75.067123
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.413134,
+      "lng": 75.057223
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.417818,
+      "lng": 75.044335
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.422022,
+      "lng": 75.036975
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.431645,
+      "lng": 75.026416
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.439485,
+      "lng": 75.017984
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.451472,
+      "lng": 75.010657
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.458721,
+      "lng": 75.007636
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.463859,
+      "lng": 74.992265
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.463762,
+      "lng": 74.980696
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.460026,
+      "lng": 74.964728
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.456146,
+      "lng": 74.931645
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.45065,
+      "lng": 74.911068
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.44041,
+      "lng": 74.885263
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.43972,
+      "lng": 74.85414
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.449644,
+      "lng": 74.821328
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.458491,
+      "lng": 74.77839
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.446748,
+      "lng": 74.722048
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.429168,
+      "lng": 74.698049
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.415821,
+      "lng": 74.680107
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.411366,
+      "lng": 74.666659
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.398062,
+      "lng": 74.654376
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.38896,
+      "lng": 74.651222
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.379526,
+      "lng": 74.639313
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.360656,
+      "lng": 74.633026
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.340937,
+      "lng": 74.618521
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.329379,
+      "lng": 74.609122
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.321185,
+      "lng": 74.602923
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.309483,
+      "lng": 74.607634
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.292849,
+      "lng": 74.61004
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ],
+  "hubballi-city": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Hubballi city & station",
+      "lat": 15.34728,
+      "lng": 75.159611
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.344959,
+      "lng": 75.151869
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.34574,
+      "lng": 75.143115
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.344614,
+      "lng": 75.137274
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.342657,
+      "lng": 75.128313
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.33478,
+      "lng": 75.123992
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.325739,
+      "lng": 75.115907
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.317968,
+      "lng": 75.103519
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.313795,
+      "lng": 75.098328
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.30772,
+      "lng": 75.090069
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.289607,
+      "lng": 75.065885
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.285294,
+      "lng": 75.05439
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.287234,
+      "lng": 75.045434
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.283232,
+      "lng": 75.034134
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.282098,
+      "lng": 75.009548
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.288354,
+      "lng": 74.973393
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.293467,
+      "lng": 74.945462
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.301606,
+      "lng": 74.920674
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.312969,
+      "lng": 74.913666
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.32272,
+      "lng": 74.902724
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.343494,
+      "lng": 74.890116
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.354531,
+      "lng": 74.862416
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.349996,
+      "lng": 74.830097
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.346893,
+      "lng": 74.801522
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.331718,
+      "lng": 74.768038
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.332641,
+      "lng": 74.75393
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.328341,
+      "lng": 74.729237
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.326067,
+      "lng": 74.717511
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.307562,
+      "lng": 74.691942
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.305329,
+      "lng": 74.67967
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.301388,
+      "lng": 74.667397
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.298957,
+      "lng": 74.657409
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.299553,
+      "lng": 74.63802
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.303673,
+      "lng": 74.622185
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.287966,
+      "lng": 74.610614
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ],
+  "alnavar-junction": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Alnavar Junction",
+      "lat": 15.42663,
+      "lng": 74.739378
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.433435,
+      "lng": 74.739992
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.449262,
+      "lng": 74.737533
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.444461,
+      "lng": 74.720107
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.437103,
+      "lng": 74.703292
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.429321,
+      "lng": 74.698143
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.423925,
+      "lng": 74.694116
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.422024,
+      "lng": 74.685831
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.414417,
+      "lng": 74.676398
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.412515,
+      "lng": 74.671469
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.41216,
+      "lng": 74.668595
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.408271,
+      "lng": 74.663249
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.401714,
+      "lng": 74.656812
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.394608,
+      "lng": 74.655696
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.391804,
+      "lng": 74.652692
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.38928,
+      "lng": 74.650804
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.387636,
+      "lng": 74.650417
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.38567,
+      "lng": 74.643884
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.375057,
+      "lng": 74.637382
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.36435,
+      "lng": 74.632543
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.360884,
+      "lng": 74.633112
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.355618,
+      "lng": 74.632876
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.347413,
+      "lng": 74.62602
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.339799,
+      "lng": 74.617469
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.335639,
+      "lng": 74.612706
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.329379,
+      "lng": 74.609122
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.324557,
+      "lng": 74.604358
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.323063,
+      "lng": 74.602763
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.318858,
+      "lng": 74.603933
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.312277,
+      "lng": 74.605676
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.3097,
+      "lng": 74.607398
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.306311,
+      "lng": 74.608846
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.30243,
+      "lng": 74.609556
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.286305,
+      "lng": 74.611966
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.278463,
+      "lng": 74.615011
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ],
+  "londa-junction": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Londa Junction",
+      "lat": 15.409613,
+      "lng": 74.521061
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.406051,
+      "lng": 74.527112
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.397695,
+      "lng": 74.534365
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.392399,
+      "lng": 74.529575
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.387347,
+      "lng": 74.528647
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.382597,
+      "lng": 74.524461
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.376543,
+      "lng": 74.532307
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.372907,
+      "lng": 74.535238
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.367486,
+      "lng": 74.533372
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.360757,
+      "lng": 74.532066
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.35606,
+      "lng": 74.523944
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.349483,
+      "lng": 74.519643
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.343185,
+      "lng": 74.520076
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.342251,
+      "lng": 74.521057
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.339313,
+      "lng": 74.530896
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.33639,
+      "lng": 74.535413
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.335531,
+      "lng": 74.540128
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.330813,
+      "lng": 74.545685
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.329411,
+      "lng": 74.548877
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.328164,
+      "lng": 74.551028
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.328831,
+      "lng": 74.553297
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.326757,
+      "lng": 74.556178
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.325479,
+      "lng": 74.558125
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.32387,
+      "lng": 74.560019
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.321743,
+      "lng": 74.562235
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.318701,
+      "lng": 74.564901
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.317452,
+      "lng": 74.565799
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.316347,
+      "lng": 74.567712
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.313147,
+      "lng": 74.570553
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.308559,
+      "lng": 74.57597
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.310756,
+      "lng": 74.5855
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.305898,
+      "lng": 74.593539
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.299431,
+      "lng": 74.601393
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.30243,
+      "lng": 74.609556
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.281237,
+      "lng": 74.614926
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ],
+  "belagavi-airport": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Belagavi airport (IXG)",
+      "lat": 15.86261,
+      "lng": 74.619094
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.868118,
+      "lng": 74.610129
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.86512,
+      "lng": 74.584842
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.857686,
+      "lng": 74.558118
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.855207,
+      "lng": 74.533756
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.862822,
+      "lng": 74.524451
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.853231,
+      "lng": 74.515245
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.840418,
+      "lng": 74.509004
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.819623,
+      "lng": 74.493575
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.798583,
+      "lng": 74.482114
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.770888,
+      "lng": 74.488139
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.741956,
+      "lng": 74.491533
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.720875,
+      "lng": 74.498274
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.686918,
+      "lng": 74.50314
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.637998,
+      "lng": 74.520135
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.600638,
+      "lng": 74.514348
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.570851,
+      "lng": 74.513169
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.546084,
+      "lng": 74.490478
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.528357,
+      "lng": 74.492257
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.49922,
+      "lng": 74.478405
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.469195,
+      "lng": 74.481663
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.446779,
+      "lng": 74.48531
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.428825,
+      "lng": 74.490896
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.410885,
+      "lng": 74.494576
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.395012,
+      "lng": 74.491566
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.36697,
+      "lng": 74.494358
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.346357,
+      "lng": 74.502702
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.34236,
+      "lng": 74.518649
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.33656,
+      "lng": 74.537242
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.329297,
+      "lng": 74.549274
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.326757,
+      "lng": 74.556178
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.322214,
+      "lng": 74.561741
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.316528,
+      "lng": 74.567049
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.308718,
+      "lng": 74.578389
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.299033,
+      "lng": 74.602224
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ],
+  "dabolim-goa": [
+    {
+      "_type": "routeStop",
+      "_key": "pt0",
+      "name": "Dabolim airport, Goa (GOI)",
+      "lat": 15.383301,
+      "lng": 73.830862
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt1",
+      "name": "_1",
+      "lat": 15.399094,
+      "lng": 73.818459
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt2",
+      "name": "_2",
+      "lat": 15.398867,
+      "lng": 73.842414
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt3",
+      "name": "_3",
+      "lat": 15.395822,
+      "lng": 73.872374
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt4",
+      "name": "_4",
+      "lat": 15.40182,
+      "lng": 73.908343
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt5",
+      "name": "_5",
+      "lat": 15.370269,
+      "lng": 73.93449
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt6",
+      "name": "_6",
+      "lat": 15.347158,
+      "lng": 73.970102
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt7",
+      "name": "_7",
+      "lat": 15.352376,
+      "lng": 74.003488
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt8",
+      "name": "_8",
+      "lat": 15.323178,
+      "lng": 74.02634
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt9",
+      "name": "_9",
+      "lat": 15.327248,
+      "lng": 74.048084
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt10",
+      "name": "_10",
+      "lat": 15.339412,
+      "lng": 74.067778
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt11",
+      "name": "_11",
+      "lat": 15.366533,
+      "lng": 74.089129
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt12",
+      "name": "_12",
+      "lat": 15.382916,
+      "lng": 74.126124
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt13",
+      "name": "_13",
+      "lat": 15.360073,
+      "lng": 74.188497
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt14",
+      "name": "_14",
+      "lat": 15.390415,
+      "lng": 74.236611
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt15",
+      "name": "_15",
+      "lat": 15.410211,
+      "lng": 74.24022
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt16",
+      "name": "_16",
+      "lat": 15.414089,
+      "lng": 74.252822
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt17",
+      "name": "_17",
+      "lat": 15.415256,
+      "lng": 74.263901
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt18",
+      "name": "_18",
+      "lat": 15.411868,
+      "lng": 74.269206
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt19",
+      "name": "_19",
+      "lat": 15.417674,
+      "lng": 74.270931
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt20",
+      "name": "_20",
+      "lat": 15.414674,
+      "lng": 74.279934
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt21",
+      "name": "_21",
+      "lat": 15.426623,
+      "lng": 74.279467
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt22",
+      "name": "_22",
+      "lat": 15.43201,
+      "lng": 74.291564
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt23",
+      "name": "_23",
+      "lat": 15.439388,
+      "lng": 74.303353
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt24",
+      "name": "_24",
+      "lat": 15.437582,
+      "lng": 74.336586
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt25",
+      "name": "_25",
+      "lat": 15.434033,
+      "lng": 74.376741
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt26",
+      "name": "_26",
+      "lat": 15.447901,
+      "lng": 74.40865
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt27",
+      "name": "_27",
+      "lat": 15.434478,
+      "lng": 74.458628
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt28",
+      "name": "_28",
+      "lat": 15.422203,
+      "lng": 74.491929
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt29",
+      "name": "_29",
+      "lat": 15.387641,
+      "lng": 74.490602
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt30",
+      "name": "_30",
+      "lat": 15.345328,
+      "lng": 74.502755
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt31",
+      "name": "_31",
+      "lat": 15.336395,
+      "lng": 74.534983
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt32",
+      "name": "_32",
+      "lat": 15.328598,
+      "lng": 74.552482
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt33",
+      "name": "_33",
+      "lat": 15.318805,
+      "lng": 74.564721
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt34",
+      "name": "_34",
+      "lat": 15.310886,
+      "lng": 74.583851
+    },
+    {
+      "_type": "routeStop",
+      "_key": "pt35",
+      "name": "Dandeli bus stand",
+      "lat": 15.267,
+      "lng": 74.618001,
+      "note": "Schematic endpoint — not turn-by-turn navigation."
+    }
+  ]
+}

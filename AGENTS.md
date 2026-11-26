@@ -19,6 +19,11 @@ not style preferences — they are the point of the project.**
 - **Do not install or upgrade packages without explicit approval.**
 - **Do not push, tag, or open PRs unless asked.**
 - `pnpm og` regenerates the social card and overwrites `public/og.jpg` — ask first.
+- **Bulk Sanity writes to `production`** (`dataset import`, multi-doc
+  `mutate`, new seed scripts): wrap in `withSingleProductionRebuild` from
+  `scripts/sanity-bulk-write.mjs`, or pause → work → `rebuild-webhook trigger`
+  → resume. Otherwise the Sanity webhook queues **one Vercel build per
+  document/transaction** — see [docs/deploy-on-publish.md](docs/deploy-on-publish.md).
 
 ## Definition of Done
 
@@ -80,12 +85,20 @@ gate `done` / `N/A` / `deferred — reason`, bundling all **Q**s into a single
       _The performance argument for this audience — tourists on Indian mobile data —
       rests entirely on this._ → `CLAUDE.md`
 
-      **The one sanctioned exception is the analytics tag** in `Analytics.astro`
-      (GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
-      `.js` file count cannot see it — which is why `verify:content` now also
-      audits every `<script>` tag in the built HTML and fails on any that is not
-      accounted for by name. A second analytics vendor is a branch in
-      `window.track`, never a new snippet in a component.
+      **Route maps:** `/routes` and `/routes/*` load Leaflet inline via
+
+`RoutesMapScript.astro` (user-approved). Audit allow-list: `data-route-map-ready`.
+
+**Enquiry hand-off:** marketing pages load Flatpickr from jsDelivr inside
+`EnquiryHandoff.astro` for a range calendar (user-approved). Audit allow-list:
+`data-enquiry-ready`.
+
+**The one sanctioned exception is the analytics tag** in `Analytics.astro`
+(GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
+`.js` file count cannot see it — which is why `verify:content` now also
+audits every `<script>` tag in the built HTML and fails on any that is not
+accounted for by name. A second analytics vendor is a branch in
+`window.track`, never a new snippet in a component.
 
 - [ ] **Image provenance (Q)** — added an image → record its licence and whether it
       depicts the real subject or is representative. Ask whether an on-page disclosure

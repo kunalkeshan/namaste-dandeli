@@ -41,6 +41,9 @@ pnpm icons            # regenerate every raster icon from public/favicon.svg
 pnpm dev:site         # Astro only, without the Studio
 pnpm dev:studio       # Studio only (localhost:3333)
 pnpm studio:deploy    # deploy the Studio to *.sanity.studio
+
+# Bulk production writes → one Vercel rebuild (see docs/deploy-on-publish.md)
+node scripts/rebuild-webhook.mjs status   # pause | resume | trigger
 ```
 
 ## Stack
@@ -233,7 +236,11 @@ wrong, and two were fabricated by research agents on this very project.
   visible text label — `pnpm verify:aria` fails a link whose whole content is
   hidden. The WhatsApp mark lived inline in `Hero.astro` and nowhere else, so five
   of six WhatsApp CTAs drew nothing. See `docs/style-guide.md` for the size table.
-- **Keep the page at zero separate `.js` files.** Check with `pnpm verify:content`,
+- **`/routes` and `/routes/*` may load Leaflet (OpenStreetMap) for driving routes;
+  marketing hub/detail pages may load Flatpickr** in `EnquiryHandoff.astro` for the
+  date-range hand-off — the sanctioned page-level JS besides Motion and analytics.
+  See `RoutesMapScript.astro`, `EnquiryHandoff.astro`, and `docs/deploy-on-publish.md`.
+  Every other route stays zero separate `.js` files. Check with `pnpm verify:content`,
   which now also **audits every `<script>` tag** in the built HTML — the `.js`
   file count alone could not see a third-party tag, since one is never written to
   `dist/`. Each script must be accounted for by name: the JSON-LD block, the

@@ -74,5 +74,17 @@ export const CONTENT_QUERY = defineQuery(`{
   // Dereferenced rather than queried by type for the same reason: a
   // page that exists but is not listed is intentionally not in the
   // footer, and a type-wide query would surface it anyway.
-  "legalPages": *[_id == "siteSettings"][0].legalPages[]->${LEGAL}
+  "legalPages": *[_id == "siteSettings"][0].legalPages[]->${LEGAL},
+  "marketingPages": *[_type == "marketingPage"] | order(section asc, slug asc){
+    section, slug, published, blocker,
+    title, description, pageTitle, eyebrow, lede,
+    sections[]{ heading, body },
+    faqs[]{ question, answer },
+    quotes[]{ author, text, pull, dateLabel },
+    whatsappMessage, enquiryTopic,
+    "heroImage": heroImage ${IMG},
+    "cardImage": cardImage ${IMG},
+    routeStops[]{ name, note, lat, lng, promoteSlug },
+    routeRefFrom, activityName, stayKind, alongTheWay
+  }
 }`);

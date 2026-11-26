@@ -1,0 +1,152 @@
+---
+import Nav from './Nav.astro';
+import Contact from './Contact.astro';
+import Motion from './Motion.astro';
+import RiverDivider from './RiverDivider.astro';
+import MarketingHero from './MarketingHero.astro';
+import FaqSection from './FaqSection.astro';
+import PageQuotes from './PageQuotes.astro';
+import InlineCta from './InlineCta.astro';
+import EnquiryHandoff from './EnquiryHandoff.astro';
+import RouteOsmMap from './RouteOsmMap.astro';
+import RoutesMapScript from './RoutesMapScript.astro';
+import MarketingHubCards from './MarketingHubCards.astro';
+import MarketingActivityBody from './MarketingActivityBody.astro';
+import MarketingStayBody from './MarketingStayBody.astro';
+import PageAttributions from './PageAttributions.astro';
+import Layout from '../layouts/Layout.astro';
+import { getContent, type MarketingPage, type Img } from '../content';
+import {
+  imgsOnMarketingPage,
+  pageShowsRouteMaps,
+  photographCredits,
+} from '../lib/page-credits';
+import type { Route } from '../content/routes';
+import type { Activity } from '../content/activities';
+import type { Stay } from '../content/stays';
+
+interface Props {
+  page: MarketingPage;
+  breadcrumbs: { name: string; href?: string }[];
+  children?: MarketingPage[];
+  route?: Route | null;
+  activity?: (Activity & { photos: Img[] }) | null;
+  stay?: (Stay & { photos: Img[] }) | null;
+  activityFallbackImage?: Img | null;
+}
+const { page, breadcrumbs, children, route, activity, stay, activityFallbackImage } =
+  Astro.props;
+
+const { stays } = await getContent();
+
+const pageImages: (Img | null | undefined)[] = [
+  ...imgsOnMarketingPage(page),
+  ...(activity?.photos ?? []),
+  activityFallbackImage,
+  ...(stay?.photos ?? []),
+];
+
+if (children?.length) {
+  for (const child of children) {
+    pageImages.push(...imgsOnMarketingPage(child));
+    if (page.section === 'stays' && child.stayKind) {
+      const kind = stays.find((s) => s.kind === child.stayKind);
+      if (kind) pageImages.push(...kind.photos);
+    }
+  }
+}
+
+const photoCredits = photographCredits(pageImages);
+const showRouteMaps = pageShowsRouteMaps(page, children);
+const distanceLine =
+  route?.distance.confirmed === true
+    ? `${route.distance.value.km} km, about ${route.distance.value.drive}`
+    : route
+      ? 'Ask the fare on the phone'
+      : null;
+---
+
+<Layout
+  title={page.title}
+  description={page.description}
+  preloadHero={Boolean(page.heroImage)}
+  heroPreload={page.heroImage}
+  pageType="WebPage"
+  pageName={page.pageTitle}
+  breadcrumbs={breadcrumbs}
+  faqs={page.faqs}
+  stickyCta
+>
+  <Nav />
+  <main id="main">
+    <MarketingHero
+      eyebrow={page.eyebrow}
+      title={page.pageTitle}
+      lede={page.lede}
+      image={page.heroImage}
+    />
+    <RiverDivider from="deep" to="bg" />
+    <div class="bg-background pb-12 md:pb-10">
+      <div class="mx-auto max-w-5xl space-y-8 px-5 py-10 sm:py-12">
+        {distanceLine && (
+          <p class="reveal measure text-lg font-medium text-foreground">{distanceLine}</p>
+        )}
+        {page.section === 'routes' &&
+          page.routeStops.length >= 2 &&
+          page.slug !== 'hub' && (
+            <RouteOsmMap
+              stops={page.routeStops}
+              variant="detail"
+              mapId={`route-detail-${page.slug}`}
+            />
+          )}
+        {children && children.length > 0 && (
+          <MarketingHubCards section={page.section} hubPages={children} />
+        )}
+        {page.alongTheWay && (
+          <div class="reveal">
+            <h2 class="text-xl">Along the way</h2>
+            <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
+              {page.alongTheWay}
+            </p>
+          </div>
+        )}
+        {activity && (
+          <MarketingActivityBody
+            activity={activity}
+            fallbackImage={activityFallbackImage}
+          />
+        )}
+        {stay && <MarketingStayBody stay={stay} />}
+        {page.sections.map((sec) => (
+          <div class="reveal">
+            {sec.heading && <h2 class="text-xl">{sec.heading}</h2>}
+            <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
+              {sec.body}
+            </p>
+          </div>
+        ))}
+        <div class="space-y-6 border-t border-border pt-6">
+          <PageQuotes quotes={page.quotes} />
+          <FaqSection faqs={page.faqs} />
+          <PageAttributions
+            photographCredits={photoCredits}
+            showRouteMaps={showRouteMaps}
+          />
+          <div class="space-y-6">
+            <InlineCta message={page.whatsappMessage} />
+            <EnquiryHandoff
+              section={page.section}
+              topic={page.enquiryTopic}
+              message={page.whatsappMessage}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <RiverDivider from="bg" to="deep" />
+  <Contact />
+  <Motion />
+  {page.section === 'routes' && <RoutesMapScript />}
+</Layout>

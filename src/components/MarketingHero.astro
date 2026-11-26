@@ -1,0 +1,30 @@
+---
+import CommonsImage from './CommonsImage.astro';
+import ForestTexture from './ForestTexture.astro';
+import type { Img } from '../content';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede: string;
+  image: Img | null;
+}
+const { eyebrow, title, lede, image } = Astro.props;
+---
+
+<div class="relative bg-primary-deep text-primary-foreground">
+  {image && (
+    <CommonsImage
+      img={image}
+      sizes="100vw"
+      class="absolute inset-0 h-full w-full object-cover opacity-50"
+    />
+  )}
+  <div class="absolute inset-0 bg-gradient-to-b from-primary-deep/85 via-primary-deep/70 to-primary-deep"></div>
+  <ForestTexture opacity={0.045} />
+  <div class="relative mx-auto max-w-5xl px-5 pt-[calc(var(--nav-h,64px)+3rem)] pb-14">
+    {eyebrow && <p class="decal mb-3 text-xs text-primary-foreground/55">{eyebrow}</p>}
+    <h1 class="text-2xl sm:text-3xl">{title}</h1>
+    <p class="measure mt-4 text-lg text-primary-foreground/85">{lede}</p>
+  </div>
+</div>

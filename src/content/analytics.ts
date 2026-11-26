@@ -75,7 +75,10 @@ export type CtaPlacement =
   | 'fares'
   | 'contact'
   | 'contact_nap'
-  | 'reviews';
+  | 'reviews'
+  | 'sticky'
+  | 'inline'
+  | 'enquiry';
 
 /**
  * The event names.
