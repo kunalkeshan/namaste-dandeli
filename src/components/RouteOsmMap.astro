@@ -26,7 +26,13 @@ const payload = plotted.map((s) => ({
 }));
 ---
 
-<figure class:list={['route-osm', variant === 'detail' && 'reveal mt-10']}>
+<figure
+  class:list={[
+    'route-osm',
+    variant === 'detail' && 'reveal mt-10',
+    variant === 'card' && 'mb-4',
+  ]}
+>
   <div
     class:list={['route-map-shell', height]}
     data-route-map
@@ -50,21 +56,27 @@ const payload = plotted.map((s) => ({
       <RouteMap stops={stops} variant={variant} schematic={false} />
     </div>
   </div>
-  <figcaption class="measure mt-3 text-sm text-muted-foreground">
-    {variant === 'detail' ? (
-      <>
-        Driving route on OpenStreetMap — orientation only, not turn-by-turn navigation.
-        Distances and times on this page are measured on the road to Dandeli bus stand.
-        Map, routing, and photograph credits are listed below.
-      </>
-    ) : (
-      <>© OpenStreetMap contributors — full map credits below this section.</>
-    )}
-  </figcaption>
+  {variant === 'detail' && (
+    <figcaption class="measure mt-2 text-xs text-muted-foreground">
+      OpenStreetMap route for orientation — not turn-by-turn navigation. Km and drive time
+      above are what Irshad quotes on the phone.
+    </figcaption>
+  )}
 </figure>
 
 <style>
+  .route-map-shell {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+  }
+
   .route-map-shell:has(.leaflet-container) .route-map-canvas > :global(figure) {
     display: none;
+  }
+
+  /* Leaflet panes default to 400+ and can paint over the fixed nav (z-50). */
+  .route-map-shell :global(.leaflet-container) {
+    z-index: 0 !important;
   }
 </style>

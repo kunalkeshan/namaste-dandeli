@@ -10,7 +10,7 @@ const { message, label = 'Message Irshad on WhatsApp' } = Astro.props;
 const { site } = await getContent();
 ---
 
-<div class="reveal mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+<div class="reveal flex flex-col items-start gap-3 sm:flex-row sm:items-center">
   <a
     href={whatsappLink(message)}
     data-track="whatsapp"

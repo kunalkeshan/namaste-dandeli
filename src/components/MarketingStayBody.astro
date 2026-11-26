@@ -1,6 +1,5 @@
 ---
 import Carousel from './Carousel.astro';
-import { getContent } from '../content';
 import type { Stay } from '../content/stays';
 import type { Img } from '../content';
 
@@ -8,25 +7,19 @@ interface Props {
   stay: Stay & { photos: Img[] };
 }
 const { stay } = Astro.props;
-const { staysDisclosure } = await getContent();
 ---
 
 {stay.photos.length > 0 && (
-  <div class="reveal lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:gap-y-8">
+  <div class="reveal">
     <div class="img-frame rounded-lg">
       <Carousel
         photos={stay.photos}
         label={stay.kind}
-        sizes="(min-width: 1024px) 40vw, (min-width: 768px) 70vw, 90vw"
+        sizes="(min-width: 768px) 70vw, 90vw"
         aspect="aspect-[4/3]"
       />
     </div>
-    <div class="mt-8 lg:mt-0">
-      <h2 class="text-lg font-display">{stay.kind}</h2>
-      <p class="mt-1.5 measure text-sm text-muted-foreground">{stay.blurb}</p>
-      <p class="measure mt-6 border-l-2 border-border pl-4 text-sm text-muted-foreground">
-        {staysDisclosure}
-      </p>
-    </div>
+    <h2 class="mt-4 text-lg font-display">{stay.kind}</h2>
+    <p class="mt-1.5 measure text-sm text-muted-foreground">{stay.blurb}</p>
   </div>
 )}
