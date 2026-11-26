@@ -54,6 +54,65 @@ const section = (heading, body) => ({
   body,
 });
 
+const routeStop = (name, lat, lng, note) => ({
+  _type: 'routeStop',
+  _key: name.replace(/\W/g, '').slice(0, 12),
+  name,
+  lat,
+  lng,
+  ...(note ? { note } : {}),
+});
+
+const DANDELI_STAND = routeStop(
+  'Dandeli bus stand',
+  15.2667,
+  74.6183,
+  'Schematic endpoint for the map — not turn-by-turn navigation.',
+);
+
+const activityPage = ({
+  id,
+  slug,
+  act,
+  regionSlot,
+  title,
+  pageTitle,
+  quoteNeedles = [],
+  extraSections = [],
+}) => {
+  const hero = img(pick('region', regionSlot));
+  return page({
+    _id: `marketing-things-to-do-${id}`,
+    section: 'things-to-do',
+    slug,
+    published: true,
+    title,
+    description: act.blurb.slice(0, 155),
+    pageTitle,
+    eyebrow: 'Things to do',
+    lede: act.blurb,
+    activityName: act.name,
+    sections: [
+      ...(act.caveat ? [section('Before you book', act.caveat)] : []),
+      ...(act.duration || act.season
+        ? [
+            section(
+              'How it fits the day',
+              `${act.duration ?? ''} ${act.season ? `Usually ${act.season}.` : ''}`.trim(),
+            ),
+          ]
+        : []),
+      ...extraSections,
+    ],
+    faqs: [],
+    quotes: quoteNeedles.map((n) => quote(n)).filter(Boolean),
+    whatsappMessage: `Hi Irshad, we are interested in ${act.name.toLowerCase()} at Dandeli.\n\nDates: \nGroup size: \nPickup from: `,
+    enquiryTopic: act.name,
+    heroImage: hero,
+    cardImage: hero,
+  });
+};
+
 const server = await createServer({
   server: { middlewareMode: true },
   appType: 'custom',
@@ -128,7 +187,9 @@ docs.push(
     whatsappMessage:
       'Hi Irshad, we are interested in white water rafting at Dandeli.\n\nDates: \nGroup size: \nPickup from: ',
     enquiryTopic: 'White water rafting',
+    activityName: 'White water rafting',
     heroImage: img(pick('region', 'rafting')),
+    cardImage: img(pick('region', 'rafting')),
   }),
   page({
     _id: 'marketing-things-to-do-jungle-safari',
@@ -155,8 +216,90 @@ docs.push(
     whatsappMessage:
       'Hi Irshad, we want a jungle safari in Dandeli.\n\nDates: \nGroup size: \nWhich slot suits us: ',
     enquiryTopic: 'Jungle safari',
+    activityName: 'Jungle safari',
     heroImage: img(pick('region', 'forestRoad')),
+    cardImage: img(pick('region', 'forestRoad')),
   }),
+);
+
+for (const spec of [
+  {
+    id: 'coracle-ride',
+    slug: 'coracle-ride',
+    regionSlot: 'coracle',
+    pageTitle: 'Coracle rides on the Kali',
+    title: 'Coracle rides on the Kali | Namaste Dandeli',
+    extraSections: [
+      section(
+        'Good with mixed ages',
+        'The round bamboo boat is the gentle option when grandparents or small children are in the group. Irshad books the slot and drives you to the river put-in.',
+      ),
+    ],
+  },
+  {
+    id: 'birdwatching',
+    slug: 'birdwatching',
+    regionSlot: 'hornbill',
+    pageTitle: 'Birdwatching around Ganeshgudi',
+    title: 'Birdwatching in Dandeli | Namaste Dandeli',
+    extraSections: [
+      section(
+        'Why the early start',
+        'Hornbills and forest birds are active at dawn. Ganeshgudi is the usual base — Irshad lines up a guide and the drive so you are on the trail while it is still cool.',
+      ),
+    ],
+  },
+  {
+    id: 'syntheri-rocks',
+    slug: 'syntheri-rocks',
+    regionSlot: 'syntheri',
+    pageTitle: 'Syntheri Rocks day trip',
+    title: 'Syntheri Rocks near Dandeli | Namaste Dandeli',
+    extraSections: [
+      section(
+        'On the ground',
+        'The monolith sits in the valley carved by the Kaneri river — not the Kali. Count on steps down and back; Irshad checks conditions before monsoon outings.',
+      ),
+    ],
+  },
+  {
+    id: 'supa-dam-sykes-point',
+    slug: 'supa-dam-sykes-point',
+    regionSlot: 'sykesPoint',
+    pageTitle: 'Supa Dam and Sykes Point',
+    title: 'Supa Dam & Sykes Point | Namaste Dandeli',
+    extraSections: [
+      section(
+        'Evening light',
+        'The reservoir feeds rafting releases on the Kali below. Sykes Point is the viewpoint run — access sometimes needs permission, so Irshad confirms before you set out.',
+      ),
+    ],
+  },
+]) {
+  const act = activities.find((a) =>
+    spec.slug === 'coracle-ride'
+      ? a.name === 'Coracle ride'
+      : spec.slug === 'birdwatching'
+        ? a.name === 'Birdwatching'
+        : spec.slug === 'syntheri-rocks'
+          ? a.name === 'Syntheri Rocks'
+          : a.name.startsWith('Supa Dam'),
+  );
+  if (!act) continue;
+  docs.push(
+    activityPage({
+      id: spec.id,
+      slug: spec.slug,
+      act,
+      regionSlot: spec.regionSlot,
+      title: spec.title,
+      pageTitle: spec.pageTitle,
+      extraSections: spec.extraSections,
+    }),
+  );
+}
+
+docs.push(
   page({
     _id: 'marketing-routes-hub',
     section: 'routes',
@@ -191,6 +334,10 @@ const routePages = [
     title: 'Hubballi airport to Dandeli cab',
     lede: 'The nearest airport. Irshad meets you at HBX and drives you to town or straight to your stay.',
     note: 'The nearest airport.',
+    card: 'forestRoad',
+    alongTheWay:
+      'From HBX you join the road toward Haliyal and the greener Western Ghats stretch. The drive mixes highway and forest edge — tea stops when you need them, timed around your flight.',
+    stops: [routeStop('Hubballi airport (HBX)', 15.3627, 75.0868), DANDELI_STAND],
     quotes: [quote('hubli to dandeli', 'hubli to dandeli')],
   },
   {
@@ -199,6 +346,10 @@ const routePages = [
     from: 'Hubballi city & station',
     title: 'Hubballi city and station to Dandeli',
     lede: 'For guests already in Hubballi or arriving at the city railway station.',
+    card: 'kaliHabitat',
+    alongTheWay:
+      'City traffic first, then the same climb toward Haliyal that airport guests see — Irshad picks you up at the station forecourt or your hotel and keeps the quoted time to Dandeli bus stand.',
+    stops: [routeStop('Hubballi city', 15.3647, 75.124), DANDELI_STAND],
     quotes: [quote('hubli to dandeli')],
   },
   {
@@ -208,6 +359,10 @@ const routePages = [
     title: 'Alnavar Junction to Dandeli taxi',
     lede: 'The closest railway stop. Common for resort pick-ups and family groups.',
     note: 'The closest railway station.',
+    card: 'forestRoad',
+    alongTheWay:
+      'A short run from the platform into forested side roads toward Dandeli — popular for families getting dropped at a resort gate rather than the bus stand.',
+    stops: [routeStop('Alnavar Junction', 15.4271, 74.7406), DANDELI_STAND],
     quotes: [quote('Alnavar railway', 'pick up from Alnavar')],
   },
   {
@@ -217,6 +372,10 @@ const routePages = [
     title: 'Londa Junction to Dandeli cab',
     lede: 'Handy if you are coming from Goa or down the Konkan coast.',
     note: 'Best if you are coming from Goa or the Konkan coast.',
+    card: 'forestRoad',
+    alongTheWay:
+      'From Londa you wind into the hills toward Dandeli — thick forest on either side on a good day. Irshad meets trains that arrive late as well as morning slots.',
+    stops: [routeStop('Londa Junction', 15.4085, 74.518), DANDELI_STAND],
     quotes: [quote('londa', 'londa')],
   },
   {
@@ -225,6 +384,10 @@ const routePages = [
     from: 'Belagavi Airport (IXG)',
     title: 'Belagavi airport to Dandeli',
     lede: 'IXG is farther than Hubballi but works when that is where your flight lands.',
+    card: 'kaliHabitat',
+    alongTheWay:
+      'Longer than HBX but straightforward highway time — useful when Belagavi is on your ticket and Hubballi is not.',
+    stops: [routeStop('Belagavi airport (IXG)', 15.8593, 74.6183), DANDELI_STAND],
     quotes: [quote('Belgaum Dandeli', 'Belgaum Dandeli Pick up')],
   },
   {
@@ -234,6 +397,10 @@ const routePages = [
     title: 'Goa Dabolim airport to Dandeli',
     lede: 'Closer than Mopa for most Goa arrivals — whatever the booking sites tell you.',
     note: 'Closer than Mopa, whatever the booking sites tell you.',
+    card: 'kaliHabitat',
+    alongTheWay:
+      'You cross from coastal Goa into Karnataka’s forest roads. It is a measured run to Dandeli bus stand — not the inflated “three hours” some booking sites quote.',
+    stops: [routeStop('Dabolim airport, Goa (GOI)', 15.3808, 73.8314), DANDELI_STAND],
     quotes: [quote('Goa to Dandeli', 'from Goa to Dandeli')],
   },
 ];
@@ -256,8 +423,10 @@ for (const r of routePages) {
       whatsappMessage: `Hi Irshad, I need a cab ${r.from} to Dandeli.\n\nDate: \nFlight or train time: \nPassengers: `,
       enquiryTopic: r.from,
       routeRefFrom: r.from,
-      heroImage: img(pick('region', 'kaliHabitat')),
-      routeStops: [],
+      alongTheWay: r.alongTheWay,
+      heroImage: img(pick('region', r.card ?? 'kaliHabitat')),
+      cardImage: img(pick('region', r.card ?? 'kaliHabitat')),
+      routeStops: r.stops ?? [],
     }),
   );
 }
@@ -302,12 +471,27 @@ for (const s of staySlugs) {
       pageTitle: st.kind,
       eyebrow: 'Stays',
       lede: st.blurb,
-      sections: [],
+      stayKind: st.kind,
+      sections: [
+        section(
+          'What you are choosing',
+          s.slug === 'on-the-river'
+            ? 'You hear the Kali at night and sit close to rafting and coracle put-ins. Irshad matches you to a river-side cottage or tent camp that is actually free for your dates.'
+            : s.slug === 'in-the-trees'
+              ? 'Treehouses and jungle camps set back from the road — darker evenings, hornbills at dawn, less pool noise. He knows which owners still take walk-ins through him.'
+              : 'Larger properties with a pool and restaurant when children or a big group need space. He quotes what is free rather than a brochure rate.',
+        ),
+        section(
+          'Around Dandeli',
+          'Whatever you pick, you are still in the Kali valley — forest birds, the river, and safari starts before breakfast when you book the morning slot.',
+        ),
+      ],
       faqs: [],
       quotes: [],
       whatsappMessage: `Hi Irshad, we are looking for a ${st.kind.toLowerCase()} stay in Dandeli.\n\nDates: \nGroup size: \nBudget per night: `,
       enquiryTopic: st.kind,
       heroImage: img(pick('stay', s.slug)),
+      cardImage: img(pick('stay', s.slug)),
     }),
   );
 }

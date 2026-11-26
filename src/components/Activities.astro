@@ -2,7 +2,7 @@
 import Section from './Section.astro';
 import CommonsImage from './CommonsImage.astro';
 import { getContent } from '../content';
-const { activities, images, copy } = await getContent();
+const { activities, images, copy, marketingLinks } = await getContent();
 
 /* Images paired to the activities that have a genuine Dandeli photo. */
 const art: Record<string, (typeof images)[keyof typeof images] | undefined> = {
@@ -25,19 +25,42 @@ const art: Record<string, (typeof images)[keyof typeof images] | undefined> = {
   <div class="reveal grid gap-x-8 gap-y-12 sm:grid-cols-2">
     {activities.map((a) => {
       const img = art[a.name];
+      const href = marketingLinks.activity(a.name);
       return (
         <article class="reveal-child">
-          {img && (
-            <div class="img-frame mb-5 rounded-lg">
-              <CommonsImage
-                img={img}
-                sizes="(min-width: 640px) 44vw, 90vw"
-                aspect="aspect-[5/3]"
-                class="w-full"
-              />
-            </div>
-          )}
-          <h3 class="text-xl">{a.name}</h3>
+          {img &&
+            (href ? (
+              <a
+                href={href}
+                class="link-inline img-frame mb-5 block rounded-lg"
+                aria-label={`More about ${a.name}`}
+              >
+                <CommonsImage
+                  img={img}
+                  sizes="(min-width: 640px) 44vw, 90vw"
+                  aspect="aspect-[5/3]"
+                  class="w-full"
+                />
+              </a>
+            ) : (
+              <div class="img-frame mb-5 rounded-lg">
+                <CommonsImage
+                  img={img}
+                  sizes="(min-width: 640px) 44vw, 90vw"
+                  aspect="aspect-[5/3]"
+                  class="w-full"
+                />
+              </div>
+            ))}
+          <h3 class="text-xl">
+            {href ? (
+              <a href={href} class="link-inline">
+                {a.name}
+              </a>
+            ) : (
+              a.name
+            )}
+          </h3>
           <p class="mt-2.5 text-muted-foreground">{a.blurb}</p>
 
           {(a.duration || a.season) && (

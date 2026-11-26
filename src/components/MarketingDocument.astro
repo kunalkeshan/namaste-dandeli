@@ -9,18 +9,26 @@ import PageQuotes from './PageQuotes.astro';
 import InlineCta from './InlineCta.astro';
 import EnquiryHandoff from './EnquiryHandoff.astro';
 import RouteDiagram from './RouteDiagram.astro';
+import MarketingHubCards from './MarketingHubCards.astro';
+import MarketingActivityBody from './MarketingActivityBody.astro';
+import MarketingStayBody from './MarketingStayBody.astro';
 import Layout from '../layouts/Layout.astro';
-import type { MarketingPage } from '../content';
-import { marketingPath } from '../content';
+import type { MarketingPage, Img } from '../content';
 import type { Route } from '../content/routes';
+import type { Activity } from '../content/activities';
+import type { Stay } from '../content/stays';
 
 interface Props {
   page: MarketingPage;
   breadcrumbs: { name: string; href?: string }[];
   children?: MarketingPage[];
   route?: Route | null;
+  activity?: (Activity & { photos: Img[] }) | null;
+  stay?: (Stay & { photos: Img[] }) | null;
+  activityFallbackImage?: Img | null;
 }
-const { page, breadcrumbs, children, route } = Astro.props;
+const { page, breadcrumbs, children, route, activity, stay, activityFallbackImage } =
+  Astro.props;
 const distanceLine =
   route?.distance.confirmed === true
     ? `${route.distance.value.km} km, about ${route.distance.value.drive}`
@@ -54,7 +62,25 @@ const distanceLine =
         {distanceLine && (
           <p class="reveal measure text-lg font-medium text-foreground">{distanceLine}</p>
         )}
+        {children && children.length > 0 && (
+          <MarketingHubCards section={page.section} hubPages={children} />
+        )}
+        {page.alongTheWay && (
+          <div class="reveal mt-10">
+            <h2 class="text-xl">Along the way</h2>
+            <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
+              {page.alongTheWay}
+            </p>
+          </div>
+        )}
         <RouteDiagram stops={page.routeStops} />
+        {activity && (
+          <MarketingActivityBody
+            activity={activity}
+            fallbackImage={activityFallbackImage}
+          />
+        )}
+        {stay && <MarketingStayBody stay={stay} />}
         {page.sections.map((sec) => (
           <div class="reveal mt-10">
             {sec.heading && <h2 class="text-xl">{sec.heading}</h2>}
@@ -65,20 +91,6 @@ const distanceLine =
         ))}
         <InlineCta message={page.whatsappMessage} />
         <PageQuotes quotes={page.quotes} />
-        {children && children.length > 0 && (
-          <nav class="reveal mt-12" aria-label="Pages in this section">
-            <h2 class="text-xl">In this section</h2>
-            <ul class="mt-4 space-y-2">
-              {children.map((c) => (
-                <li>
-                  <a href={marketingPath(c)} class="link-inline text-lg">
-                    {c.pageTitle}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
         <FaqSection faqs={page.faqs} />
         <EnquiryHandoff topic={page.enquiryTopic} message={page.whatsappMessage} />
       </div>

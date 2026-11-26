@@ -96,6 +96,28 @@ export const marketingPage = defineType({
       type: 'string',
       description: 'Matches a route document `from` for distance lookup.',
     }),
+    defineField({
+      name: 'activityName',
+      type: 'string',
+      description: 'Matches an activity document `name` (things-to-do child pages).',
+    }),
+    defineField({
+      name: 'stayKind',
+      type: 'string',
+      description: 'Matches a stay document `kind` (stays child pages).',
+    }),
+    defineField({
+      name: 'cardImage',
+      type: 'imageWithMeta',
+      description: 'Thumbnail for hub list cards. Falls back to heroImage.',
+    }),
+    defineField({
+      name: 'alongTheWay',
+      type: 'text',
+      rows: 4,
+      description:
+        'Vague “along the way” notes for route pages — no fabricated milestones.',
+    }),
   ],
   preview: {
     select: {

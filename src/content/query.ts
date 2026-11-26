@@ -83,7 +83,8 @@ export const CONTENT_QUERY = defineQuery(`{
     quotes[]{ author, text, pull, dateLabel },
     whatsappMessage, enquiryTopic,
     "heroImage": heroImage ${IMG},
+    "cardImage": cardImage ${IMG},
     routeStops[]{ name, note, lat, lng, promoteSlug },
-    routeRefFrom
+    routeRefFrom, activityName, stayKind, alongTheWay
   }
 }`);

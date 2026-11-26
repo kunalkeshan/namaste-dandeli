@@ -46,10 +46,72 @@ export interface MarketingPage {
   whatsappMessage: string;
   enquiryTopic: string;
   heroImage: Img | null;
+  cardImage: Img | null;
   routeStops: RouteStop[];
   /** Matches route.from on a route document for distance lookup. */
   routeRefFrom?: string;
+  activityName?: string;
+  stayKind?: string;
+  alongTheWay?: string;
   blocker?: string;
+}
+
+/** Homepage activity name → marketing slug (published pages only). */
+export const ACTIVITY_MARKETING_SLUG: Record<string, string> = {
+  'White water rafting': 'white-water-rafting',
+  'Jungle safari': 'jungle-safari',
+  'Coracle ride': 'coracle-ride',
+  Birdwatching: 'birdwatching',
+  'Syntheri Rocks': 'syntheri-rocks',
+  'Supa Dam & Sykes Point': 'supa-dam-sykes-point',
+};
+
+export const ROUTE_MARKETING_SLUG: Record<string, string> = {
+  'Hubballi Airport (HBX)': 'hubballi-airport',
+  'Hubballi city & station': 'hubballi-city',
+  'Alnavar Junction': 'alnavar-junction',
+  'Londa Junction': 'londa-junction',
+  'Belagavi Airport (IXG)': 'belagavi-airport',
+  'Dabolim Airport, Goa (GOI)': 'dabolim-goa',
+};
+
+export const STAY_MARKETING_SLUG: Record<string, string> = {
+  'On the river': 'on-the-river',
+  'In the trees': 'in-the-trees',
+  'Pool & family': 'pool-and-family',
+};
+
+export function marketingChildUrl(
+  published: MarketingPage[],
+  section: MarketingSection,
+  slug: string,
+): string | null {
+  const hit = published.find((p) => p.section === section && p.slug === slug);
+  return hit ? marketingPath(hit) : null;
+}
+
+export function marketingActivityUrl(
+  published: MarketingPage[],
+  activityName: string,
+): string | null {
+  const slug = ACTIVITY_MARKETING_SLUG[activityName];
+  return slug ? marketingChildUrl(published, 'things-to-do', slug) : null;
+}
+
+export function marketingRouteUrl(
+  published: MarketingPage[],
+  from: string,
+): string | null {
+  const slug = ROUTE_MARKETING_SLUG[from];
+  return slug ? marketingChildUrl(published, 'routes', slug) : null;
+}
+
+export function marketingStayUrl(
+  published: MarketingPage[],
+  kind: string,
+): string | null {
+  const slug = STAY_MARKETING_SLUG[kind];
+  return slug ? marketingChildUrl(published, 'stays', slug) : null;
 }
 
 export type MarketingSection = MarketingPage['section'];

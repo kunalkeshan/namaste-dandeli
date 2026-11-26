@@ -1,0 +1,39 @@
+---
+import Carousel from './Carousel.astro';
+import type { Activity } from '../content/activities';
+import type { Img } from '../content';
+
+interface Props {
+  activity: Activity & { photos: Img[] };
+  fallbackImage?: Img | null;
+}
+const { activity, fallbackImage } = Astro.props;
+const photos =
+  activity.photos.length > 0 ? activity.photos : fallbackImage ? [fallbackImage] : [];
+---
+
+{photos.length > 0 && (
+  <div class="reveal mt-10 img-frame max-w-3xl rounded-lg">
+    <Carousel
+      photos={photos}
+      label={activity.name}
+      sizes="(min-width: 768px) 60vw, 90vw"
+      aspect="aspect-[5/3]"
+    />
+  </div>
+)}
+
+<dl class="reveal mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+  {activity.duration && (
+    <div class="flex gap-2">
+      <dt class="text-muted-foreground">Takes</dt>
+      <dd class="font-medium">{activity.duration}</dd>
+    </div>
+  )}
+  {activity.season && (
+    <div class="flex gap-2">
+      <dt class="text-muted-foreground">Season</dt>
+      <dd class="font-medium">{activity.season}</dd>
+    </div>
+  )}
+</dl>

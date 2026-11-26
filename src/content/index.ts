@@ -23,6 +23,9 @@ import { narrowConfirmed, narrowDistance, narrowAssurance } from './narrow';
 import { isPublished, type LegalPage, type LegalBlock } from './legal';
 import {
   isMarketingPublished,
+  marketingActivityUrl,
+  marketingRouteUrl,
+  marketingStayUrl,
   type MarketingPage,
   type MarketingSection,
 } from './marketing';
@@ -276,8 +279,12 @@ async function loadContent() {
       whatsappMessage: String(row.whatsappMessage ?? waMessages.default),
       enquiryTopic: String(row.enquiryTopic ?? 'Dandeli trip'),
       heroImage: toImg(row.heroImage as never),
+      cardImage: toImg(row.cardImage as never) ?? toImg(row.heroImage as never),
       routeStops: (row.routeStops ?? []) as MarketingPage['routeStops'],
       routeRefFrom: row.routeRefFrom ? String(row.routeRefFrom) : undefined,
+      activityName: row.activityName ? String(row.activityName) : undefined,
+      stayKind: row.stayKind ? String(row.stayKind) : undefined,
+      alongTheWay: row.alongTheWay ? String(row.alongTheWay) : undefined,
     }));
 
   const marketingSeeds: { section: string; slug: string; blocker: string }[] =
@@ -302,6 +309,12 @@ async function loadContent() {
   function marketingChildren(section: MarketingSection) {
     return marketingPublished.filter((p) => p.section === section && p.slug !== 'hub');
   }
+
+  const marketingLinks = {
+    activity: (name: string) => marketingActivityUrl(marketingPublished, name),
+    route: (from: string) => marketingRouteUrl(marketingPublished, from),
+    stay: (kind: string) => marketingStayUrl(marketingPublished, kind),
+  };
 
   /** Credits for every rendered image. CC BY-SA requires attribution. */
   const imageCredits = [
@@ -344,6 +357,7 @@ async function loadContent() {
     marketingSeeds,
     marketingHub,
     marketingChildren,
+    marketingLinks,
     carImageNote,
     staysDisclosure,
     soloFallback,

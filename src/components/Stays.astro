@@ -13,7 +13,7 @@ import Section from './Section.astro';
 import WhatsAppIcon from './icons/WhatsApp.astro';
 import Carousel from './Carousel.astro';
 import { getContent } from '../content';
-const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
+const { stays, staysDisclosure, copy, whatsappLink, marketingLinks } = await getContent();
 ---
 
 <Section
@@ -27,20 +27,34 @@ const { stays, staysDisclosure, copy, whatsappLink } = await getContent();
        array by POSITION (art[i]), so a fourth stay crashed the build;
        photographs now live on the stay document itself. -->
   <div class="reveal grid gap-6 sm:grid-cols-3">
-    {stays.map((s) => (
-      <article class="reveal-child">
-        <div class="img-frame rounded-lg">
-          <Carousel
-            photos={s.photos}
-            label={s.kind}
-            sizes="(min-width: 640px) 30vw, 90vw"
-            aspect="aspect-[4/3]"
-          />
-        </div>
-        <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
-        <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
-      </article>
-    ))}
+    {stays.map((s) => {
+      const href = marketingLinks.stay(s.kind);
+      const inner = (
+        <>
+          <div class="img-frame rounded-lg">
+            <Carousel
+              photos={s.photos}
+              label={s.kind}
+              sizes="(min-width: 640px) 30vw, 90vw"
+              aspect="aspect-[4/3]"
+            />
+          </div>
+          <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
+          <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
+        </>
+      );
+      return (
+        <article class="reveal-child">
+          {href ? (
+            <a href={href} class="link-inline block">
+              {inner}
+            </a>
+          ) : (
+            inner
+          )}
+        </article>
+      );
+    })}
   </div>
 
   <p class="measure reveal mt-10 border-l-2 border-border pl-4 text-sm text-muted-foreground">

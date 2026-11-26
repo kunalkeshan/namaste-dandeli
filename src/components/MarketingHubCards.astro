@@ -1,0 +1,79 @@
+---
+import CommonsImage from './CommonsImage.astro';
+import Carousel from './Carousel.astro';
+import { getContent, marketingPath } from '../content';
+import type { MarketingPage } from '../content';
+import { render } from '../content/confirmed';
+
+interface Props {
+  section: MarketingPage['section'];
+  hubPages: MarketingPage[];
+}
+const { section, hubPages } = Astro.props;
+const { routes, stays } = await getContent();
+
+const cardImg = (p: MarketingPage) => p.cardImage ?? p.heroImage;
+
+const routeFor = (p: MarketingPage) =>
+  p.routeRefFrom ? routes.find((r) => r.from === p.routeRefFrom) : undefined;
+
+const stayFor = (p: MarketingPage) =>
+  p.stayKind ? stays.find((s) => s.kind === p.stayKind) : undefined;
+---
+
+<nav class="reveal" aria-label="Pages in this section">
+  <h2 class="text-xl">
+    {section === 'things-to-do' && 'Pick an activity'}
+    {section === 'routes' && 'Pick a route'}
+    {section === 'stays' && 'Pick a stay type'}
+  </h2>
+  <ul
+    class:list={[
+      'mt-6 list-none p-0',
+      section === 'stays'
+        ? 'grid gap-6 sm:grid-cols-3'
+        : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3',
+    ]}
+  >
+    {hubPages.map((p) => {
+      const href = marketingPath(p);
+      const img = cardImg(p);
+      const route = routeFor(p);
+      const stay = stayFor(p);
+      return (
+        <li class="reveal-child">
+          <article class="h-full">
+            <a href={href} class="link-inline group block h-full">
+              {stay && stay.photos.length > 0 ? (
+                <div class="img-frame rounded-lg">
+                  <Carousel
+                    photos={stay.photos}
+                    label={stay.kind}
+                    sizes="(min-width: 640px) 30vw, 90vw"
+                    aspect="aspect-[4/3]"
+                  />
+                </div>
+              ) : img ? (
+                <div class="img-frame mb-4 overflow-hidden rounded-lg">
+                  <CommonsImage
+                    img={img}
+                    sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 90vw"
+                    aspect="aspect-[5/3]"
+                    class="w-full transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                </div>
+              ) : null}
+              <h3 class="text-lg font-display">{p.pageTitle}</h3>
+              <p class="mt-1.5 line-clamp-3 text-sm text-muted-foreground">{p.lede}</p>
+              {route && (
+                <p class="mt-2 text-sm tabular-nums text-muted-foreground">
+                  {render(route.distance, (d) => `${d.km} km · about ${d.drive}`)}
+                </p>
+              )}
+            </a>
+          </article>
+        </li>
+      );
+    })}
+  </ul>
+</nav>

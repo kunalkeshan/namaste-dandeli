@@ -3,14 +3,17 @@ import { getContent } from '../../content';
 import MarketingDocument from '../../components/MarketingDocument.astro';
 
 export async function getStaticPaths() {
-  const { marketingChildren } = await getContent();
+  const { marketingChildren, stays } = await getContent();
   return marketingChildren('stays').map((page) => ({
     params: { slug: page.slug },
-    props: { page },
+    props: {
+      page,
+      stay: page.stayKind ? (stays.find((s) => s.kind === page.stayKind) ?? null) : null,
+    },
   }));
 }
 
-const { page } = Astro.props;
+const { page, stay } = Astro.props;
 const { staysDisclosure } = await getContent();
 const withDisclosure = {
   ...page,
@@ -20,5 +23,6 @@ const withDisclosure = {
 
 <MarketingDocument
   page={withDisclosure}
+  stay={stay}
   breadcrumbs={[{ name: 'Stays', href: '/stays' }, { name: page.pageTitle }]}
 />
