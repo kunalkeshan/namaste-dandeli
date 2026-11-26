@@ -12,28 +12,36 @@ const photos =
   activity.photos.length > 0 ? activity.photos : fallbackImage ? [fallbackImage] : [];
 ---
 
-{photos.length > 0 && (
-  <div class="reveal mt-10 img-frame max-w-3xl rounded-lg">
-    <Carousel
-      photos={photos}
-      label={activity.name}
-      sizes="(min-width: 768px) 60vw, 90vw"
-      aspect="aspect-[5/3]"
-    />
+<div class="reveal mt-10 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 lg:gap-y-8">
+  {photos.length > 0 && (
+    <div class="img-frame rounded-lg lg:max-w-none">
+      <Carousel
+        photos={photos}
+        label={activity.name}
+        sizes="(min-width: 1024px) 40vw, (min-width: 768px) 60vw, 90vw"
+        aspect="aspect-[5/3]"
+      />
+    </div>
+  )}
+  <div
+    class:list={[
+      photos.length === 0 && 'lg:col-span-2',
+      photos.length > 0 && 'mt-8 lg:mt-0',
+    ]}
+  >
+    <dl class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+      {activity.duration && (
+        <div class="flex gap-2">
+          <dt class="text-muted-foreground">Takes</dt>
+          <dd class="font-medium">{activity.duration}</dd>
+        </div>
+      )}
+      {activity.season && (
+        <div class="flex gap-2">
+          <dt class="text-muted-foreground">Season</dt>
+          <dd class="font-medium">{activity.season}</dd>
+        </div>
+      )}
+    </dl>
   </div>
-)}
-
-<dl class="reveal mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-  {activity.duration && (
-    <div class="flex gap-2">
-      <dt class="text-muted-foreground">Takes</dt>
-      <dd class="font-medium">{activity.duration}</dd>
-    </div>
-  )}
-  {activity.season && (
-    <div class="flex gap-2">
-      <dt class="text-muted-foreground">Season</dt>
-      <dd class="font-medium">{activity.season}</dd>
-    </div>
-  )}
-</dl>
+</div>

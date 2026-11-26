@@ -128,6 +128,7 @@ const stayMod = await server.ssrLoadModule('/src/content/stays.ts');
 const copyMod = await server.ssrLoadModule('/src/content/copy.ts');
 const activities = actMod.activities;
 const stays = stayMod.stays;
+const { staysDisclosure } = stayMod;
 const { waMessages } = copyMod;
 await server.close();
 
@@ -166,66 +167,63 @@ docs.push(
     enquiryTopic: 'Dandeli activities',
     heroImage: img(pick('region', 'rafting')),
   }),
-  page({
-    _id: 'marketing-things-to-do-white-water-rafting',
-    section: 'things-to-do',
-    slug: 'white-water-rafting',
-    published: true,
-    title: 'White water rafting in Dandeli | Namaste Dandeli',
-    description:
-      'Grade II–III rapids on the Kali, usually October to June — subject to Supa Dam release. Irshad checks before you drive out.',
-    pageTitle: 'White water rafting on the Kali',
-    eyebrow: 'Things to do',
-    lede: rafting.blurb,
-    sections: [
-      section('Before you book', rafting.caveat ?? ''),
-      section(
-        'How it fits the day',
-        `${rafting.duration ?? ''} ${rafting.season ? `Usually ${rafting.season}.` : ''}`.trim(),
-      ),
-    ],
-    faqs: [],
-    quotes: [
-      quote('white water rafting', 'helped us book white water rafting'),
-      quote('rafting event', 'good mid rafting event'),
-    ].filter(Boolean),
-    whatsappMessage:
-      'Hi Irshad, we are interested in white water rafting at Dandeli.\n\nDates: \nGroup size: \nPickup from: ',
-    enquiryTopic: 'White water rafting',
-    activityName: 'White water rafting',
-    heroImage: img(pick('region', 'rafting')),
-    cardImage: img(pick('region', 'rafting')),
-  }),
-  page({
-    _id: 'marketing-things-to-do-jungle-safari',
-    section: 'things-to-do',
-    slug: 'jungle-safari',
-    published: true,
-    title: 'Jungle safari in Kali Tiger Reserve | Namaste Dandeli',
-    description:
-      'Open-jeep safari with a forest guide. Morning collection around 5:15. No sighting is promised.',
-    pageTitle: 'Jungle safari at first light',
-    eyebrow: 'Things to do',
-    lede: safari.blurb,
-    sections: [
-      section('The early start', safari.caveat ?? ''),
-      section(
-        'On the ground',
-        `${safari.duration ?? ''}. ${safari.season ? `Best in ${safari.season}.` : ''}`.trim(),
-      ),
-    ],
-    faqs: [],
-    quotes: [
-      quote('sight seeing in dandeli forest', 'sight seeing in dandeli forest'),
-    ].filter(Boolean),
-    whatsappMessage:
-      'Hi Irshad, we want a jungle safari in Dandeli.\n\nDates: \nGroup size: \nWhich slot suits us: ',
-    enquiryTopic: 'Jungle safari',
-    activityName: 'Jungle safari',
-    heroImage: img(pick('region', 'forestRoad')),
-    cardImage: img(pick('region', 'forestRoad')),
-  }),
 );
+
+if (rafting) {
+  docs.push(
+    activityPage({
+      id: 'white-water-rafting',
+      slug: 'white-water-rafting',
+      act: rafting,
+      regionSlot: 'rafting',
+      title: 'White water rafting in Dandeli | Namaste Dandeli',
+      pageTitle: 'White water rafting on the Kali',
+      quoteNeedles: ['white water rafting', 'rafting event'],
+      extraSections: [
+        section(
+          'Why Supa Dam matters',
+          'The Kali does not run on monsoon rain alone. Water released from Supa Dam is what makes Grade II–III rapids possible — usually October to June, but never on a fixed calendar date. Irshad checks the release before you pay.',
+        ),
+        section(
+          'At Ganeshgudi',
+          'The commercial run is nine to twelve kilometres with a trained guide and life jackets in every raft. Non-swimmers go; the honest limit is whether the river is actually flowing that week.',
+        ),
+        section(
+          'How Irshad fits in',
+          'He books the operator slot, drives you from stay or bus stand, and will tell you to postpone rather than sit on a dry riverbed. That check is why guests book through him instead of guessing online.',
+        ),
+      ],
+    }),
+  );
+}
+
+if (safari) {
+  docs.push(
+    activityPage({
+      id: 'jungle-safari',
+      slug: 'jungle-safari',
+      act: safari,
+      regionSlot: 'forestRoad',
+      title: 'Jungle safari in Kali Tiger Reserve | Namaste Dandeli',
+      pageTitle: 'Jungle safari at first light',
+      quoteNeedles: ['sight seeing in dandeli forest', 'sight seeing in dandeli forest'],
+      extraSections: [
+        section(
+          'Why 5:15',
+          'The 6am gate slot means collection while it is still dark. You are at the reserve before heat and noise build — that is when deer and giant squirrels are easiest to see on the track.',
+        ),
+        section(
+          'What the forest is',
+          'Kali Tiger Reserve is the official name. Gaur, sambar, langur and Malabar giant squirrel are common on a good run. Tigers and black panthers live here; anyone who promises them is lying.',
+        ),
+        section(
+          'How Irshad fits in',
+          'Forest department guides ride in the jeep with you. Irshad books the permit, handles the drive, and tells you when morning slots are full.',
+        ),
+      ],
+    }),
+  );
+}
 
 for (const spec of [
   {
@@ -238,6 +236,14 @@ for (const spec of [
       section(
         'Good with mixed ages',
         'The round bamboo boat is the gentle option when grandparents or small children are in the group. Irshad books the slot and drives you to the river put-in.',
+      ),
+      section(
+        'On the water',
+        'The current carries the coracle — quiet enough that kingfishers and marsh crocodiles sometimes show at the banks. Guides pole the boat; this is not a swimming stop.',
+      ),
+      section(
+        'How Irshad fits in',
+        'He lines up the operator and times the drive from your stay. Mention if anyone needs a hand stepping in or out of the boat.',
       ),
     ],
   },
@@ -270,8 +276,16 @@ for (const spec of [
     title: 'Syntheri Rocks near Dandeli | Namaste Dandeli',
     extraSections: [
       section(
-        'On the ground',
-        'The monolith sits in the valley carved by the Kaneri river — not the Kali. Count on steps down and back; Irshad checks conditions before monsoon outings.',
+        'Kaneri river, not the Kali',
+        'Syntheri Rocks sits in a valley carved by the Kaneri — easy to confuse with the Kali on a map. The monolith is about three hundred feet of granite above the water.',
+      ),
+      section(
+        'The steps down',
+        'A few hundred steps to the base. Pack water and shoes with grip. Irshad skips the trip in heavy monsoon when the steps get slick.',
+      ),
+      section(
+        'How Irshad fits in',
+        'Half day from Dandeli with the drive and entry coordination. He confirms access the morning you go.',
       ),
     ],
   },
@@ -285,6 +299,14 @@ for (const spec of [
       section(
         'Evening light',
         'The reservoir feeds rafting releases on the Kali below. Sykes Point is the viewpoint run — access sometimes needs permission, so Irshad confirms before you set out.',
+      ),
+      section(
+        'Supa and rafting',
+        'If you are rafting the same trip, seeing the dam puts the river in context — the release schedule upstream is what makes the rapids runnable, not rainfall alone.',
+      ),
+      section(
+        'How Irshad fits in',
+        'He books timing for the evening viewpoint and checks permission when Sykes Point is restricted. Tell him if you want this the same day as rafting or coracles.',
       ),
     ],
   },
@@ -507,6 +529,23 @@ for (const s of staySlugs) {
         section(
           'Around Dandeli',
           'Whatever you pick, you are still in the Kali valley — forest birds, the river, and safari starts before breakfast when you book the morning slot.',
+        ),
+        section('Photographs and names', staysDisclosure),
+        section(
+          'Availability and price',
+          'Rates on booking sites are often stale. Irshad quotes what is actually free for your dates, group size and budget, then holds the room through his contact — not a brochure number.',
+        ),
+        section(
+          s.slug === 'on-the-river'
+            ? 'River-first days'
+            : s.slug === 'in-the-trees'
+              ? 'Forest mornings'
+              : 'Families and groups',
+          s.slug === 'on-the-river'
+            ? 'Rafting and coracle put-ins are easiest from river-side stays — shorter transfers and less road time when Supa releases are early.'
+            : s.slug === 'in-the-trees'
+              ? 'Jungle camps suit guests who want the 5:15 safari pickup and dawn birding without driving in from town each morning.'
+              : 'Pool properties handle meal timings, extra beds and noisy children better — worth saying ages and headcount up front when you message him.',
         ),
       ],
       faqs: [],
