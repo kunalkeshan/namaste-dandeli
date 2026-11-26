@@ -111,7 +111,16 @@ for (const [, attrs, body] of scripts) {
   const isGtagInline = body.includes('window.dataLayer') && body.includes('window.track');
   const isEnquiry = body.includes('data-enquiry-ready');
   const isRouteMap = body.includes('data-route-map-ready');
-  if (isJsonLd || isMotion || isGtagSrc || isGtagInline || isEnquiry || isRouteMap)
+  const isFaqAccordion = body.includes('data-faq-accordion-ready');
+  if (
+    isJsonLd ||
+    isMotion ||
+    isGtagSrc ||
+    isGtagInline ||
+    isEnquiry ||
+    isRouteMap ||
+    isFaqAccordion
+  )
     continue;
   const where = attrs.trim() || body.trim().slice(0, 60);
   unaccounted.push(where.replace(/\s+/g, ' ').slice(0, 80));
@@ -623,13 +632,13 @@ for (const f of walk(DIST).filter((p) => p.endsWith('index.html'))) {
     continue;
   }
 
-  const dl = page.match(/id="faq-heading"[\s\S]*?<dl[^>]*>([\s\S]*?)<\/dl>/)?.[1] ?? '';
-  const questions = [...dl.matchAll(/<dt[^>]*>([\s\S]*?)<\/dt>/g)].map((m) =>
-    normText(m[1]),
-  );
-  const answers = [...dl.matchAll(/<dd[^>]*>([\s\S]*?)<\/dd>/g)].map((m) =>
-    normText(m[1]),
-  );
+  const faqBlock = page.match(/id="faq-heading"[\s\S]*?<\/section>/)?.[0] ?? '';
+  const questions = [
+    ...faqBlock.matchAll(/class="faq-question[^"]*"[^>]*>([\s\S]*?)<\/span>/g),
+  ].map((m) => normText(m[1]));
+  const answers = [
+    ...faqBlock.matchAll(/class="faq-answer[^"]*"[^>]*>([\s\S]*?)<\/p>/g),
+  ].map((m) => normText(m[1]));
   const entities = faqLd.mainEntity ?? [];
 
   if (questions.length !== entities.length || answers.length !== entities.length) {

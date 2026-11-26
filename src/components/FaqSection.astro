@@ -1,5 +1,6 @@
 ---
 import type { FaqItem } from '../content';
+import ChevronDown from './icons/ChevronDown.astro';
 
 interface Props {
   faqs: FaqItem[];
@@ -12,12 +13,87 @@ if (!faqs.length) return null;
   <h2 id="faq-heading" class="text-xl">
     Questions from travellers
   </h2>
-  <dl class="measure mt-6 space-y-8">
+  <div class="faq-accordion measure mt-6" data-faq-accordion>
     {faqs.map((f) => (
-      <div class="reveal-child">
-        <dt class="font-semibold text-foreground">{f.question}</dt>
-        <dd class="mt-2 text-muted-foreground">{f.answer}</dd>
-      </div>
+      <details class="faq-accordion__item reveal-child border-b border-rule last:border-b-0">
+        <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left font-semibold text-foreground transition-colors hover:text-primary [&::-webkit-details-marker]:hidden">
+          <span class="faq-question pr-2">{f.question}</span>
+          <ChevronDown class="faq-accordion__chevron mt-0.5 shrink-0 text-muted-foreground" />
+        </summary>
+        <div class="faq-accordion__panel">
+          <p class="faq-answer pb-4 text-muted-foreground">{f.answer}</p>
+        </div>
+      </details>
     ))}
-  </dl>
+  </div>
 </section>
+
+<style>
+  .faq-accordion {
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-background);
+    padding: 0 1rem;
+  }
+
+  .faq-accordion__item:first-child summary {
+    padding-top: 1rem;
+  }
+
+  .faq-accordion__item:last-child .faq-answer {
+    padding-bottom: 1rem;
+  }
+
+  .faq-accordion__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 280ms var(--ease-in-out-strong);
+  }
+
+  .faq-accordion__item[open] .faq-accordion__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-accordion__panel > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-accordion__chevron {
+    transition: transform 280ms var(--ease-in-out-strong);
+  }
+
+  .faq-accordion__item[open] .faq-accordion__chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-accordion__panel {
+      transition-duration: 0.01ms;
+    }
+    .faq-accordion__chevron {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    /* data-faq-accordion-ready */
+    const roots = document.querySelectorAll('[data-faq-accordion]');
+    if (!roots.length) return;
+    for (const root of roots) {
+      root.addEventListener(
+        'toggle',
+        (e) => {
+          const t = e.target;
+          if (!(t instanceof HTMLDetailsElement) || !t.open || !root.contains(t)) return;
+          root.querySelectorAll('details[open]').forEach((d) => {
+            if (d !== t) d.open = false;
+          });
+        },
+        true,
+      );
+    }
+  })();
+</script>
