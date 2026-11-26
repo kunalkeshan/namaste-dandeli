@@ -16,28 +16,24 @@
  */
 import { getContent, whatsappLink } from '../content';
 import WhatsAppIcon from './icons/WhatsApp.astro';
-import { isConfirmed, unconfirmed, type Confirmed } from '../content/confirmed';
+import { confirmed, isConfirmed, type Confirmed } from '../content/confirmed';
 
 const { featuredReview, assurances, soloFallback, copy, irshad, site } =
   await getContent();
 
-/* The public review-history start year is not confirmed yet. Keep the
-   duration out of the rendered copy until it is; once confirmed, calculate
-   elapsed whole years at build time so it advances with each deployment. */
-const reviewHistoryStartYear = 2023;
-const reviewHistory: Confirmed<number> = unconfirmed(
-  'Reviews anyone can read',
-  'Confirm that the public Google review history dates back to 2023.',
+/* Confirmed by the user; Astro evaluates this during the static build, so
+   the elapsed year count advances on the next deployment after New Year. */
+const reviewHistory: Confirmed<number> = confirmed(
+  2023,
+  '2026-11-26',
+  'Confirmed by Irshad via the site owner',
 );
-const lede = reviewHistory.confirmed
+const lede = isConfirmed(reviewHistory)
   ? soloFallback.lede.replace(
       'three years',
-      `${new Date().getFullYear() - reviewHistoryStartYear} ${new Date().getFullYear() - reviewHistoryStartYear === 1 ? 'year' : 'years'}`,
+      `${new Date().getFullYear() - reviewHistory.value} ${new Date().getFullYear() - reviewHistory.value === 1 ? 'year' : 'years'}`,
     )
-  : soloFallback.lede.replace(
-      'and three years of reviews anyone can read',
-      'and reviews anyone can read',
-    );
+  : soloFallback.lede;
 
 /* His face, above the review.
    The section's whole argument is "a named person, not an app" — and
