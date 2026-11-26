@@ -52,9 +52,9 @@ const art: Record<string, (typeof images)[keyof typeof images] | undefined> = {
                 />
               </div>
             ))}
-          <h3 class="text-xl">
+          <h3 class="text-xl decoration-accent underline-offset-4">
             {href ? (
-              <a href={href} class="link-inline">
+              <a href={href} class="card-link link-inline hover:underline">
                 {a.name}
               </a>
             ) : (

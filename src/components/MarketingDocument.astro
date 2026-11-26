@@ -8,7 +8,8 @@ import FaqSection from './FaqSection.astro';
 import PageQuotes from './PageQuotes.astro';
 import InlineCta from './InlineCta.astro';
 import EnquiryHandoff from './EnquiryHandoff.astro';
-import RouteDiagram from './RouteDiagram.astro';
+import RouteOsmMap from './RouteOsmMap.astro';
+import RoutesMapScript from './RoutesMapScript.astro';
 import MarketingHubCards from './MarketingHubCards.astro';
 import MarketingActivityBody from './MarketingActivityBody.astro';
 import MarketingStayBody from './MarketingStayBody.astro';
@@ -58,22 +59,30 @@ const distanceLine =
     />
     <RiverDivider from="deep" to="bg" />
     <div class="bg-background pb-24 md:pb-16">
-      <div class="mx-auto max-w-5xl px-5 py-12 sm:py-16">
+      <div class="mx-auto max-w-5xl space-y-14 px-5 py-14 sm:py-16">
         {distanceLine && (
           <p class="reveal measure text-lg font-medium text-foreground">{distanceLine}</p>
         )}
+        {page.section === 'routes' &&
+          page.routeStops.length >= 2 &&
+          page.slug !== 'hub' && (
+            <RouteOsmMap
+              stops={page.routeStops}
+              variant="detail"
+              mapId={`route-detail-${page.slug}`}
+            />
+          )}
         {children && children.length > 0 && (
           <MarketingHubCards section={page.section} hubPages={children} />
         )}
         {page.alongTheWay && (
-          <div class="reveal mt-10">
+          <div class="reveal">
             <h2 class="text-xl">Along the way</h2>
             <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
               {page.alongTheWay}
             </p>
           </div>
         )}
-        <RouteDiagram stops={page.routeStops} />
         {activity && (
           <MarketingActivityBody
             activity={activity}
@@ -82,7 +91,7 @@ const distanceLine =
         )}
         {stay && <MarketingStayBody stay={stay} />}
         {page.sections.map((sec) => (
-          <div class="reveal mt-10">
+          <div class="reveal">
             {sec.heading && <h2 class="text-xl">{sec.heading}</h2>}
             <p class="measure mt-3 text-muted-foreground whitespace-pre-line">
               {sec.body}
@@ -99,4 +108,5 @@ const distanceLine =
   <RiverDivider from="bg" to="deep" />
   <Contact />
   <Motion />
+  {page.section === 'routes' && <RoutesMapScript />}
 </Layout>

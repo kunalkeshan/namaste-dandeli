@@ -1,0 +1,65 @@
+---
+/**
+ * OpenStreetMap route view — JS only on /routes* (see RoutesMapScript.astro).
+ * Static SVG fallback inside <noscript>.
+ */
+import RouteMap from './RouteMap.astro';
+import type { RouteStop } from '../content';
+import { withCoordinates } from '../lib/route-map';
+
+interface Props {
+  stops: RouteStop[];
+  variant?: 'detail' | 'card';
+  mapId: string;
+}
+const { stops, variant = 'detail', mapId } = Astro.props;
+
+const plotted = withCoordinates(stops);
+if (plotted.length < 2) return null;
+
+const height = variant === 'card' ? 'min-h-[11rem]' : 'min-h-[20rem] sm:min-h-[22rem]';
+const payload = plotted.map((s) => ({
+  lat: s.lat,
+  lng: s.lng,
+  name: s.name,
+  note: s.note,
+}));
+---
+
+<figure class:list={['route-osm', variant === 'detail' && 'reveal mt-10']}>
+  <div
+    class:list={['route-map-shell', height]}
+    data-route-map
+    data-map-id={mapId}
+    data-variant={variant}
+    data-stops={JSON.stringify(payload)}
+  >
+    <noscript>
+      <RouteMap stops={stops} variant={variant} />
+    </noscript>
+    <div
+      id={mapId}
+      class:list={[
+        'route-map-canvas img-frame w-full overflow-hidden rounded-lg border border-border bg-muted',
+        height,
+      ]}
+      role="img"
+      tabindex="-1"
+      aria-label="OpenStreetMap driving route"
+    >
+      <RouteMap stops={stops} variant={variant} schematic={false} />
+    </div>
+  </div>
+  {variant === 'detail' && (
+    <figcaption class="measure mt-3 text-sm text-muted-foreground">
+      Driving route on OpenStreetMap — orientation only, not turn-by-turn navigation.
+      Distances and times on this page are measured on the road to Dandeli bus stand.
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .route-map-shell:has(.leaflet-container) .route-map-canvas > :global(figure) {
+    display: none;
+  }
+</style>

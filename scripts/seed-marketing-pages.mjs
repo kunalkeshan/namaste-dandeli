@@ -19,6 +19,7 @@ const OUT = 'scripts/.seed-marketing.ndjson';
 
 const assets = JSON.parse(readFileSync('scripts/asset-ids.json', 'utf8'));
 const research = JSON.parse(readFileSync('scripts/reviews-research.json', 'utf8'));
+const routeGeometries = JSON.parse(readFileSync('scripts/route-geometries.json', 'utf8'));
 
 const pick = (group, slot) =>
   assets.find((a) => a.group === group && (slot === undefined || a.slot === slot));
@@ -251,6 +252,14 @@ for (const spec of [
         'Why the early start',
         'Hornbills and forest birds are active at dawn. Ganeshgudi is the usual base — Irshad lines up a guide and the drive so you are on the trail while it is still cool.',
       ),
+      section(
+        'What serious birders know',
+        'Four hornbill species live in this landscape, among around 270 recorded species. Malabar pied and Malabar grey hornbills are the ones guests ask about most — no sighting is guaranteed, but the forest at first light is when calls and movement are easiest to follow.',
+      ),
+      section(
+        'How Irshad fits in',
+        'He does not guide the trail himself; he gets you to the right patch at the right hour and back for breakfast. Tell him if you are a photographer with a heavy lens — the vehicle choice matters.',
+      ),
     ],
   },
   {
@@ -421,7 +430,17 @@ for (const r of routePages) {
       pageTitle: r.title,
       eyebrow: 'Route',
       lede: r.lede,
-      sections: r.note ? [section(undefined, r.note)] : [],
+      sections: [
+        ...(r.note ? [section('Why guests choose this route', r.note)] : []),
+        section(
+          'Pickup and drop',
+          `Irshad quotes the fare for ${r.from} to Dandeli after he knows your date, time and group size. Pickup is at the airport, station or hotel you name; drop is usually Dandeli bus stand unless you are heading straight to a resort he books for you.`,
+        ),
+        section(
+          'On the map',
+          'The map on this page traces the driving route from OpenStreetMap. It is for orientation — the km and drive time above are what he quotes on the phone.',
+        ),
+      ],
       faqs: [],
       quotes: (r.quotes ?? []).filter(Boolean),
       whatsappMessage: `Hi Irshad, I need a cab ${r.from} to Dandeli.\n\nDate: \nFlight or train time: \nPassengers: `,
@@ -430,7 +449,7 @@ for (const r of routePages) {
       alongTheWay: r.alongTheWay,
       heroImage: img(pick('region', r.card ?? 'kaliHabitat')),
       cardImage: img(pick('region', r.card ?? 'kaliHabitat')),
-      routeStops: r.stops ?? [],
+      routeStops: routeGeometries[r.slug] ?? r.stops ?? [],
     }),
   );
 }

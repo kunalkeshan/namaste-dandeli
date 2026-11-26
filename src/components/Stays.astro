@@ -39,14 +39,16 @@ const { stays, staysDisclosure, copy, whatsappLink, marketingLinks } = await get
               aspect="aspect-[4/3]"
             />
           </div>
-          <h3 class="mt-4 text-lg font-display">{s.kind}</h3>
+          <h3 class="mt-4 text-lg font-display decoration-accent underline-offset-4 group-hover:underline">
+            {s.kind}
+          </h3>
           <p class="mt-1.5 text-sm text-muted-foreground">{s.blurb}</p>
         </>
       );
       return (
         <article class="reveal-child">
           {href ? (
-            <a href={href} class="link-inline block">
+            <a href={href} class="card-link link-inline group block">
               {inner}
             </a>
           ) : (

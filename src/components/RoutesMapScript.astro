@@ -1,0 +1,104 @@
+---
+/** Loads Leaflet once per page; inits every [data-route-map]. Allowed on /routes* only. */
+---
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="anonymous"
+/>
+
+<script is:inline data-route-map-ready>
+  (() => {
+    const hosts = document.querySelectorAll('[data-route-map]');
+    if (!hosts.length) return;
+
+    const PRIMARY = '#0F3D2E';
+    const ACCENT = '#AE631B';
+
+    const loadLeaflet = () =>
+      new Promise((resolve, reject) => {
+        if (window.L) return resolve(window.L);
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        s.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        s.crossOrigin = 'anonymous';
+        s.onload = () => resolve(window.L);
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+
+    const label = (name) => {
+      const n = String(name || '').trim();
+      return !n || n.startsWith('_') ? null : n;
+    };
+
+    hosts.forEach(async (host) => {
+      const id = host.getAttribute('data-map-id');
+      const variant = host.getAttribute('data-variant') || 'detail';
+      const canvas = id
+        ? document.getElementById(id)
+        : host.querySelector('.route-map-canvas');
+      if (!canvas) return;
+      let stops;
+      try {
+        stops = JSON.parse(host.getAttribute('data-stops') || '[]');
+      } catch {
+        return;
+      }
+      if (stops.length < 2) return;
+
+      try {
+        const L = await loadLeaflet();
+        const svg = canvas.querySelector('figure');
+        if (svg) svg.remove();
+
+        const map = L.map(canvas, {
+          scrollWheelZoom: false,
+          attributionControl: variant === 'detail',
+          zoomControl: variant === 'detail',
+        });
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }).addTo(map);
+
+        const latlngs = stops.map((s) => [s.lat, s.lng]);
+        L.polyline(latlngs, {
+          color: PRIMARY,
+          weight: variant === 'card' ? 4 : 5,
+          opacity: 0.9,
+        }).addTo(map);
+        map.fitBounds(L.latLngBounds(latlngs), {
+          padding: variant === 'card' ? [12, 12] : [28, 28],
+        });
+
+        const ends = [
+          { i: 0, fill: ACCENT },
+          { i: stops.length - 1, fill: PRIMARY },
+        ];
+        for (const { i, fill } of ends) {
+          const s = stops[i];
+          const title = label(s.name);
+          L.circleMarker([s.lat, s.lng], {
+            radius: variant === 'card' ? 5 : 7,
+            color: fill,
+            fillColor: fill,
+            fillOpacity: 1,
+            weight: 2,
+          })
+            .addTo(map)
+            .bindTooltip(title || 'Stop', {
+              permanent: variant === 'detail',
+              direction: 'top',
+            });
+        }
+      } catch {
+        /* SVG fallback stays visible */
+      }
+    });
+  })();
+</script>

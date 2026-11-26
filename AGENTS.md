@@ -85,12 +85,16 @@ gate `done` / `N/A` / `deferred — reason`, bundling all **Q**s into a single
       _The performance argument for this audience — tourists on Indian mobile data —
       rests entirely on this._ → `CLAUDE.md`
 
-      **The one sanctioned exception is the analytics tag** in `Analytics.astro`
-      (GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
-      `.js` file count cannot see it — which is why `verify:content` now also
-      audits every `<script>` tag in the built HTML and fails on any that is not
-      accounted for by name. A second analytics vendor is a branch in
-      `window.track`, never a new snippet in a component.
+      **Route maps:** `/routes` and `/routes/*` load Leaflet inline via
+
+`RoutesMapScript.astro` (user-approved). Audit allow-list: `data-route-map-ready`.
+
+**The one sanctioned exception is the analytics tag** in `Analytics.astro`
+(GA4, 150KB measured, loaded only when an ID is set). It is inline, so the
+`.js` file count cannot see it — which is why `verify:content` now also
+audits every `<script>` tag in the built HTML and fails on any that is not
+accounted for by name. A second analytics vendor is a branch in
+`window.track`, never a new snippet in a component.
 
 - [ ] **Image provenance (Q)** — added an image → record its licence and whether it
       depicts the real subject or is representative. Ask whether an on-page disclosure

@@ -110,7 +110,9 @@ for (const [, attrs, body] of scripts) {
   const isGtagSrc = /googletagmanager\.com\/gtm\.js/i.test(attrs);
   const isGtagInline = body.includes('window.dataLayer') && body.includes('window.track');
   const isEnquiry = body.includes('data-enquiry-ready');
-  if (isJsonLd || isMotion || isGtagSrc || isGtagInline || isEnquiry) continue;
+  const isRouteMap = body.includes('data-route-map-ready');
+  if (isJsonLd || isMotion || isGtagSrc || isGtagInline || isEnquiry || isRouteMap)
+    continue;
   const where = attrs.trim() || body.trim().slice(0, 60);
   unaccounted.push(where.replace(/\s+/g, ' ').slice(0, 80));
 }

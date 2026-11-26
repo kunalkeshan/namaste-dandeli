@@ -1,6 +1,7 @@
 ---
 import CommonsImage from './CommonsImage.astro';
 import Carousel from './Carousel.astro';
+import RouteOsmMap from './RouteOsmMap.astro';
 import { getContent, marketingPath } from '../content';
 import type { MarketingPage } from '../content';
 import { render } from '../content/confirmed';
@@ -43,8 +44,14 @@ const stayFor = (p: MarketingPage) =>
       return (
         <li class="reveal-child">
           <article class="h-full">
-            <a href={href} class="link-inline group block h-full">
-              {stay && stay.photos.length > 0 ? (
+            <a href={href} class="card-link link-inline group block h-full">
+              {section === 'routes' && p.routeStops.length >= 2 ? (
+                <RouteOsmMap
+                  stops={p.routeStops}
+                  variant="card"
+                  mapId={`route-card-${p.slug}`}
+                />
+              ) : stay && stay.photos.length > 0 ? (
                 <div class="img-frame rounded-lg">
                   <Carousel
                     photos={stay.photos}
@@ -63,7 +70,9 @@ const stayFor = (p: MarketingPage) =>
                   />
                 </div>
               ) : null}
-              <h3 class="text-lg font-display">{p.pageTitle}</h3>
+              <h3 class="text-lg font-display decoration-accent underline-offset-4 group-hover:underline">
+                {p.pageTitle}
+              </h3>
               <p class="mt-1.5 line-clamp-3 text-sm text-muted-foreground">{p.lede}</p>
               {route && (
                 <p class="mt-2 text-sm tabular-nums text-muted-foreground">

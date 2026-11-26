@@ -1,0 +1,117 @@
+---
+import type { RouteStop } from '../content';
+import { projectStops, shortStopLabel, withCoordinates } from '../lib/route-map';
+
+interface Props {
+  stops: RouteStop[];
+  /** Taller hero map on route detail pages */
+  variant?: 'detail' | 'card';
+  schematic?: boolean;
+}
+const { stops, variant = 'detail', schematic = true } = Astro.props;
+
+const plotted = withCoordinates(stops);
+if (plotted.length < 2) return null;
+
+const w = variant === 'card' ? 400 : 560;
+const h = variant === 'card' ? 140 : 220;
+const { points, pathD } = projectStops(stops, w, h);
+const showLabel = (name: string) => name.trim().length > 0 && !name.startsWith('_');
+---
+
+<figure class:list={[variant === 'detail' ? 'reveal mt-10' : '']}>
+  <svg
+    viewBox={`0 0 ${w} ${h}`}
+    role="img"
+    aria-labelledby={variant === 'card' ? undefined : 'route-map-title'}
+    class:list={[
+      'w-full text-primary',
+      variant === 'card'
+        ? 'h-full min-h-[140px]'
+        : 'max-w-2xl rounded-lg border border-border bg-muted/40 p-2',
+    ]}
+  >
+    {variant === 'detail' && <title id="route-map-title">
+        Road route sketch with {plotted.length} points
+      </title>}
+    <rect x="0" y="0" width={w} height={h} class="fill-muted/50" rx="8" />
+    <path
+      d={pathD}
+      fill="none"
+      stroke="currentColor"
+      stroke-width={variant === 'card' ? 2.5 : 3}
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="text-primary route-draw"
+      pathLength="1"
+      stroke-dasharray="1"
+      stroke-dashoffset="1"
+    />
+    {points
+      .filter((p) => showLabel(p.stop.name))
+      .map((p) => {
+        const anchor = p.i === 0 ? 'end' : p.i === points.length - 1 ? 'start' : 'middle';
+        const tx = p.i === 0 ? p.x - 10 : p.i === points.length - 1 ? p.x + 10 : p.x;
+        const ty = p.y - 12;
+        return (
+          <g>
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={variant === 'card' ? 4 : 6}
+              class="fill-primary text-primary route-stop"
+              style={`--i:${p.i}`}
+            />
+            <text
+              x={tx}
+              y={ty}
+              text-anchor={anchor}
+              class="fill-foreground font-medium"
+              font-size={variant === 'card' ? 9 : 11}
+            >
+              {shortStopLabel(p.stop.name, variant === 'card' ? 18 : 28)}
+            </text>
+          </g>
+        );
+      })}
+  </svg>
+  {schematic && variant === 'detail' && (
+    <figcaption class="measure mt-3 text-sm text-muted-foreground">
+      Route traced from OpenStreetMap driving geometry — schematic, not turn-by-turn
+      navigation. Road distances and times on this page are measured separately.
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .route-draw {
+      animation: draw-route 0.9s var(--ease-out-strong, cubic-bezier(0.16, 1, 0.3, 1))
+        forwards;
+    }
+    .route-stop {
+      opacity: 0;
+      animation: fade-stop 0.4s var(--ease-out-strong, cubic-bezier(0.16, 1, 0.3, 1))
+        forwards;
+      animation-delay: calc(0.45s + var(--i, 0) * 60ms);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .route-draw {
+      stroke-dashoffset: 0;
+    }
+    .route-stop {
+      opacity: 1;
+    }
+  }
+  @keyframes draw-route {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes fade-stop {
+    to {
+      opacity: 1;
+    }
+  }
+</style>
