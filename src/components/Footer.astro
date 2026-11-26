@@ -29,6 +29,7 @@
  */
 import Logo from './Logo.astro';
 import { getContent } from '../content';
+import { APP_VERSION } from '../config/version';
 const { site, imageCredits, legalPages } = await getContent();
 ---
 
@@ -46,6 +47,15 @@ const { site, imageCredits, legalPages } = await getContent();
       </div>
       <p class="text-xs text-primary-foreground/45">
         &copy; {new Date().getFullYear()} {site.legalName}
+        <span aria-hidden="true"> · </span>
+        <a
+          href="https://github.com/kunalkeshan/namaste-dandeli/releases/latest"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-inline text-primary-foreground/70 underline underline-offset-4 hover:text-primary-foreground hover:no-underline"
+        >
+          v{APP_VERSION}
+        </a>
       </p>
     </div>
 

@@ -80,6 +80,7 @@ src/
     index.ts    the adapter: components import from here and nowhere else
     confirmed.ts  the Confirmed<T> guard (read this first)
     analytics.ts  the GTM container ID and the event vocabulary (code, not Sanity)
+  config/version.ts  package.json version displayed in the footer
   components/   one .astro file per section
     Analytics.astro  the Google tag + window.track, the one fan-out point
     icons/      one .astro component per UI glyph — aria-hidden, currentColor
@@ -93,6 +94,11 @@ src/
 scripts/        the gates: verify-content, verify-a11y, report-blockers, render-og
 docs/           style guide, content rules, domain facts, SEO, launch runbook
 ```
+
+The footer version comes from `package.json` via `src/config/version.ts`. The
+`sync-version` GitHub Actions workflow updates that value from a published release
+through an auto-mergeable pull request. Until the first release is published, the
+package version (`0.0.1`) is the visible fallback.
 
 ### The content adapter
 
