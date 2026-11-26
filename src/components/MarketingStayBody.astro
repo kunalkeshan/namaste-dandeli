@@ -10,16 +10,16 @@ const { stay } = Astro.props;
 ---
 
 {stay.photos.length > 0 && (
-  <div class="reveal">
-    <div class="img-frame rounded-lg">
+  <article class="reveal">
+    <div class="img-frame max-w-3xl rounded-lg">
       <Carousel
         photos={stay.photos}
         label={stay.kind}
-        sizes="(min-width: 768px) 70vw, 90vw"
+        sizes="(min-width: 640px) 44vw, 90vw"
         aspect="aspect-[4/3]"
       />
     </div>
-    <h2 class="mt-4 text-lg font-display">{stay.kind}</h2>
+    <h3 class="mt-4 text-lg font-display">{stay.kind}</h3>
     <p class="mt-1.5 measure text-sm text-muted-foreground">{stay.blurb}</p>
-  </div>
+  </article>
 )}

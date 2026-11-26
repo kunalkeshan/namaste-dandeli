@@ -52,14 +52,20 @@ const stayFor = (p: MarketingPage) =>
                   mapId={`route-card-${p.slug}`}
                 />
               ) : stay && stay.photos.length > 0 ? (
-                <div class="img-frame rounded-lg">
-                  <Carousel
-                    photos={stay.photos}
-                    label={stay.kind}
-                    sizes="(min-width: 640px) 30vw, 90vw"
-                    aspect="aspect-[4/3]"
-                  />
-                </div>
+                <>
+                  <div class="img-frame rounded-lg">
+                    <Carousel
+                      photos={stay.photos}
+                      label={stay.kind}
+                      sizes="(min-width: 640px) 30vw, 90vw"
+                      aspect="aspect-[4/3]"
+                    />
+                  </div>
+                  <h3 class="mt-4 text-lg font-display decoration-accent underline-offset-4 group-hover:underline">
+                    {stay.kind}
+                  </h3>
+                  <p class="mt-1.5 text-sm text-muted-foreground">{stay.blurb}</p>
+                </>
               ) : img ? (
                 <div class="img-frame mb-4 overflow-hidden rounded-lg">
                   <CommonsImage
@@ -70,10 +76,16 @@ const stayFor = (p: MarketingPage) =>
                   />
                 </div>
               ) : null}
-              <h3 class="text-lg font-display decoration-accent underline-offset-4 group-hover:underline">
-                {p.pageTitle}
-              </h3>
-              <p class="mt-1.5 line-clamp-3 text-sm text-muted-foreground">{p.lede}</p>
+              {!(section === 'stays' && stay && stay.photos.length > 0) && (
+                <>
+                  <h3 class="text-lg font-display decoration-accent underline-offset-4 group-hover:underline">
+                    {p.pageTitle}
+                  </h3>
+                  <p class="mt-1.5 line-clamp-3 text-sm text-muted-foreground">
+                    {p.lede}
+                  </p>
+                </>
+              )}
               {route && (
                 <p class="mt-2 text-sm tabular-nums text-muted-foreground">
                   {render(route.distance, (d) => `${d.km} km · about ${d.drive}`)}
