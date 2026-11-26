@@ -11,6 +11,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createServer } from 'vite';
 import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
+import { faqsFor, routeFaqs } from './marketing-faqs.mjs';
 
 const DRY = process.argv.includes('--dry-run');
 const PROJECT = process.env.SANITY_PROJECT_ID ?? 'krbamcti';
@@ -109,7 +110,7 @@ const activityPage = ({
         : []),
       ...extraSections,
     ],
-    faqs: [],
+    faqs: faqsFor('things-to-do', slug),
     quotes: quoteNeedles.map((n) => quote(n)).filter(Boolean),
     whatsappMessage: `Hi Irshad, we are interested in ${act.name.toLowerCase()} at Dandeli.\n\nDates: \nGroup size: \nPickup from: `,
     enquiryTopic: act.name,
@@ -130,6 +131,8 @@ const activities = actMod.activities;
 const stays = stayMod.stays;
 const { staysDisclosure } = stayMod;
 const { waMessages } = copyMod;
+const routeMod = await server.ssrLoadModule('/src/content/routes.ts');
+const routesList = routeMod.routes;
 await server.close();
 
 const rafting = activities.find((a) => a.name.includes('rafting'));
@@ -160,7 +163,7 @@ docs.push(
         'This is what people actually book through him — not a list scraped off a travel site. The river runs on Supa Dam release, not rainfall. The forest does not promise a tiger.',
       ),
     ],
-    faqs: [],
+    faqs: faqsFor('things-to-do', 'hub'),
     quotes: [],
     whatsappMessage:
       'Hi Irshad, we are planning activities in Dandeli.\n\nDates: \nGroup size: \nWhat we want to try: ',
@@ -352,7 +355,7 @@ docs.push(
         'Pick the route below for notes from real trips. For anything else, call — a wrong drive time on a cab site means a missed flight.',
       ),
     ],
-    faqs: [],
+    faqs: faqsFor('routes', 'hub'),
     quotes: [],
     whatsappMessage:
       'Hi Irshad, I need a transfer to or from Dandeli.\n\nFrom: \nTo: \nDate and time: \nPassengers: ',
@@ -459,7 +462,7 @@ for (const r of routePages) {
           `Irshad quotes the fare for ${r.from} to Dandeli after he knows your date, time and group size. Pickup is at the airport, station or hotel you name; drop is usually Dandeli bus stand unless you are heading straight to a resort he books for you.`,
         ),
       ],
-      faqs: [],
+      faqs: [...routeFaqs(routesList, r.from), ...faqsFor('routes', r.slug)],
       quotes: (r.quotes ?? []).filter(Boolean),
       whatsappMessage: `Hi Irshad, I need a cab ${r.from} to Dandeli.\n\nDate: \nFlight or train time: \nPassengers: `,
       enquiryTopic: r.from,
@@ -485,7 +488,7 @@ docs.push(
     eyebrow: 'Stays',
     lede: 'Irshad books people into places he works with. Resorts are not named here on purpose: a named resort gets booked direct and he loses the introduction.',
     sections: [],
-    faqs: [],
+    faqs: faqsFor('stays', 'hub'),
     quotes: [],
     whatsappMessage: waMessages.stay,
     enquiryTopic: 'Stay in Dandeli',
@@ -544,7 +547,7 @@ for (const s of staySlugs) {
               : 'Pool properties handle meal timings, extra beds and noisy children better — worth saying ages and headcount up front when you message him.',
         ),
       ],
-      faqs: [],
+      faqs: faqsFor('stays', s.slug),
       quotes: [],
       whatsappMessage: `Hi Irshad, we are looking for a ${st.kind.toLowerCase()} stay in Dandeli.\n\nDates: \nGroup size: \nBudget per night: `,
       enquiryTopic: st.kind,

@@ -574,6 +574,89 @@ for (const [band, token] of Object.entries(THEME_OF)) {
 }
 if (drift === 0) ok('band tokens', 'bands.ts matches @theme');
 
+/* 9b. Marketing FAQs: every published page has them; JSON-LD matches --- */
+const marketingPages = snapshot?.marketingPublished ?? [];
+const decodeText = (t) =>
+  t
+    .replace(/&#8217;|&rsquo;|&lsquo;|&#39;/g, "'")
+    .replace(/&ldquo;|&rdquo;|&quot;|&#34;/g, '"')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"');
+const normText = (t) => decodeText(t).replace(/\s+/g, ' ').trim();
+
+const faqEmpty = marketingPages.filter((p) => !p.faqs?.length);
+if (marketingPages.length && faqEmpty.length) {
+  fail(
+    'marketing FAQs',
+    `${faqEmpty.length} published marketing page(s) have no FAQs — e.g. ${faqEmpty
+      .slice(0, 3)
+      .map((p) => `${p.section}/${p.slug}`)
+      .join(', ')}`,
+  );
+} else if (marketingPages.length) {
+  ok('marketing FAQs', `${marketingPages.length} published page(s) each carry FAQs`);
+}
+
+let faqLdDrift = 0;
+for (const f of walk(DIST).filter((p) => p.endsWith('index.html'))) {
+  if (!/\/(things-to-do|routes|stays)\//.test(f)) continue;
+  const page = readFileSync(f, 'utf8');
+  if (!page.includes('id="faq-heading"')) continue;
+
+  const faqLd = [
+    ...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
+  ]
+    .map((m) => {
+      try {
+        return JSON.parse(m[1]);
+      } catch {
+        return null;
+      }
+    })
+    .find((j) => j && j['@type'] === 'FAQPage');
+
+  if (!faqLd) {
+    fail('FAQ JSON-LD', `${f} has a visible FAQ but no FAQPage block`);
+    faqLdDrift++;
+    continue;
+  }
+
+  const dl = page.match(/id="faq-heading"[\s\S]*?<dl[^>]*>([\s\S]*?)<\/dl>/)?.[1] ?? '';
+  const questions = [...dl.matchAll(/<dt[^>]*>([\s\S]*?)<\/dt>/g)].map((m) =>
+    normText(m[1]),
+  );
+  const answers = [...dl.matchAll(/<dd[^>]*>([\s\S]*?)<\/dd>/g)].map((m) =>
+    normText(m[1]),
+  );
+  const entities = faqLd.mainEntity ?? [];
+
+  if (questions.length !== entities.length || answers.length !== entities.length) {
+    fail(
+      'FAQ JSON-LD',
+      `${f}: ${questions.length} visible Q&A vs ${entities.length} in JSON-LD`,
+    );
+    faqLdDrift++;
+    continue;
+  }
+  for (let i = 0; i < entities.length; i++) {
+    const q = normText(entities[i].name ?? '');
+    const a = normText(entities[i].acceptedAnswer?.text ?? '');
+    if (q !== questions[i] || a !== answers[i]) {
+      fail(
+        'FAQ JSON-LD',
+        `${f}: FAQ ${i + 1} does not match visible text — check question/answer parity`,
+      );
+      faqLdDrift++;
+      break;
+    }
+  }
+}
+if (faqLdDrift === 0 && marketingPages.some((p) => p.faqs?.length)) {
+  ok('FAQ JSON-LD', 'visible FAQs match FAQPage on marketing pages');
+}
+
 /* Every light<->dark edge is a river bend, never a straight cut. The
    house style's one hard "no" — see docs/style-guide.md. A page that
    puts a light section directly against a dark one ships a hard
