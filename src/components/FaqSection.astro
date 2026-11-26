@@ -7,6 +7,10 @@ interface Props {
 }
 const { faqs } = Astro.props;
 if (!faqs.length) return null;
+
+/* Shadcn / Radix accordion timing — ease-out-cubic open, ease-in-out-cubic close (coss.com/origin/easings). */
+const easeOutCubic = 'cubic-bezier(0.33, 1, 0.68, 1)';
+const easeInOutCubic = 'cubic-bezier(0.65, 0, 0.35, 1)';
 ---
 
 <section class="reveal" aria-labelledby="faq-heading">
@@ -20,36 +24,35 @@ if (!faqs.length) return null;
           <span class="faq-question pr-2">{f.question}</span>
           <ChevronDown class="faq-accordion__chevron mt-0.5 shrink-0 text-muted-foreground" />
         </summary>
-        <div class="faq-accordion__panel">
-          <p class="faq-answer pb-4 text-sm text-muted-foreground">{f.answer}</p>
+        <div class="faq-accordion__panel" data-faq-panel>
+          <div class="faq-accordion__inner" data-faq-inner>
+            <p class="faq-answer pb-4 text-sm text-muted-foreground">{f.answer}</p>
+          </div>
         </div>
       </details>
     ))}
   </div>
 </section>
 
-<style>
+<style define:vars={{ easeOutCubic, easeInOutCubic }}>
   .faq-accordion__panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 280ms var(--ease-in-out-strong);
-  }
-
-  .faq-accordion__item[open]:not(.faq-accordion__item--closing) .faq-accordion__panel {
-    grid-template-rows: 1fr;
+    overflow: hidden;
+    height: 0;
+    transition: height 300ms var(--easeOutCubic);
   }
 
   .faq-accordion__item--closing .faq-accordion__panel {
-    grid-template-rows: 0fr;
-  }
-
-  .faq-accordion__panel > * {
-    min-height: 0;
-    overflow: hidden;
+    transition: height 200ms var(--easeInOutCubic);
   }
 
   .faq-accordion__item :global(.faq-accordion__chevron) {
-    transition: transform 280ms var(--ease-in-out-strong);
+    transition: transform 300ms var(--easeOutCubic);
+  }
+
+  .faq-accordion__item--closing :global(.faq-accordion__chevron),
+  .faq-accordion__item:not([open]) :global(.faq-accordion__chevron) {
+    transform: rotate(0deg);
+    transition: transform 200ms var(--easeInOutCubic);
   }
 
   .faq-accordion__item[open]:not(.faq-accordion__item--closing)
@@ -60,7 +63,7 @@ if (!faqs.length) return null;
   @media (prefers-reduced-motion: reduce) {
     .faq-accordion__panel,
     .faq-accordion__item :global(.faq-accordion__chevron) {
-      transition-duration: 0.01ms;
+      transition-duration: 0.01ms !important;
     }
   }
 </style>
@@ -68,50 +71,128 @@ if (!faqs.length) return null;
 <script is:inline>
   (() => {
     /* data-faq-accordion-ready */
-    const DURATION = 280;
+    const OPEN_MS = 300;
+    const CLOSE_MS = 200;
+
+    const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /** @param {HTMLDetailsElement} d */
-    function animateClose(d) {
-      if (!d.open || d.classList.contains('faq-accordion__item--closing')) return;
-      const panel = d.querySelector('.faq-accordion__panel');
-      if (!panel) {
-        d.open = false;
+    function panelEls(d) {
+      return {
+        panel: d.querySelector('[data-faq-panel]'),
+        inner: d.querySelector('[data-faq-inner]'),
+      };
+    }
+
+    /** @param {HTMLDetailsElement} d */
+    function animateOpen(d) {
+      const { panel, inner } = panelEls(d);
+      if (!panel || !inner) return;
+      if (reduced()) {
+        panel.style.height = '';
         return;
       }
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      panel.style.height = '0px';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          panel.style.height = `${inner.offsetHeight}px`;
+        });
+      });
+      const onEnd = (ev) => {
+        if (ev.target !== panel || ev.propertyName !== 'height') return;
+        panel.removeEventListener('transitionend', onEnd);
+        if (d.open) panel.style.height = 'auto';
+      };
+      panel.addEventListener('transitionend', onEnd);
+      window.setTimeout(() => {
+        if (d.open) panel.style.height = 'auto';
+      }, OPEN_MS + 50);
+    }
+
+    /** @param {HTMLDetailsElement} d @param {() => void} [done] */
+    function animateClose(d, done) {
+      const { panel, inner } = panelEls(d);
+      if (!panel || !inner) {
         d.open = false;
+        done?.();
+        return;
+      }
+      if (reduced() || !d.open) {
+        d.open = false;
+        panel.style.height = '0px';
+        done?.();
         return;
       }
       d.classList.add('faq-accordion__item--closing');
+      const start = inner.offsetHeight;
+      panel.style.height = `${start}px`;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          panel.style.height = '0px';
+        });
+      });
       let finished = false;
       const finish = () => {
         if (finished) return;
         finished = true;
         d.open = false;
         d.classList.remove('faq-accordion__item--closing');
+        panel.style.height = '0px';
+        done?.();
       };
       const onEnd = (ev) => {
-        if (ev.target !== panel || ev.propertyName !== 'grid-template-rows') return;
+        if (ev.target !== panel || ev.propertyName !== 'height') return;
         panel.removeEventListener('transitionend', onEnd);
         finish();
       };
       panel.addEventListener('transitionend', onEnd);
-      window.setTimeout(finish, DURATION + 40);
+      window.setTimeout(finish, CLOSE_MS + 50);
     }
 
     const roots = document.querySelectorAll('[data-faq-accordion]');
     if (!roots.length) return;
+
     for (const root of roots) {
+      root.querySelectorAll('details').forEach((d) => {
+        const { panel } = panelEls(d);
+        if (panel) panel.style.height = '0px';
+      });
+
+      root.addEventListener(
+        'click',
+        (e) => {
+          const summary =
+            e.target instanceof Element ? e.target.closest('summary') : null;
+          if (!summary || !root.contains(summary)) return;
+          const d = summary.closest('details');
+          if (!(d instanceof HTMLDetailsElement) || !root.contains(d)) return;
+          if (d.open && !d.classList.contains('faq-accordion__item--closing')) {
+            e.preventDefault();
+            animateClose(d);
+          }
+        },
+        true,
+      );
+
       root.addEventListener(
         'toggle',
         (e) => {
-          const t = e.target;
-          if (!(t instanceof HTMLDetailsElement) || !root.contains(t)) return;
-          if (t.open) {
-            root.querySelectorAll('details[open]').forEach((d) => {
-              if (d !== t) animateClose(d);
-            });
+          const d = e.target;
+          if (!(d instanceof HTMLDetailsElement) || !root.contains(d)) return;
+          if (!d.open) return;
+          const others = [...root.querySelectorAll('details[open]')].filter(
+            (x) => x !== d,
+          );
+          if (others.length === 0) {
+            animateOpen(d);
+            return;
           }
+          let pending = others.length;
+          const after = () => {
+            pending -= 1;
+            if (pending === 0) animateOpen(d);
+          };
+          others.forEach((other) => animateClose(other, after));
         },
         true,
       );

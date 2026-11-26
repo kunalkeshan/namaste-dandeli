@@ -31,7 +31,7 @@ import {
 } from './marketing';
 import { whatsappLink, telLink, WA_DEFAULT, siteLinks } from './site';
 import { carImageNote } from './images';
-import { staysDisclosure } from './stays';
+import { staysBeforeYouBook, staysDisclosure } from './stays';
 import { soloFallback } from './assurances';
 import { outstation } from './routes';
 import { slabs, extras, pricingNote } from './packages';
@@ -75,6 +75,16 @@ function firstImg(photos: unknown[] | null | undefined, alt = ''): Img | null {
 
 function allImgs(photos: unknown[] | null | undefined): Img[] {
   return (photos ?? []).map((p) => toImg(p as never)).filter((i): i is Img => i !== null);
+}
+
+function dedupePageQuotes(quotes: MarketingPage['quotes']) {
+  const seen = new Set<string>();
+  return quotes.filter((q) => {
+    const key = q.text.trim();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /**
@@ -273,8 +283,10 @@ async function loadContent() {
       faqs: ((row.faqs ?? []) as { question: string; answer: string }[]).filter(
         (f) => f.question?.trim() && f.answer?.trim(),
       ),
-      quotes: ((row.quotes ?? []) as MarketingPage['quotes']).filter(
-        (q) => q.author?.trim() && q.text?.trim(),
+      quotes: dedupePageQuotes(
+        ((row.quotes ?? []) as MarketingPage['quotes']).filter(
+          (q) => q.author?.trim() && q.text?.trim(),
+        ),
       ),
       whatsappMessage: String(row.whatsappMessage ?? waMessages.default),
       enquiryTopic: String(row.enquiryTopic ?? 'Dandeli trip'),
@@ -360,6 +372,7 @@ async function loadContent() {
     marketingLinks,
     carImageNote,
     staysDisclosure,
+    staysBeforeYouBook,
     soloFallback,
     outstation,
     pricing: { slabs, extras, note: pricingNote },

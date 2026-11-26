@@ -111,7 +111,14 @@ const activityPage = ({
       ...extraSections,
     ],
     faqs: faqsFor('things-to-do', slug),
-    quotes: quoteNeedles.map((n) => quote(n)).filter(Boolean),
+    quotes: [
+      ...new Map(
+        quoteNeedles
+          .map((n) => quote(n))
+          .filter(Boolean)
+          .map((q) => [q.text, q]),
+      ).values(),
+    ],
     whatsappMessage: `Hi Irshad, we are interested in ${act.name.toLowerCase()} at Dandeli.\n\nDates: \nGroup size: \nPickup from: `,
     enquiryTopic: act.name,
     heroImage: hero,
@@ -209,7 +216,7 @@ if (safari) {
       regionSlot: 'forestRoad',
       title: 'Jungle safari in Kali Tiger Reserve | Namaste Dandeli',
       pageTitle: 'Jungle safari at first light',
-      quoteNeedles: ['sight seeing in dandeli forest', 'sight seeing in dandeli forest'],
+      quoteNeedles: ['sight seeing in dandeli forest'],
       extraSections: [
         section(
           'Why 5:15',

@@ -14,10 +14,10 @@ export async function getStaticPaths() {
 }
 
 const { page, stay } = Astro.props;
-const { staysDisclosure } = await getContent();
+const { staysBeforeYouBook } = await getContent();
 const withDisclosure = {
   ...page,
-  sections: [...page.sections, { heading: 'Before you book', body: staysDisclosure }],
+  sections: [...page.sections, { heading: 'Before you book', body: staysBeforeYouBook }],
 };
 ---
 
