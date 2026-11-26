@@ -13,15 +13,15 @@ if (!faqs.length) return null;
   <h2 id="faq-heading" class="text-xl">
     Questions from travellers
   </h2>
-  <div class="faq-accordion measure mt-6 flex flex-col gap-3" data-faq-accordion>
+  <div class="faq-accordion measure mt-6 flex flex-col" data-faq-accordion>
     {faqs.map((f) => (
-      <details class="faq-accordion__item reveal-child">
-        <summary class="flex cursor-pointer list-none items-start justify-between gap-4 px-4 py-3.5 text-left font-semibold text-foreground transition-colors hover:text-primary [&::-webkit-details-marker]:hidden">
+      <details class="faq-accordion__item reveal-child border-b border-rule last:border-b-0">
+        <summary class="flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left font-semibold text-foreground transition-colors hover:text-primary [&::-webkit-details-marker]:hidden">
           <span class="faq-question pr-2">{f.question}</span>
           <ChevronDown class="faq-accordion__chevron mt-0.5 shrink-0 text-muted-foreground" />
         </summary>
         <div class="faq-accordion__panel">
-          <p class="faq-answer px-4 pb-4 text-muted-foreground">{f.answer}</p>
+          <p class="faq-answer pb-4 text-sm text-muted-foreground">{f.answer}</p>
         </div>
       </details>
     ))}
@@ -29,36 +29,18 @@ if (!faqs.length) return null;
 </section>
 
 <style>
-  .faq-accordion__item {
-    border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    background: color-mix(in srgb, var(--color-muted) 55%, var(--color-background));
-    transition:
-      border-color 280ms var(--ease-in-out-strong),
-      box-shadow 280ms var(--ease-in-out-strong);
-  }
-
-  @media (hover: hover) {
-    .faq-accordion__item:has(summary:hover) {
-      border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary));
-      box-shadow: 0 4px 14px rgb(18 32 25 / 0.06);
-    }
-  }
-
-  .faq-accordion__item[open] {
-    border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-primary));
-    box-shadow: 0 6px 20px rgb(18 32 25 / 0.08);
-    background: var(--color-background);
-  }
-
   .faq-accordion__panel {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 280ms var(--ease-in-out-strong);
   }
 
-  .faq-accordion__item[open] .faq-accordion__panel {
+  .faq-accordion__item[open]:not(.faq-accordion__item--closing) .faq-accordion__panel {
     grid-template-rows: 1fr;
+  }
+
+  .faq-accordion__item--closing .faq-accordion__panel {
+    grid-template-rows: 0fr;
   }
 
   .faq-accordion__panel > * {
@@ -66,19 +48,18 @@ if (!faqs.length) return null;
     overflow: hidden;
   }
 
-  .faq-accordion__chevron {
+  .faq-accordion__item :global(.faq-accordion__chevron) {
     transition: transform 280ms var(--ease-in-out-strong);
   }
 
-  .faq-accordion__item[open] .faq-accordion__chevron {
+  .faq-accordion__item[open]:not(.faq-accordion__item--closing)
+    :global(.faq-accordion__chevron) {
     transform: rotate(180deg);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .faq-accordion__panel {
-      transition-duration: 0.01ms;
-    }
-    .faq-accordion__chevron {
+    .faq-accordion__panel,
+    .faq-accordion__item :global(.faq-accordion__chevron) {
       transition-duration: 0.01ms;
     }
   }
@@ -87,6 +68,37 @@ if (!faqs.length) return null;
 <script is:inline>
   (() => {
     /* data-faq-accordion-ready */
+    const DURATION = 280;
+
+    /** @param {HTMLDetailsElement} d */
+    function animateClose(d) {
+      if (!d.open || d.classList.contains('faq-accordion__item--closing')) return;
+      const panel = d.querySelector('.faq-accordion__panel');
+      if (!panel) {
+        d.open = false;
+        return;
+      }
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        d.open = false;
+        return;
+      }
+      d.classList.add('faq-accordion__item--closing');
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        d.open = false;
+        d.classList.remove('faq-accordion__item--closing');
+      };
+      const onEnd = (ev) => {
+        if (ev.target !== panel || ev.propertyName !== 'grid-template-rows') return;
+        panel.removeEventListener('transitionend', onEnd);
+        finish();
+      };
+      panel.addEventListener('transitionend', onEnd);
+      window.setTimeout(finish, DURATION + 40);
+    }
+
     const roots = document.querySelectorAll('[data-faq-accordion]');
     if (!roots.length) return;
     for (const root of roots) {
@@ -94,10 +106,12 @@ if (!faqs.length) return null;
         'toggle',
         (e) => {
           const t = e.target;
-          if (!(t instanceof HTMLDetailsElement) || !t.open || !root.contains(t)) return;
-          root.querySelectorAll('details[open]').forEach((d) => {
-            if (d !== t) d.open = false;
-          });
+          if (!(t instanceof HTMLDetailsElement) || !root.contains(t)) return;
+          if (t.open) {
+            root.querySelectorAll('details[open]').forEach((d) => {
+              if (d !== t) animateClose(d);
+            });
+          }
         },
         true,
       );
