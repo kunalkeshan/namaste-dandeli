@@ -15,6 +15,94 @@ left to purge. No cache API call, no revalidation endpoint, no tokens.
 
 ---
 
+## How it works (read this before any seed or migration)
+
+```text
+Irshad publishes in Studio          You run a seed script (CLI import)
+           │                                    │
+           └──────────────┬─────────────────────┘
+                          ▼
+              Sanity commits change(s)
+                          ▼
+         Webhook "Rebuild Site on Publish"
+         (production dataset, drafts OFF)
+                          ▼
+              POST → Vercel Deploy Hook
+              (rebuilds Git branch: main)
+                          ▼
+              Vercel runs pnpm build → static dist/
+                          ▼
+              Production URL serves new HTML
+```
+
+**Git is not involved in step 2–4.** A deploy hook does not push code. It
+tells Vercel to rebuild **whatever commit is already on `main`**. That is
+why a deployment storm shows the **same commit message dozens of times** —
+only the Sanity content changed, not the repo.
+
+### What triggers one rebuild vs many
+
+| Trigger                              | Webhook type      | Typical result                                                                      |
+| ------------------------------------ | ----------------- | ----------------------------------------------------------------------------------- |
+| Irshad **Publish** one doc in Studio | Transaction       | **1** Vercel build                                                                  |
+| `sanity dataset import` with 27 docs | Document (legacy) | **27** builds — one per document                                                    |
+| `sanity dataset import` with 27 docs | Transaction       | **1–N** builds — one per Sanity _transaction_ (imports often use many transactions) |
+| Import **without** pausing the hook  | Either            | **N** builds queued on Vercel                                                       |
+
+The safe rule for **scripts**: assume **N builds** unless you explicitly
+coalesce to **1**.
+
+### The rule for agents and maintainers
+
+Any script that **writes the production dataset** in bulk must use
+**one** production rebuild afterward:
+
+1. `node scripts/rebuild-webhook.mjs pause` — stop Sanity calling Vercel
+2. Run all imports / patches (single batch of work)
+3. `node scripts/rebuild-webhook.mjs trigger` — **one** deploy hook call
+4. `node scripts/rebuild-webhook.mjs resume` — normal Studio publishes work again
+
+Repo helper (used by all seed scripts):
+
+```js
+import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
+
+withSingleProductionRebuild(
+  () => {
+    /* dataset import, client.mutate, etc. */
+  },
+  { skip: skipRebuildPause() },
+);
+```
+
+Opt out only when targeting a non-production dataset or you will rebuild
+manually later: `--no-rebuild-pause` or `SANITY_NO_REBUILD_PAUSE=1`.
+
+**Scripts that already wrap imports:** `seed-sanity.mjs`,
+`seed-marketing-pages.mjs`, `seed-legal.mjs`, `patch-post-launch.mjs`.
+New bulk-write scripts must do the same.
+
+### Studio editing (Irshad)
+
+- **Publish** → one transaction → one rebuild (with the transaction webhook).
+- **Type without publishing** → no rebuild (drafts must stay **off** on the
+  webhook).
+- Batch edits in Studio, then **publish once** when possible.
+
+### What “deployment loop” looked like (Nov 2026)
+
+`seed-marketing-pages.mjs` ran `dataset import --replace` on 27
+`marketingPage` documents while a **document** webhook with **no GROQ
+filter** was active. Sanity fired 27 POSTs to the deploy hook in one second;
+Vercel queued 27 production builds of the same `main` commit. Not an
+infinite Git loop — a **backlog**.
+
+**Project state now:** webhook is **transaction** type; seeds use
+`withSingleProductionRebuild`. Verify with
+`node scripts/rebuild-webhook.mjs status`.
+
+---
+
 ## Why not ISR
 
 ISR is the obvious-looking answer and it does not work here.
@@ -61,20 +149,23 @@ Vercel → the project → **Settings → Git → Deploy Hooks**
 [sanity.io/manage](https://sanity.io/manage) → project `krbamcti` →
 **API → Webhooks → Create webhook**
 
-| Field       | Value                           |
-| ----------- | ------------------------------- |
-| Name        | `Rebuild site on publish`       |
-| URL         | the Deploy Hook URL from step 1 |
-| Dataset     | `production`                    |
-| Trigger on  | ✅ Create ✅ Update ✅ Delete   |
-| **Drafts**  | ❌ **OFF** — see below          |
-| Filter      | the GROQ below                  |
-| HTTP method | `POST`                          |
-| HTTP body   | leave empty (Vercel ignores it) |
-| Secret      | leave empty (nothing reads it)  |
+**Prefer type: transaction** (one call per committed transaction). Document
+webhooks are one call **per document** — fine for Studio, dangerous for CLI
+imports.
 
-**Filter** — only rebuild for types the site actually renders, so editing
-an unrelated document does not burn a build:
+| Field       | Value                            |
+| ----------- | -------------------------------- |
+| Name        | `Rebuild Site on Publish`        |
+| Type        | **Transaction**                  |
+| URL         | the Deploy Hook URL from step 1  |
+| Dataset     | `production`                     |
+| **Drafts**  | ❌ **OFF** (document hooks only) |
+| HTTP method | `POST`                           |
+| HTTP body   | leave empty (Vercel ignores it)  |
+| Secret      | leave empty (nothing reads it)   |
+
+If you must use a **document** webhook, set this **filter** so unrelated
+types do not trigger rebuilds:
 
 ```groq
 _type in [
@@ -104,34 +195,32 @@ not reach the live page even if a build did run.
 
 ---
 
-### 4. Bulk imports and deployment storms
+### 4. Bulk imports (seeds and migrations)
 
-Scripts such as `seed-marketing-pages.mjs` use `sanity dataset import
---replace` and update many documents at once. With a **document** webhook,
-each updated doc calls the Vercel Deploy Hook → dozens of production
-deploys of the same Git commit.
+Do **not** call `sanity dataset import` or bulk `client.mutate` against
+`production` without `withSingleProductionRebuild` — see **How it works**
+above.
 
-Before a bulk seed:
+Manual equivalent:
 
 ```bash
 node scripts/rebuild-webhook.mjs pause
-node scripts/seed-marketing-pages.mjs
-node scripts/rebuild-webhook.mjs trigger   # one production rebuild
+node scripts/seed-marketing-pages.mjs    # or any bulk writer
+node scripts/rebuild-webhook.mjs trigger
 node scripts/rebuild-webhook.mjs resume
 ```
 
-`seed-marketing-pages.mjs` runs **pause → import → trigger → resume**
-automatically unless you pass `--no-rebuild-pause`.
+Helpers:
 
-To convert the webhook to **transaction** type (one hook call per Sanity
-transaction, not per document):
+| Command                                                | Purpose                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
+| `node scripts/rebuild-webhook.mjs status`              | Webhook type, disabled, filter              |
+| `node scripts/rebuild-webhook.mjs pause` / `resume`    | Mute hook during bulk work                  |
+| `node scripts/rebuild-webhook.mjs trigger`             | One production rebuild                      |
+| `node scripts/rebuild-webhook.mjs migrate-transaction` | Replace document hook with transaction hook |
 
-```bash
-node scripts/rebuild-webhook.mjs migrate-transaction
-```
-
-Imports may still use multiple transactions; pausing remains the safe path
-for large `--replace` runs.
+Seeds accept `--no-rebuild-pause` when you intentionally skip the coalesced
+rebuild (e.g. local dataset only).
 
 ---
 

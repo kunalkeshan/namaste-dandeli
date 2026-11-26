@@ -16,10 +16,13 @@
  *
  *   node scripts/seed-sanity.mjs --dry-run
  *   node scripts/seed-sanity.mjs
+ *
+ * Production import: one Vercel rebuild — docs/deploy-on-publish.md.
  */
 import { createServer } from 'vite';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
 
 const DRY = process.argv.includes('--dry-run');
 const PROJECT = process.env.SANITY_PROJECT_ID ?? 'krbamcti';
@@ -233,9 +236,13 @@ if (DRY) {
   process.exit(0);
 }
 
-execFileSync(
-  'studio/node_modules/.bin/sanity',
-  ['dataset', 'import', OUT, DATASET, '--replace', '-p', PROJECT],
-  { stdio: 'inherit' },
+withSingleProductionRebuild(
+  () =>
+    execFileSync(
+      'studio/node_modules/.bin/sanity',
+      ['dataset', 'import', OUT, DATASET, '--replace', '-p', PROJECT],
+      { stdio: 'inherit' },
+    ),
+  { skip: skipRebuildPause() },
 );
 console.log('\nimported.');

@@ -2,9 +2,12 @@
  * Surgical Sanity patches after launch confirmations — not a full reimport.
  *
  *   node scripts/patch-post-launch.mjs
+ *
+ * Production mutate: one Vercel rebuild — docs/deploy-on-publish.md.
  */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
 
 const CLI = 'node_modules/.bin/sanity';
 const PROJECT = 'krbamcti';
@@ -114,12 +117,17 @@ client
   .catch((e) => { console.error(e.message); process.exit(1); });
 `,
 );
-try {
-  execFileSync(CLI, ['exec', '--with-user-token', '.patch-post-launch.cjs'], {
-    stdio: 'inherit',
-    cwd: 'studio',
-  });
-} finally {
-  unlinkSync('studio/.patch-post-launch.cjs');
-}
+withSingleProductionRebuild(
+  () => {
+    try {
+      execFileSync(CLI, ['exec', '--with-user-token', '.patch-post-launch.cjs'], {
+        stdio: 'inherit',
+        cwd: 'studio',
+      });
+    } finally {
+      unlinkSync('studio/.patch-post-launch.cjs');
+    }
+  },
+  { skip: skipRebuildPause() },
+);
 console.log('done.');

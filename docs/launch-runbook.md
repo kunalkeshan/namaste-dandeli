@@ -50,6 +50,7 @@ or update `scripts/.route-measurements.json` and `node scripts/patch-post-launch
 ```bash
 pnpm verify
 # Vercel production deploys from main; Sanity webhook may trigger rebuild — see docs/deploy-on-publish.md
+# Bulk seeds/migrations: withSingleProductionRebuild in scripts/sanity-bulk-write.mjs (one build, not N)
 ```
 
 ## Analytics

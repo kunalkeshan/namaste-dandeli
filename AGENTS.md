@@ -19,6 +19,11 @@ not style preferences — they are the point of the project.**
 - **Do not install or upgrade packages without explicit approval.**
 - **Do not push, tag, or open PRs unless asked.**
 - `pnpm og` regenerates the social card and overwrites `public/og.jpg` — ask first.
+- **Bulk Sanity writes to `production`** (`dataset import`, multi-doc
+  `mutate`, new seed scripts): wrap in `withSingleProductionRebuild` from
+  `scripts/sanity-bulk-write.mjs`, or pause → work → `rebuild-webhook trigger`
+  → resume. Otherwise the Sanity webhook queues **one Vercel build per
+  document/transaction** — see [docs/deploy-on-publish.md](docs/deploy-on-publish.md).
 
 ## Definition of Done
 

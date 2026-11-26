@@ -3,13 +3,16 @@
  *
  *   node scripts/seed-marketing-pages.mjs --dry-run
  *   node scripts/seed-marketing-pages.mjs
+ *
+ * Production import: one Vercel rebuild (pause → import → trigger → resume).
+ * See docs/deploy-on-publish.md. Pass --no-rebuild-pause to skip.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createServer } from 'vite';
+import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
 
 const DRY = process.argv.includes('--dry-run');
-const NO_REBUILD_PAUSE = process.argv.includes('--no-rebuild-pause');
 const PROJECT = process.env.SANITY_PROJECT_ID ?? 'krbamcti';
 const DATASET = process.env.SANITY_DATASET ?? 'production';
 const OUT = 'scripts/.seed-marketing.ndjson';
@@ -545,36 +548,24 @@ console.log(`Wrote ${docs.length} marketing documents to ${OUT}`);
 
 if (DRY) process.exit(0);
 
-const runImport = () =>
-  execFileSync(
-    'pnpm',
-    [
-      'exec',
-      'sanity',
-      'dataset',
-      'import',
-      OUT,
-      DATASET,
-      '--replace',
-      `--project=${PROJECT}`,
-    ],
-    {
-      stdio: 'inherit',
-      env: { ...process.env, SANITY_PROJECT_ID: PROJECT, SANITY_DATASET: DATASET },
-    },
-  );
-
-const rebuildWebhook = (subcmd) =>
-  execFileSync('node', ['scripts/rebuild-webhook.mjs', subcmd], { stdio: 'inherit' });
-
-if (NO_REBUILD_PAUSE) {
-  runImport();
-} else {
-  try {
-    rebuildWebhook('pause');
-    runImport();
-    rebuildWebhook('trigger');
-  } finally {
-    rebuildWebhook('resume');
-  }
-}
+withSingleProductionRebuild(
+  () =>
+    execFileSync(
+      'pnpm',
+      [
+        'exec',
+        'sanity',
+        'dataset',
+        'import',
+        OUT,
+        DATASET,
+        '--replace',
+        `--project=${PROJECT}`,
+      ],
+      {
+        stdio: 'inherit',
+        env: { ...process.env, SANITY_PROJECT_ID: PROJECT, SANITY_DATASET: DATASET },
+      },
+    ),
+  { skip: skipRebuildPause() },
+);

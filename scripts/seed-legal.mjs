@@ -29,10 +29,13 @@
  *
  *   node scripts/seed-legal.mjs --dry-run
  *   node scripts/seed-legal.mjs
+ *
+ * Production import + siteSettings patch: one Vercel rebuild — deploy-on-publish.md.
  */
 import { createServer } from 'vite';
 import { execFileSync } from 'node:child_process';
 import { writeFileSync, unlinkSync } from 'node:fs';
+import { withSingleProductionRebuild, skipRebuildPause } from './sanity-bulk-write.mjs';
 
 const DRY = process.argv.includes('--dry-run');
 const PROJECT = process.env.SANITY_PROJECT_ID ?? 'krbamcti';
@@ -311,18 +314,30 @@ if (DRY) {
   process.exit(0);
 }
 
-execFileSync(
-  CLI,
-  ['dataset', 'import', `../${OUT}`, '--dataset', DATASET, '--replace', '-p', PROJECT],
-  { stdio: 'inherit', cwd: 'studio' },
-);
-
-/* The reference array, as a one-field patch — never a document write.
-   Order here IS the footer order. */
 const refs = docs.map((d) => ({ _type: 'reference', _key: d._id, _ref: d._id }));
-writeFileSync(
-  'studio/.seed-legal-patch.cjs',
-  `const { createClient } = require('@sanity/client');
+
+withSingleProductionRebuild(
+  () => {
+    execFileSync(
+      CLI,
+      [
+        'dataset',
+        'import',
+        `../${OUT}`,
+        '--dataset',
+        DATASET,
+        '--replace',
+        '-p',
+        PROJECT,
+      ],
+      { stdio: 'inherit', cwd: 'studio' },
+    );
+
+    /* The reference array, as a one-field patch — never a document write.
+       Order here IS the footer order. */
+    writeFileSync(
+      'studio/.seed-legal-patch.cjs',
+      `const { createClient } = require('@sanity/client');
 // SANITY_AUTH_TOKEN is injected by \`sanity exec --with-user-token\`.
 const client = createClient({
   projectId: '${PROJECT}',
@@ -338,13 +353,16 @@ client
   .then(() => console.log('siteSettings.legalPages set (${refs.length} refs, in order)'))
   .catch((e) => { console.error(e.message); process.exit(1); });
 `,
+    );
+    try {
+      execFileSync(CLI, ['exec', '--with-user-token', '.seed-legal-patch.cjs'], {
+        stdio: 'inherit',
+        cwd: 'studio',
+      });
+    } finally {
+      unlinkSync('studio/.seed-legal-patch.cjs');
+    }
+  },
+  { skip: skipRebuildPause() },
 );
-try {
-  execFileSync(CLI, ['exec', '--with-user-token', '.seed-legal-patch.cjs'], {
-    stdio: 'inherit',
-    cwd: 'studio',
-  });
-} finally {
-  unlinkSync('studio/.seed-legal-patch.cjs');
-}
 console.log('\npublished.');

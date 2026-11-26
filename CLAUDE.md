@@ -41,6 +41,9 @@ pnpm icons            # regenerate every raster icon from public/favicon.svg
 pnpm dev:site         # Astro only, without the Studio
 pnpm dev:studio       # Studio only (localhost:3333)
 pnpm studio:deploy    # deploy the Studio to *.sanity.studio
+
+# Bulk production writes → one Vercel rebuild (see docs/deploy-on-publish.md)
+node scripts/rebuild-webhook.mjs status   # pause | resume | trigger
 ```
 
 ## Stack
