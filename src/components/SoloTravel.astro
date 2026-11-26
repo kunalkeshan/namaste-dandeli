@@ -16,10 +16,28 @@
  */
 import { getContent, whatsappLink } from '../content';
 import WhatsAppIcon from './icons/WhatsApp.astro';
-import { isConfirmed } from '../content/confirmed';
+import { isConfirmed, unconfirmed, type Confirmed } from '../content/confirmed';
 
 const { featuredReview, assurances, soloFallback, copy, irshad, site } =
   await getContent();
+
+/* The public review-history start year is not confirmed yet. Keep the
+   duration out of the rendered copy until it is; once confirmed, calculate
+   elapsed whole years at build time so it advances with each deployment. */
+const reviewHistoryStartYear = 2023;
+const reviewHistory: Confirmed<number> = unconfirmed(
+  'Reviews anyone can read',
+  'Confirm that the public Google review history dates back to 2023.',
+);
+const lede = reviewHistory.confirmed
+  ? soloFallback.lede.replace(
+      'three years',
+      `${new Date().getFullYear() - reviewHistoryStartYear} ${new Date().getFullYear() - reviewHistoryStartYear === 1 ? 'year' : 'years'}`,
+    )
+  : soloFallback.lede.replace(
+      'and three years of reviews anyone can read',
+      'and reviews anyone can read',
+    );
 
 /* His face, above the review.
    The section's whole argument is "a named person, not an app" — and
@@ -42,7 +60,7 @@ const points = [...soloFallback.evidence, ...confirmedAssurances];
       <div class="reveal">
         <p class="decal text-xs text-accent-ink">{copy.sections.solo.eyebrow}</p>
         <h2 class="mt-3 text-2xl">{soloFallback.title}</h2>
-        <p class="measure mt-4 text-lg text-muted-foreground">{soloFallback.lede}</p>
+        <p class="measure mt-4 text-lg text-muted-foreground">{lede}</p>
 
         <ul class="mt-8 space-y-6">
           {points.map((p) => (
